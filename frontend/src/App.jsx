@@ -1,0 +1,48 @@
+import React from "react";
+import { Provider } from "react-redux";
+
+import { Routes, Route, Navigate } from "react-router-dom";
+
+import { BrowserRouter } from "react-router-dom";
+
+import Box from "@mui/joy/Box";
+import Container from "@mui/joy/Container";
+
+import Main from "./pages/Main";
+
+import AppStore from "./store";
+
+export default function App() {
+  return (
+    <Provider store={AppStore}>
+      <Container
+        maxWidth={false}
+        disableGutters={true}
+        sx={{
+          height: "100%",
+          width: "100%",
+          position: "absolute",
+          bottom: 0,
+          top: 0,
+          left: 0,
+          right: 0,
+          display: "block",
+        }}
+      >
+        <BrowserRouter>
+          <Box
+            sx={
+              {
+                // height: "calc(100% - 80px)",
+              }
+            }
+          >
+            <Routes>
+              <Route index element={<Main />} />
+            </Routes>
+          </Box>
+        </BrowserRouter>
+      </Container>
+    </Provider>
+  );
+}
