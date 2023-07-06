@@ -11,23 +11,18 @@ import CommunitySelect from "../components/CommunitySelect";
 import ReportsList from "../components/ReportsList";
 
 export default function MainPage() {
-  const instanceBase = useSelector((state) => state.configReducer.instanceBase);
-  const userJwt = useSelector((state) => state.configReducer.userJwt);
+  const currentUser = useSelector((state) => state.configReducer.currentUser);
 
   // when we get a jwt, set the cookie in electron
   React.useEffect(() => {
-    if (userJwt) {
-      window.modder.setLemmyCookie(instanceBase, userJwt);
+    if (currentUser) {
+      window.modder.setLemmyCookie(currentUser.base, currentUser.jwt);
     }
-  }, [userJwt]);
+  }, [currentUser]);
 
   // return login form if no jwt
-  if (!instanceBase || !userJwt) {
-    return (
-      <Container maxWidth={"md"} sx={{}}>
-        <LoginForm />
-      </Container>
-    );
+  if (!currentUser) {
+    return <LoginForm />;
   }
 
   return (

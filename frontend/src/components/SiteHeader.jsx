@@ -11,14 +11,14 @@ import Chip from "@mui/joy/Chip";
 
 import LogoutIcon from "@mui/icons-material/Logout";
 
-import { setUserJwt } from "../reducers/configReducer";
+import { logoutCurrent } from "../reducers/configReducer";
 
 import useLemmyHttp from "../hooks/useLemmyHttp";
 
 export default function SiteHeader() {
   const dispatch = useDispatch();
 
-  const instanceBase = useSelector((state) => state.configReducer.instanceBase);
+  const currentUser = useSelector((state) => state.configReducer.currentUser);
 
   const { data: siteData, loading: siteLoading, error: siteError } = useLemmyHttp("getSite");
 
@@ -48,7 +48,7 @@ export default function SiteHeader() {
               }}
               onClick={() => {
                 window.open(
-                  `https://${instanceBase}`,
+                  `https://${currentUser.base}`,
                   "_new",
                   // set size
                   "width=1300,height=900",
@@ -72,7 +72,7 @@ export default function SiteHeader() {
               size="sm"
               color="warning"
               onClick={() => {
-                dispatch(setUserJwt(null));
+                dispatch(logoutCurrent());
               }}
             >
               <LogoutIcon />

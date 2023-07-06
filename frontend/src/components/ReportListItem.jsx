@@ -183,7 +183,7 @@ export function PostReportItem({ report }) {
             gap: 1,
           }}
         >
-          <Typography variant="body1" component="p">
+          <Typography variant="body3" component="p">
             <Link href={report.post_creator.actor_id} target="_blank" rel="noopener noreferrer">
               @{report.post_creator.name}
             </Link>
