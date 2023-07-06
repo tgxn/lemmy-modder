@@ -4,11 +4,11 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
-  target: "electron-renderer",
   entry: "./src/index.jsx",
   output: {
     path: path.join(__dirname, "dist"),
     publicPath: "/",
+    clean: true,
   },
   resolve: {
     extensions: [".js", ".jsx"],
