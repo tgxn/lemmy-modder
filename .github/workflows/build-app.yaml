@@ -10,7 +10,7 @@ jobs:
 
   build_app:
     runs-on: ubuntu-latest
-    container: electron-builder-wine:latest
+    container: electronuserland/builder:wine
     timeout-minutes: 30
 
     steps:
