@@ -23,10 +23,8 @@ jobs:
 
       - name: Fix Wine Perms
         run: |
-          sudo rm -rf ~/docker-data/wine
+          rm -rf ~/docker-data/wine
           mkdir ~/docker-data/wine
- 
-
 
       # App
       - name: Cache App NPM Modules
