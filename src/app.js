@@ -46,11 +46,11 @@ app.once("ready", () => {
 
   mainWindow.setMenu(null);
 
-  // if (isDevelop) {
-  mainWindow.webContents.openDevTools({
-    mode: "detach",
-  });
-  // }
+  if (isDevelop) {
+    mainWindow.webContents.openDevTools({
+      mode: "detach",
+    });
+  }
 
   // this lets us set cookies for the users lemmy instance so it's already loggeed in
   ipcMain.handle("set_jwt", async (event, instanceBase, userJwt) => {
