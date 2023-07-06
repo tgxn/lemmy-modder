@@ -1,0 +1,65 @@
+name: build-app
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+
+  build_app:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js 18.15.0
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.15.0
+
+      # App
+      - name: Cache App NPM Modules
+        id: cache-app-npm
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-app-npm
+        with:
+          path: ./node_modules/
+          key: cache-app-npm-${{ hashFiles('package-lock.json') }}
+
+      - name: Install App Dependencies
+        if: steps.cache-app-npm.outputs.cache-hit != 'true'
+        run: npm ci
+        working-directory: ./
+
+      # Frontend
+      - name: Cache Frontend NPM Modules
+        id: cache-frontend-npm
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-frontend-npm
+        with:
+          path: ./frontend/node_modules/
+          key: cache-frontend-npm-${{ hashFiles('frontend/package-lock.json') }}
+
+      - name: Install Dependencies
+        if: steps.cache-frontend-npm.outputs.cache-hit != 'true'
+        run: npm ci
+        working-directory: ./frontend
+
+      - name: Build App Win64
+        run: npm run build:win
+
+      - name: Build App Win32
+        run: npm run build:win32
+
+      # store the json files as artifacts
+      - name: Archive Built App
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-installer
+          path: |
+            ./dist/*.exe

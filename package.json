@@ -5,11 +5,12 @@
   "description": "Lemmy Moderation Frontend",
   "author": "tgxn",
   "license": "MIT",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
-    "start": "electron app.js",
+    "start": "electron src/app.js",
     "bundle:prod": "cd ./frontend && npm run build",
-    "build:win": "npm run bundle:prod && electron-builder --win --x64 --ia32",
+    "build:win": "npm run bundle:prod && electron-builder --win --x64",
+    "build:win32": "npm run bundle:prod && electron-builder --win --ia32",
     "build:linux": "npm run bundle:prod && electron-builder --linux --x64",
     "build:mac": "npm run bundle:prod && electron-builder --mac --x64"
   },
@@ -25,7 +26,7 @@
     "productName": "Lemmy Modder",
     "generateUpdatesFilesForAllChannels": false,
     "files": [
-      "./app.js",
+      "./src/**",
       "./frontend/dist/**/*",
       "./icon/**"
     ],
@@ -34,15 +35,15 @@
       "compression": "maximum",
       "target": "portable",
       "publisherName": "tgxn",
-      "icon": "./Lemmy_Logo.png"
+      "icon": "./icon/Lemmy_Logo.png"
     },
     "linux": {
       "artifactName": "LemmyModder-${version}-portable.${ext}",
       "target": "snap",
-      "icon": "./Lemmy_Logo.png",
+      "icon": "./icon/Lemmy_Logo.png",
       "desktop": {
         "Name": "LemmyModder",
-        "icon": "./Lemmy_Logo.png",
+        "icon": "./icon/Lemmy_Logo.png",
         "Encoding": "UTF-8"
       }
     }

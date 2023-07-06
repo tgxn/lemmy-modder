@@ -1,5 +1,8 @@
 const { app, ipcMain, BrowserWindow, session } = require("electron");
 
+const path = require("path");
+const url = require("url");
+
 let mainWindow = null;
 
 const isDevelop = require("electron-is-dev");
@@ -18,6 +21,12 @@ function localUrl() {
   return returnUrl;
 }
 
+// Quit when all windows are closed.
+app.on("window-all-closed", function () {
+  console.log("app window-all-closed");
+  app.quit();
+});
+
 app.once("ready", () => {
   mainWindow = new BrowserWindow({
     //name
@@ -28,7 +37,7 @@ app.once("ready", () => {
     show: false,
     webPreferences: {
       webSecurity: false,
-      preload: `${__dirname}/preload.js`,
+      preload: `${__dirname}/src/preload.js`,
     },
   });
 
@@ -37,11 +46,11 @@ app.once("ready", () => {
 
   mainWindow.setMenu(null);
 
-  if (isDevelop) {
-    mainWindow.webContents.openDevTools({
-      mode: "detach",
-    });
-  }
+  // if (isDevelop) {
+  mainWindow.webContents.openDevTools({
+    mode: "detach",
+  });
+  // }
 
   // this lets us set cookies for the users lemmy instance so it's already loggeed in
   ipcMain.handle("set_jwt", async (event, instanceBase, userJwt) => {
