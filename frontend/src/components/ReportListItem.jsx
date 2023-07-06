@@ -22,125 +22,16 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 
 import Image from "./Image.jsx";
 
-const SquareChip = ({ children, tooltip = null, color = "neutral", ...props }) => (
-  <Tooltip title={tooltip} color={color} variant="plain" placement="top">
-    <Chip
-      size="small"
-      color={color}
-      sx={{
-        cursor: "default",
-        userSelect: "none",
-        borderRadius: 4,
-        p: 0.1,
-        px: 0.8,
-        height: "24px",
-      }}
-      {...props}
-    >
-      {children}
-    </Chip>
-  </Tooltip>
-);
+import {
+  IgnoreReportButton,
+  ResolveReportButton,
+  DeletePostButton,
+  PurgePostButton,
+  BanUserCommunityButton,
+  BanUserSiteButton,
+} from "./ActionButtons.jsx";
 
-const BaseActionButton = ({ icon = null, text, tooltip, color = "neutral", ...props }) => {
-  return (
-    <Tooltip title={tooltip} color={color} variant="plain" placement="top">
-      <Button
-        variant="outlined"
-        color={color}
-        size={"small"}
-        sx={{
-          userSelect: "none",
-          // borderRadius: 4,
-          p: 1,
-          // px: 0.8,
-          // height: "28px",
-        }}
-        {...props}
-      >
-        {text}
-      </Button>
-    </Tooltip>
-  );
-};
-
-const IgnoreReportButton = ({ report, ...props }) => {
-  const ignoreReport = async () => {
-    console.log("ignoreReport", report);
-  };
-
-  return (
-    <BaseActionButton
-      text="Ignore"
-      tooltip="Ignore Report"
-      color="primary"
-      onClick={ignoreReport}
-      {...props}
-    />
-  );
-};
-
-const ResolveReportButton = ({ report, ...props }) => {
-  const handleClick = async () => {
-    console.log("ResolveReportButton", report);
-  };
-
-  return (
-    <BaseActionButton
-      text="Resolve"
-      tooltip="Resolve Report"
-      color="success"
-      onClick={handleClick}
-      {...props}
-    />
-  );
-};
-
-const DeletePostButton = ({ report, ...props }) => {
-  const deletePost = async () => {
-    console.log("deletePost", report);
-  };
-  return (
-    <BaseActionButton text="Delete" tooltip="Delete Post" color="warning" onClick={deletePost} {...props} />
-  );
-};
-
-const PurgePostButton = ({ report, ...props }) => {
-  const purgePost = async () => {
-    console.log("purgePost", report);
-  };
-  return <BaseActionButton text="Purge" tooltip="Purge Post" color="danger" onClick={purgePost} {...props} />;
-};
-
-const BanUserCommunityButton = ({ report, ...props }) => {
-  const banUserCommunity = async () => {
-    console.log("banUserCommunity", report);
-  };
-  return (
-    <BaseActionButton
-      text="Ban {Comm.)"
-      tooltip="Ban from Community"
-      color="danger"
-      onClick={banUserCommunity}
-      {...props}
-    />
-  );
-};
-
-const BanUserSiteButton = ({ report, ...props }) => {
-  const banUserSite = async () => {
-    console.log("banUserSite", report);
-  };
-  return (
-    <BaseActionButton
-      text="Ban (Site)"
-      tooltip="Ban from Site"
-      color="danger"
-      onClick={banUserSite}
-      {...props}
-    />
-  );
-};
+import { SquareChip } from "./Display.jsx";
 
 export function PostReportItem({ report }) {
   return (
@@ -218,7 +109,7 @@ export function PostReportItem({ report }) {
         </Box>
 
         {/* Post Title */}
-        <Typography variant="h6" component="h2">
+        <Typography variant="h4" component="h2">
           <Link href={report.post.ap_id} target="_blank" rel="noopener noreferrer">
             {report.post.name}
           </Link>
@@ -273,7 +164,13 @@ export function PostReportItem({ report }) {
         </Typography>
 
         {/* Post Content */}
-        <Typography variant="body1" component="p">
+        <Typography
+          variant="body1"
+          component="p"
+          sx={{
+            p: 1,
+          }}
+        >
           {report.post.body}
         </Typography>
 
@@ -326,6 +223,7 @@ export function PostReportItem({ report }) {
         >
           <Box
             sx={{
+              display: "flex",
               justifyContent: "flex-end",
               alignItems: "flex-end",
               gap: 1,
@@ -341,6 +239,7 @@ export function PostReportItem({ report }) {
           </Box>
           <Box
             sx={{
+              display: "flex",
               justifyContent: "flex-start",
               alignItems: "flex-start",
               gap: 1,

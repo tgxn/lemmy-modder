@@ -2,8 +2,27 @@ const { app, ipcMain, BrowserWindow, session } = require("electron");
 
 let mainWindow = null;
 
+const isDevelop = require("electron-is-dev");
+
+function localUrl() {
+  let returnUrl;
+  if (isDevelop) {
+    returnUrl = "http://localhost:9696/";
+  } else {
+    returnUrl = url.format({
+      pathname: path.join(__dirname, "frontend", "dist", `index.html`),
+      protocol: "file",
+      slashes: true,
+    });
+  }
+  return returnUrl;
+}
+
 app.once("ready", () => {
   mainWindow = new BrowserWindow({
+    //name
+    title: "Lemmy Modder",
+    icon: `${__dirname}/Lemmy_Logo.png`,
     width: 850,
     height: 1000,
     show: false,
@@ -12,11 +31,17 @@ app.once("ready", () => {
       preload: `${__dirname}/preload.js`,
     },
   });
-  mainWindow.loadURL("http://localhost:9696/");
+
+  const loadUrl = localUrl();
+  mainWindow.loadURL(loadUrl);
+
   mainWindow.setMenu(null);
-  mainWindow.webContents.openDevTools({
-    mode: "detach",
-  });
+
+  if (isDevelop) {
+    mainWindow.webContents.openDevTools({
+      mode: "detach",
+    });
+  }
 
   // this lets us set cookies for the users lemmy instance so it's already loggeed in
   ipcMain.handle("set_jwt", async (event, instanceBase, userJwt) => {
@@ -45,9 +70,9 @@ app.once("ready", () => {
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     return {
       action: "allow",
-      overrideBrowserWindowOptions: {
-        parent: mainWindow,
-      },
+      // overrideBrowserWindowOptions: {
+      //   parent: mainWindow,
+      // },
     };
   });
 

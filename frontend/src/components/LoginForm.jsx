@@ -40,6 +40,7 @@ export default function LoginForm() {
 
   // perform login against lemmy instance
   const loginClick = async () => {
+    setIsLoading(true);
     try {
       const lemmyClient = new LemmyHttp(`https://${instanceBase}`);
 
@@ -62,14 +63,15 @@ export default function LoginForm() {
         } else {
           dispatch(setCurrentUser(instanceBase, auth.jwt, getSite));
         }
-        return;
+      } else {
+        console.log(auth);
+        setLoginError(auth);
       }
-
-      console.log(auth);
-      setLoginError(auth);
     } catch (e) {
       console.log(e);
       setLoginError(e);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -190,7 +192,6 @@ export default function LoginForm() {
               height: "100%",
             }}
           >
-            {" "}
             <Typography
               isLoading={isLoading}
               sx={{

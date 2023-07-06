@@ -1,7 +1,7 @@
 {
-  "name": "lemmy-modder",
-  "version": "0.1.0",
-  "description": "",
+  "name": "lemmy-modder-frontend",
+  "version": "0.2.0",
+  "description": "Lemmy Moderation App",
   "author": "tgxn",
   "license": "MIT",
   "main": "./src/index.jsx",
@@ -14,8 +14,8 @@
     "test": "mocha --require @babel/register --require @babel/polyfill ./tests/api.mjs"
   },
   "dependencies": {
-    "@babel/core": "^7.22.5",
-    "@babel/preset-env": "^7.22.5",
+    "@babel/core": "^7.22.7",
+    "@babel/preset-env": "^7.22.7",
     "@babel/preset-react": "^7.22.5",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",

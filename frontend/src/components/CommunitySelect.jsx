@@ -22,12 +22,6 @@ export default function CommunitySelect() {
 
   const { data: siteData, loading: siteLoading, error: siteError } = useLemmyHttp("getSite");
 
-  const {
-    data: reportCountsData,
-    loading: reportCountsLoading,
-    error: reportCountsError,
-  } = useLemmyHttp("getReportCount");
-
   // extract the communitites that the user moderates
   const modCommms = React.useMemo(() => {
     if (!siteData) return [];
@@ -83,27 +77,6 @@ export default function CommunitySelect() {
             })}
           </Select>
         </>
-      )}
-
-      {/* Report Counts */}
-      {reportCountsData && (
-        <Box>
-          <Typography
-            level="h4"
-            gutterBottom
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              pt: 2,
-              gap: 2,
-            }}
-          >
-            Reports:
-            <Chip>Comment: {reportCountsData.comment_reports}</Chip>
-            <Chip>Post: {reportCountsData.post_reports}</Chip>
-            <Chip>PM: {reportCountsData.private_message_reports}</Chip>
-          </Typography>
-        </Box>
       )}
     </Box>
   );
