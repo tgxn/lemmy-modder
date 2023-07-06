@@ -24,12 +24,15 @@
     "@mui/joy": "^5.0.0-alpha.85",
     "@mui/lab": "^5.0.0-alpha.134",
     "@reduxjs/toolkit": "^1.9.5",
+    "@tanstack/react-query": "^4.29.19",
+    "@tanstack/react-query-devtools": "^4.29.19",
     "babel-loader": "^9.1.2",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.8.1",
     "css-minimizer-webpack-plugin": "^5.0.1",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.3",
+    "lemmy-js-client": "^0.18.1-rc.3",
     "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -44,8 +47,7 @@
     "url-loader": "^4.1.1",
     "webpack": "^5.88.1",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1",
-    "lemmy-js-client": "^0.18.1-rc.3"
+    "webpack-dev-server": "^4.15.1"
   },
   "devDependencies": {
     "@babel/polyfill": "^7.12.1",

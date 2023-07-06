@@ -1,4 +1,4 @@
-const { app, BrowserWindow, session } = require("electron");
+const { app, ipcMain, BrowserWindow, session } = require("electron");
 
 let mainWindow = null;
 
@@ -6,7 +6,12 @@ app.once("ready", () => {
   mainWindow = new BrowserWindow({
     width: 850,
     height: 1000,
+
     show: false,
+    webPreferences: {
+      webSecurity: false,
+      preload: `${__dirname}/preload.js`,
+    },
   });
   mainWindow.loadURL("http://localhost:9696/");
   mainWindow.setMenu(null);
@@ -14,16 +19,28 @@ app.once("ready", () => {
     mode: "detach",
   });
 
-  // set origin to always match request
+  ipcMain.handle("set_jwt", async (event, instanceBase, userJwt) => {
+    console.log("set_jwt", instanceBase, userJwt);
+
+    // Set a cookie with the given cookie data;
+    // may overwrite equivalent cookies if they exist.
+    const cookie = {
+      url: `http://${instanceBase}`,
+      name: "jwt",
+      value: userJwt,
+    };
+    session.defaultSession.cookies.set(cookie, (error) => {
+      if (error) console.error(error);
+    });
+  });
+
+  // set origin to always match request (for lemmy mainly)
   session.defaultSession.webRequest.onBeforeSendHeaders(
     {
       urls: ["*://*/*"],
     },
     (details, callback) => {
-      const urlObject = new URL(details.url);
-      details.requestHeaders[
-        "Origin"
-      ] = `${urlObject.protocol}//${urlObject.hostname}`;
+      details.requestHeaders["Origin"] = null;
       callback({ cancel: false, requestHeaders: details.requestHeaders });
     }
   );
@@ -34,10 +51,6 @@ app.once("ready", () => {
       action: "allow",
       overrideBrowserWindowOptions: {
         parent: mainWindow,
-        frame: true,
-        skipTaskbar: true,
-        modal: true,
-        menu: null,
       },
     };
   });

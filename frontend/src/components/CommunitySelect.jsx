@@ -1,80 +1,92 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
+import React from "react";
+
+import { useDispatch, useSelector } from "react-redux";
 
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
+import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
+
 import Chip from "@mui/joy/Chip";
 
-import { LemmyHttp } from "lemmy-js-client";
+import CheckIcon from "@mui/icons-material/Check";
 
-import { setUserJwt, setSelectedCommunity } from "../reducers/configReducer";
+import { setSelectedCommunity } from "../reducers/configReducer";
 
-function CommunitySelect({ userJwt, instanceBase, selectedCommunity, dispatch }) {
-  const [siteData, setSiteData] = useState(null);
-  const [modsCommunities, setModsCommunities] = useState(null);
-  const [reportCounts, setReportCounts] = useState(null);
+import useLemmyHttp from "../hooks/useLemmyHttp";
 
-  useEffect(() => {
-    if (!userJwt) return [];
+export default function CommunitySelect() {
+  const dispatch = useDispatch();
+  const selectedCommunity = useSelector((state) => state.configReducer.selectedCommunity);
 
-    // load users moderated communities
-    async function loadCommunities() {
-      const lemmyClient = new LemmyHttp(`https://${instanceBase}`);
+  const { data: siteData, loading: siteLoading, error: siteError } = useLemmyHttp("getSite");
 
-      const siteData = await lemmyClient.getSite({
-        auth: userJwt,
-      });
+  const {
+    data: reportCountsData,
+    loading: reportCountsLoading,
+    error: reportCountsError,
+  } = useLemmyHttp("getReportCount");
 
-      console.log(siteData);
-      if (!siteData.my_user) {
-        console.log("User not found");
-        dispatch(setUserJwt(null));
-        return;
-      }
+  // extract the communitites that the user moderates
+  const modCommms = React.useMemo(() => {
+    if (!siteData) return [];
 
-      setSiteData(siteData);
-
-      setModsCommunities(siteData.my_user.moderates);
-
-      const reportCount = await lemmyClient.getReportCount({
-        auth: userJwt,
-      });
-      console.log("getReportCount", reportCount);
-
-      setReportCounts(reportCount);
-    }
-
-    loadCommunities();
-  }, [userJwt]);
+    return siteData.my_user.moderates;
+  }, [siteData]);
 
   return (
     <Box>
-      {modsCommunities && (
+      {/* Community Select */}
+      {modCommms && (
         <>
           <Select
-            placeholder="Choose one…"
             defaultValue={selectedCommunity}
-            onChange={(e) => {
-              console.log("selectedCommunity", e.target.value);
-              dispatch(setSelectedCommunity(e.target.value));
+            value={selectedCommunity}
+            onChange={(event, newValue) => {
+              dispatch(setSelectedCommunity(newValue));
+            }}
+            slotProps={{
+              listbox: {
+                component: "div",
+                sx: {
+                  maxHeight: 240,
+                  overflow: "auto",
+                  "--List-padding": "0px",
+                  "--ListItem-radius": "0px",
+                },
+              },
             }}
           >
             <Option key="all" value="all">
               All Communities
             </Option>
-            {modsCommunities.map((community) => (
-              <Option key={community.community.id} value={community.community.name}>
-                {community.community.name}
-              </Option>
-            ))}
+            {modCommms.map((community) => {
+              const { name, title } = community.community;
+              console.log("community", community.community.name);
+              return (
+                <Option
+                  key={name}
+                  value={name}
+                  label={
+                    <React.Fragment>
+                      <Chip size="sm" color={"primary"} sx={{ borderRadius: "xs", mr: 1 }}>
+                        Community
+                      </Chip>
+                      {title}
+                    </React.Fragment>
+                  }
+                >
+                  {title}
+                </Option>
+              );
+            })}
           </Select>
         </>
       )}
 
       {/* Report Counts */}
-      {reportCounts && (
+      {reportCountsData && (
         <Box>
           <Typography
             level="h4"
@@ -87,18 +99,12 @@ function CommunitySelect({ userJwt, instanceBase, selectedCommunity, dispatch })
             }}
           >
             Reports:
-            <Chip>Comment: {reportCounts.comment_reports}</Chip>
-            <Chip>Post: {reportCounts.post_reports}</Chip>
-            <Chip>PM: {reportCounts.private_message_reports}</Chip>
+            <Chip>Comment: {reportCountsData.comment_reports}</Chip>
+            <Chip>Post: {reportCountsData.post_reports}</Chip>
+            <Chip>PM: {reportCountsData.private_message_reports}</Chip>
           </Typography>
         </Box>
       )}
     </Box>
   );
 }
-const mapStateToProps = (state) => ({
-  instanceBase: state.configReducer.instanceBase,
-  userJwt: state.configReducer.userJwt,
-  selectedCommunity: state.configReducer.selectedCommunity,
-});
-export default connect(mapStateToProps)(CommunitySelect);

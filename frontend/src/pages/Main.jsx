@@ -1,18 +1,28 @@
 import React from "react";
-import { connect } from "react-redux";
+
+import { useSelector } from "react-redux";
 
 import Container from "@mui/joy/Container";
-import Box from "@mui/joy/Box";
-import Typography from "@mui/joy/Typography";
-import Divider from "@mui/joy/Divider";
 
 import LoginForm from "../components/LoginForm";
+
+import SiteHeader from "../components/SiteHeader";
 import CommunitySelect from "../components/CommunitySelect";
 import ReportsList from "../components/ReportsList";
 
-function MainPage({ userJwt }) {
+export default function MainPage() {
+  const instanceBase = useSelector((state) => state.configReducer.instanceBase);
+  const userJwt = useSelector((state) => state.configReducer.userJwt);
+
+  // when we get a jwt, set the cookie in electron
+  React.useEffect(() => {
+    if (userJwt) {
+      window.modder.setLemmyCookie(instanceBase, userJwt);
+    }
+  }, [userJwt]);
+
   // return login form if no jwt
-  if (!userJwt) {
+  if (!instanceBase || !userJwt) {
     return (
       <Container maxWidth={"md"} sx={{}}>
         <LoginForm />
@@ -21,21 +31,19 @@ function MainPage({ userJwt }) {
   }
 
   return (
-    <Container
-      maxWidth={"md"}
-      sx={{
-        py: 2,
-      }}
-    >
-      <CommunitySelect />
+    <React.Fragment>
+      <SiteHeader />
 
-      <ReportsList />
-    </Container>
+      <Container
+        maxWidth={"md"}
+        sx={{
+          py: 2,
+        }}
+      >
+        <CommunitySelect />
+
+        <ReportsList />
+      </Container>
+    </React.Fragment>
   );
 }
-
-const mapStateToProps = (state) => ({
-  userJwt: state.configReducer.userJwt,
-  instanceBase: state.configReducer.instanceBase,
-});
-export default connect(mapStateToProps)(MainPage);

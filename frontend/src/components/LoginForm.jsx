@@ -41,77 +41,100 @@ function LoginForm({ instanceBase, dispatch }) {
       setLoginError(auth);
     } catch (e) {
       console.log(e);
-      setLoginError(e.message);
+      setLoginError(e);
     }
   };
 
   return (
-    <Card
+    <Box
       sx={{
-        p: 2,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        width: "100%",
-        height: "100%",
       }}
     >
-      <Typography
+      <Card
         sx={{
-          display: "flex",
-          justifyContent: "center",
-          pb: 2,
-        }}
-      >
-        Login
-      </Typography>
-      <Box
-        sx={{
+          mt: 4,
+          p: 1,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          width: "100%",
+          width: "220px",
+          height: "100%",
         }}
       >
-        <Input
-          placeholder="Instance URL"
-          value={instanceBase}
-          onChange={(e) => setInstance(e.target.value)}
-          variant="outlined"
-          color="neutral"
-        />
-        <Input
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          variant="outlined"
-          color="neutral"
-        />
-        <Input
-          placeholder="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          variant="outlined"
-          color="neutral"
-        />
+        <Typography
+          sx={{
+            pt: 2,
+            display: "flex",
+            justifyContent: "center",
+            pb: 2,
+          }}
+        >
+          Login
+        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Input
+            placeholder="Instance URL"
+            value={instanceBase}
+            onChange={(e) => setInstance(e.target.value)}
+            variant="outlined"
+            color="neutral"
+            sx={{ mb: 1 }}
+          />
+          <Input
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            variant="outlined"
+            color="neutral"
+            sx={{ mb: 1 }}
+          />
+          <Input
+            placeholder="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            variant="outlined"
+            color="neutral"
+            sx={{ mb: 1 }}
+          />
 
-        <Button onClick={loginClick}>Login</Button>
+          <Button fullWidth onClick={loginClick} disabled={username.length === 0 || password.length === 0}>
+            Login
+          </Button>
+        </Box>
+
         {loginError && (
           <Typography
             sx={{
               display: "flex",
+              alignItems: "center",
               justifyContent: "center",
-              pt: 2,
+              width: "100%",
+              fontSize: "0.8rem",
+              color: "#ff0000",
+
+              // display: "flex",
+              // justifyContent: "center",
+              // // pt: 2,
             }}
           >
             {loginError}
           </Typography>
         )}
-      </Box>
-    </Card>
+      </Card>
+    </Box>
   );
 }
 
