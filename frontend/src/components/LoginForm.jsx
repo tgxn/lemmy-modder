@@ -6,6 +6,8 @@ import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
 import Typography from "@mui/joy/Typography";
 import Input from "@mui/joy/Input";
+import Tooltip from "@mui/joy/Tooltip";
+import Checkbox from "@mui/joy/Checkbox";
 
 import { LemmyHttp } from "lemmy-js-client";
 
@@ -14,6 +16,8 @@ import { setUserJwt, setInstanceBase } from "../reducers/configReducer";
 function LoginForm({ instanceBase, dispatch }) {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
+
+  const [saveAccount, setSaveAccount] = React.useState(false);
 
   const [loginError, setLoginError] = React.useState("");
 
@@ -57,21 +61,21 @@ function LoginForm({ instanceBase, dispatch }) {
       <Card
         sx={{
           mt: 4,
-          p: 1,
+          p: 2,
+          py: 4,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          width: "220px",
+          width: "250px",
           height: "100%",
         }}
       >
         <Typography
           sx={{
-            pt: 2,
+            // px: 2,
             display: "flex",
             justifyContent: "center",
-            pb: 2,
           }}
         >
           Login
@@ -109,6 +113,17 @@ function LoginForm({ instanceBase, dispatch }) {
             color="neutral"
             sx={{ mb: 1 }}
           />
+
+          <Box>
+            <Tooltip title="Your account will be saved locally">
+              <Checkbox
+                label="Save Account"
+                variant="outlined"
+                value={saveAccount}
+                onChange={() => setSaveAccount(!saveAccount)}
+              />
+            </Tooltip>
+          </Box>
 
           <Button fullWidth onClick={loginClick} disabled={username.length === 0 || password.length === 0}>
             Login

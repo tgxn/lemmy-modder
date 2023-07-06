@@ -6,8 +6,6 @@ import Link from "@mui/joy/Link";
 
 import LaunchIcon from "@mui/icons-material/Launch";
 
-import useIntersection from "../hooks/useIntersection";
-
 function RenderImage({ imageSrc, imageAlt = "" }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -79,7 +77,7 @@ export default function LazyImage({ imageSrc, imageAlt = "" }) {
           <RenderImage imageSrc={imageSrc} imageAlt={imageAlt} />
         ) : (
           <Typography component="div">
-            <LaunchIcon />
+            <LaunchIcon color="neutral" />
           </Typography>
         )}
       </Link>

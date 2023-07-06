@@ -6,7 +6,6 @@ app.once("ready", () => {
   mainWindow = new BrowserWindow({
     width: 850,
     height: 1000,
-
     show: false,
     webPreferences: {
       webSecurity: false,
@@ -19,11 +18,8 @@ app.once("ready", () => {
     mode: "detach",
   });
 
+  // this lets us set cookies for the users lemmy instance so it's already loggeed in
   ipcMain.handle("set_jwt", async (event, instanceBase, userJwt) => {
-    console.log("set_jwt", instanceBase, userJwt);
-
-    // Set a cookie with the given cookie data;
-    // may overwrite equivalent cookies if they exist.
     const cookie = {
       url: `http://${instanceBase}`,
       name: "jwt",
@@ -59,6 +55,8 @@ app.once("ready", () => {
   mainWindow.webContents.on(
     "did-create-window",
     (window, { url, frameName }) => {
+      // set size
+      window.setSize(1300, 900);
       window.setMenu(null);
     }
   );
