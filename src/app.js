@@ -31,7 +31,7 @@ app.once("ready", () => {
   mainWindow = new BrowserWindow({
     //name
     title: "Lemmy Modder",
-    icon: `${__dirname}/Lemmy_Logo.png`,
+    icon: `${__dirname}/icon/Lemmy_Logo.png`,
     width: 850,
     height: 1000,
     show: false,

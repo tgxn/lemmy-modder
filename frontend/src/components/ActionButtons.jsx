@@ -9,6 +9,11 @@ import Button from "@mui/joy/Button";
 import Typography from "@mui/joy/Typography";
 import Tooltip from "@mui/joy/Tooltip";
 import Link from "@mui/joy/Link";
+import Divider from "@mui/joy/Divider";
+import Modal from "@mui/joy/Modal";
+import ModalDialog from "@mui/joy/ModalDialog";
+import DeleteForever from "@mui/icons-material/DeleteForever";
+import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
 
 import Chip from "@mui/joy/Chip";
 
@@ -44,19 +49,52 @@ const BaseActionButton = ({ icon = null, text, tooltip, color = "neutral", ...pr
   );
 };
 
+const ConfirmDialog = ({ title, message, onConfirm, onCancel }) => {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <Modal open={open} onClose={() => setOpen(false)}>
+      <ModalDialog
+        variant="outlined"
+        role="alertdialog"
+        aria-labelledby="alert-dialog-modal-title"
+        aria-describedby="alert-dialog-modal-description"
+      >
+        <Typography id="alert-dialog-modal-title" component="h2" startDecorator={<WarningRoundedIcon />}>
+          Confirm Action
+        </Typography>
+        <Divider />
+        <Typography id="alert-dialog-modal-description" textColor="text.tertiary">
+          Are you sure you want to discard all of your notes?
+        </Typography>
+        <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end", pt: 2 }}>
+          <Button variant="plain" color="neutral" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+          <Button variant="solid" color="danger" onClick={() => setOpen(false)}>
+            Discard notes
+          </Button>
+        </Box>
+      </ModalDialog>
+    </Modal>
+  );
+};
+
 export const IgnoreReportButton = ({ report, ...props }) => {
   const ignoreReport = async () => {
     console.log("ignoreReport", report);
   };
 
   return (
-    <BaseActionButton
-      text="Ignore"
-      tooltip="Ignore Report"
-      color="primary"
-      onClick={ignoreReport}
-      {...props}
-    />
+    <>
+      <BaseActionButton
+        text="Ignore"
+        tooltip="Ignore Report"
+        color="primary"
+        onClick={ignoreReport}
+        {...props}
+      />
+      <ConfirmDialog />
+    </>
   );
 };
 

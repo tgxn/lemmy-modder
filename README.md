@@ -35,6 +35,14 @@ This is a hacky quick and dirty app, so running it is in beta
 
 The reason for the electron app is CORS on most lemmy instances returning invalid unless the origin header is overridden... which the electron app does.
 
+clean reports
+![Alt text](image.png)
+
+easy switch between accounts
+![Alt text](image-1.png)
+
+auto-login to lemmy instance with saved jwt
+
 
 # Credits
 

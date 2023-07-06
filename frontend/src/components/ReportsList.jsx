@@ -8,6 +8,8 @@ import Checkbox from "@mui/joy/Checkbox";
 import Sheet from "@mui/joy/Sheet";
 import Tooltip from "@mui/joy/Tooltip";
 
+import SoapIcon from "@mui/icons-material/Soap";
+
 import { LemmyHttp } from "lemmy-js-client";
 
 import { PostReportItem, CommentReportItem, PMReportItem } from "./ReportListItem";
@@ -135,6 +137,25 @@ export default function ReportsList() {
           />
         </Box>
       </Sheet>
+
+      {mergedReports.length == 0 && (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 2,
+            p: 2,
+            mt: 4,
+            borderRadius: 4,
+            // border: "1px solid",
+            // borderColor: "grey.500",
+          }}
+        >
+          <SoapIcon sx={{ fontSize: 64 }} />
+          <Box sx={{ fontWeight: "bold" }}>No reports found</Box>
+        </Box>
+      )}
 
       {mergedReports.length > 0 &&
         mergedReports.map((report, index) => {

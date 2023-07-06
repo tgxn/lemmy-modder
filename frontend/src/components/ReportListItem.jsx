@@ -84,9 +84,7 @@ export function PostReportItem({ report }) {
           <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
             {report.post_creator.published && (
               <SquareChip color="neutral" variant="outlined" tooltip={"User Published"}>
-                <Moment fromNow ago>
-                  {report.post_creator.published}
-                </Moment>
+                registered <Moment fromNow>{report.post_creator.published}</Moment>
               </SquareChip>
             )}
 
