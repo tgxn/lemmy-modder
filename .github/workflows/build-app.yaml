@@ -21,6 +21,13 @@ jobs:
         with:
           node-version: 18.15.0
 
+      - name: Fix Wine Perms
+        run: |
+          sudo rm -rf ~/docker-data/wine
+          mkdir ~/docker-data/wine
+ 
+
+
       # App
       - name: Cache App NPM Modules
         id: cache-app-npm
