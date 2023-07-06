@@ -20,5 +20,11 @@ thinking methods
  - backend container sits with lemmy instance - overhead to manage for admins, possibly better access to data from db
 
 
-# backend
+## Running
 
+This is a hacky quick and dirty app, so running it is in beta
+
+1. Frontend: `cd frontend && npm i && npm start`
+2. App: `cd app && npm i && npm start`
+
+The reason for the electron app is CORS on most lemmy instances returning invalid unless the origin header is overridden... which the electron app does.
