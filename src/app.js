@@ -13,7 +13,7 @@ function localUrl() {
     returnUrl = "http://localhost:9696/";
   } else {
     returnUrl = url.format({
-      pathname: path.join(__dirname, "frontend", "dist", `index.html`),
+      pathname: path.join(__dirname, "..", "frontend", "dist", `index.html`),
       protocol: "file",
       slashes: true,
     });
@@ -37,7 +37,7 @@ app.once("ready", () => {
     show: false,
     webPreferences: {
       webSecurity: false,
-      preload: `${__dirname}/src/preload.js`,
+      preload: `${__dirname}/preload.js`,
     },
   });
 

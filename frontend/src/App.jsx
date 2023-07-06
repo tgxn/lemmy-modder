@@ -6,7 +6,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 
 import Box from "@mui/joy/Box";
 import Container from "@mui/joy/Container";
@@ -35,7 +35,7 @@ export default function App() {
             display: "block",
           }}
         >
-          <BrowserRouter>
+          <HashRouter>
             <Box
               sx={
                 {
@@ -44,10 +44,10 @@ export default function App() {
               }
             >
               <Routes>
-                <Route index element={<Main />} />
+                <Route path="/" element={<Main />} />
               </Routes>
             </Box>
-          </BrowserRouter>
+          </HashRouter>
         </Container>
       </Provider>
     </QueryClientProvider>

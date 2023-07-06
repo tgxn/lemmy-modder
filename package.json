@@ -25,10 +25,12 @@
     "appId": "net.tgxn.lemmy.modder",
     "productName": "Lemmy Modder",
     "generateUpdatesFilesForAllChannels": false,
+    "asar": true,
+    "asarUnpack": "**\\*.{node,dll}",
     "files": [
-      "./src/**",
-      "./frontend/dist/**/*",
-      "./icon/**"
+      "src/",
+      "frontend/dist/",
+      "icon/"
     ],
     "win": {
       "artifactName": "LemmyModder-${version}-portable.${ext}",
