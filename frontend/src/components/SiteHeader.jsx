@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+
 import { useDispatch, useSelector } from "react-redux";
 
 import Sheet from "@mui/joy/Sheet";
@@ -7,6 +9,7 @@ import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
 import Chip from "@mui/joy/Chip";
 import Typography from "@mui/joy/Typography";
+import Tooltip from "@mui/joy/Tooltip";
 
 import LogoutIcon from "@mui/icons-material/Logout";
 import PersonIcon from "@mui/icons-material/Person";
@@ -17,15 +20,20 @@ import InfoIcon from "@mui/icons-material/Info";
 import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 
+import IconButton from "@mui/joy/IconButton";
+import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import CachedIcon from "@mui/icons-material/Cached";
+
 import { logoutCurrent } from "../reducers/configReducer";
 
-import useLemmyHttp from "../hooks/useLemmyHttp";
+import { useLemmyHttp } from "../hooks/useLemmyHttp";
 
 import { HeaderChip } from "./Display.jsx";
 
 export default function SiteHeader() {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.configReducer.currentUser);
+  const queryClient = useQueryClient();
 
   const {
     data: reportCountsData,
@@ -44,14 +52,14 @@ export default function SiteHeader() {
           alignItems: "center",
         }}
       >
-        {currentUser.site && (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Tooltip title="View Site">
             <Chip
               color="info"
               sx={{
@@ -68,7 +76,16 @@ export default function SiteHeader() {
             >
               {currentUser.site.site_view.site.name}
             </Chip>
-
+          </Tooltip>
+        </Box>
+        {currentUser.site && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             {/* Report Counts */}
             {reportCountsData && (
               <Box

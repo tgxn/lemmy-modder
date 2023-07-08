@@ -23,12 +23,12 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import Image from "./Image.jsx";
 
 import {
-  IgnoreReportButton,
-  ResolveReportButton,
+  ResolvePostReportButton,
   DeletePostButton,
+  RemovePostButton,
   PurgePostButton,
-  BanUserCommunityButton,
-  BanUserSiteButton,
+  BanPostUserCommunityButton,
+  BanPostUserSiteButton,
 } from "./ActionButtons.jsx";
 
 import { SquareChip } from "./Display.jsx";
@@ -88,19 +88,23 @@ export function PostReportItem({ report }) {
               </SquareChip>
             )}
 
-            {report.post_creator.admin && <SquareChip color={"info"}>Admin</SquareChip>}
+            {report.post_creator.admin && (
+              <SquareChip color={"info"} tooltip="User is Site Admin">
+                ADMIN
+              </SquareChip>
+            )}
 
             {report.post_creator.banned && <SquareChip color={"danger"}>Banned</SquareChip>}
 
             {report.post_creator.bot_account && (
-              <SquareChip color={"danger"} tooltip="Removed">
-                Bot
+              <SquareChip color={"danger"} tooltip="User is Bot Account">
+                BOT
               </SquareChip>
             )}
 
             {report.post_creator.deleted && (
-              <SquareChip color={"danger"} tooltip="Removed">
-                Deleted
+              <SquareChip color={"danger"} tooltip="User is Deleted">
+                DELETED
               </SquareChip>
             )}
           </Typography>
@@ -227,13 +231,15 @@ export function PostReportItem({ report }) {
               gap: 1,
             }}
           >
-            <DeletePostButton report={report} />
+            {/* <DeletePostButton report={report} /> */}
+            <RemovePostButton report={report} />
 
-            <PurgePostButton report={report} />
+            {/* only show purge is post is deleted */}
+            {report.post.removed && <PurgePostButton report={report} />}
 
-            <BanUserCommunityButton report={report} />
+            <BanPostUserCommunityButton report={report} />
 
-            <BanUserSiteButton report={report} />
+            <BanPostUserSiteButton report={report} />
           </Box>
           <Box
             sx={{
@@ -243,8 +249,7 @@ export function PostReportItem({ report }) {
               gap: 1,
             }}
           >
-            <IgnoreReportButton report={report} />
-            <ResolveReportButton report={report} />
+            <ResolvePostReportButton report={report} />
           </Box>
         </Box>
       </Box>

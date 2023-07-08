@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - develop
 
 jobs:
 
@@ -48,53 +47,6 @@ jobs:
           -v ~/.cache/electron-builder:/root/.cache/electron-builder \
           electronuserland/builder:wine \
           bash -c "npm i && npm run build:win"
-
-      # - uses: actions/upload-artifact@v2
-      #   with:
-      #     name: dist_electron
-      #     path: dist_electron
-
-      # - name: upload release asset
-      #   if: github.event_name == 'release'
-      #   run: |
-      #     cd dist_electron
-      #     for var in $(ls); do
-      #         $GITHUB_WORKSPACE/.github/workflows/upload_github_release_asset.sh \
-      #             owner=${{ github.repository_owner }} \
-      #             repo=mqttx \
-      #             tag=$(echo ${{ github.ref }} | sed -r  "s ^refs/heads/|^refs/tags/(.*) \1 g") \
-      #             filename=$var \
-      #             github_api_token=$(echo ${{ secrets.GITHUB_TOKEN }})
-      #     done
-
-
-
-
-      # - name: Use Node.js 18.15.0
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 18.15.0
-
-      # # App
-      # - name: Cache App NPM Modules
-      #   id: cache-app-npm
-      #   uses: actions/cache@v3
-      #   env:
-      #     cache-name: cache-app-npm
-      #   with:
-      #     path: ./node_modules/
-      #     key: cache-app-npm-${{ hashFiles('package-lock.json') }}
-
-      # - name: Install App Dependencies
-      #   if: steps.cache-app-npm.outputs.cache-hit != 'true'
-      #   run: npm ci
-      #   working-directory: ./
-
-      # - name: Build App Win64
-      #   run: npm run build:win
-
-      # - name: Build App Win32
-      #   run: npm run build:win32
 
       # store the json files as artifacts
       - name: Archive Built App

@@ -7,6 +7,7 @@ import Box from "@mui/joy/Box";
 import Checkbox from "@mui/joy/Checkbox";
 import Sheet from "@mui/joy/Sheet";
 import Tooltip from "@mui/joy/Tooltip";
+import CircularProgress from "@mui/joy/CircularProgress";
 
 import SoapIcon from "@mui/icons-material/Soap";
 
@@ -14,13 +15,13 @@ import { LemmyHttp } from "lemmy-js-client";
 
 import { PostReportItem, CommentReportItem, PMReportItem } from "./ReportListItem";
 
-import useLemmyHttp from "../hooks/useLemmyHttp";
+import { useLemmyHttp } from "../hooks/useLemmyHttp";
 
 export default function ReportsList() {
   const selectedCommunity = useSelector((state) => state.configReducer.selectedCommunity);
 
   const [showResolved, setShowResolved] = React.useState(false);
-  const [showIgnored, setShowIgnored] = React.useState(false);
+  const [showDeleted, setShowDeleted] = React.useState(true);
 
   const {
     data: commentReportsData,
@@ -86,6 +87,13 @@ export default function ReportsList() {
       });
     }
 
+    // filter out deleted/removed posts
+    if (!showDeleted) {
+      mergedReports = mergedReports.filter((report) => {
+        return !report.post.removed;
+      });
+    }
+
     console.log("mergedReports", mergedReports);
 
     mergedReports.sort((a, b) => {
@@ -98,7 +106,30 @@ export default function ReportsList() {
 
     console.log("mergedReports", mergedReports);
     return mergedReports;
-  }, [commentReportsData, postReportsData, pmReportsData, selectedCommunity, showResolved, showIgnored]);
+  }, [commentReportsData, postReportsData, pmReportsData, selectedCommunity, showResolved, showDeleted]);
+
+  const isLoading = commentReportsLoading || postReportsLoading || pmReportsLoading;
+
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 2,
+          p: 2,
+          mt: 4,
+          borderRadius: 4,
+          border: "1px solid",
+          borderColor: "grey.500",
+        }}
+      >
+        <CircularProgress size="lg" />
+        <Box sx={{ fontWeight: "bold" }}>Loading reports...</Box>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -124,16 +155,16 @@ export default function ReportsList() {
           <Checkbox
             label="Show Resolved"
             variant="outlined"
-            value={showResolved}
+            checked={showResolved}
             onChange={() => setShowResolved(!showResolved)}
           />
         </Box>
         <Box>
           <Checkbox
-            label="Show Ignored"
+            label="Show Deleted"
             variant="outlined"
-            value={showIgnored}
-            onChange={() => setShowIgnored(!showIgnored)}
+            checked={showDeleted}
+            onChange={() => setShowDeleted(!showDeleted)}
           />
         </Box>
       </Sheet>

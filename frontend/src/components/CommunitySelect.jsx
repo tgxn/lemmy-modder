@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+
 import { useDispatch, useSelector } from "react-redux";
 
 import Box from "@mui/joy/Box";
@@ -8,17 +10,23 @@ import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 
+import IconButton from "@mui/joy/IconButton";
+import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import CachedIcon from "@mui/icons-material/Cached";
+
 import Chip from "@mui/joy/Chip";
 
 import CheckIcon from "@mui/icons-material/Check";
 
 import { setSelectedCommunity } from "../reducers/configReducer";
 
-import useLemmyHttp from "../hooks/useLemmyHttp";
+import { useLemmyHttp } from "../hooks/useLemmyHttp";
 
 export default function CommunitySelect() {
   const dispatch = useDispatch();
   const selectedCommunity = useSelector((state) => state.configReducer.selectedCommunity);
+
+  const queryClient = useQueryClient();
 
   const { data: siteData, loading: siteLoading, error: siteError } = useLemmyHttp("getSite");
 
@@ -33,12 +41,32 @@ export default function CommunitySelect() {
     <Box>
       {/* Community Select */}
       {modCommms && (
-        <>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            gap: 1,
+          }}
+        >
+          <IconButton
+            variant="outlined"
+            color="neutral"
+            onClick={() => {
+              // invalidate everything
+              queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
+            }}
+          >
+            <CachedIcon />
+          </IconButton>
           <Select
             defaultValue={selectedCommunity}
             value={selectedCommunity}
             onChange={(event, newValue) => {
               dispatch(setSelectedCommunity(newValue));
+            }}
+            sx={{
+              flewxGrow: 1,
+              width: "100%",
             }}
             slotProps={{
               listbox: {
@@ -76,7 +104,7 @@ export default function CommunitySelect() {
               );
             })}
           </Select>
-        </>
+        </Box>
       )}
     </Box>
   );
