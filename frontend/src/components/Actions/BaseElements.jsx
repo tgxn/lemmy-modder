@@ -158,7 +158,7 @@ export const ConfirmDialog = ({
               color: "#ff0000",
             }}
           >
-            {error}
+            {typeof error === "string" ? error : error.message}
           </Typography>
         )}
       </ModalDialog>

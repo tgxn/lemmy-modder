@@ -9,7 +9,7 @@
   "scripts": {
     "start": "electron src/app.js",
     "bundle:prod": "cd ./frontend && npm run build",
-    "build:win": "electron-builder --win --x64",
+    "build:win": "electron-builder --win nsis portable --x64 --publish",
     "build:win32": "electron-builder --win --ia32",
     "build:linux": "electron-builder --linux --x64",
     "build:mac": "electron-builder --mac --x64"
@@ -25,7 +25,6 @@
     "appId": "net.tgxn.lemmy.modder",
     "productName": "Lemmy Modder",
     "generateUpdatesFilesForAllChannels": false,
-    "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
       "src/",
@@ -33,14 +32,17 @@
       "icon/"
     ],
     "win": {
-      "artifactName": "LemmyModder-${version}-portable.${ext}",
+      "artifactName": "LemmyModder.${version}.Portable.x64.${ext}",
       "compression": "maximum",
-      "target": "portable",
       "publisherName": "tgxn",
       "icon": "./icon/Lemmy_Logo.png"
     },
+    "nsis": {
+      "artifactName": "LemmyModder.${version}.Setup.x64.${ext}",
+      "deleteAppDataOnUninstall": true
+    },
     "linux": {
-      "artifactName": "LemmyModder-${version}-portable.${ext}",
+      "artifactName": "LemmyModder-${version}-Snap.${ext}",
       "target": "snap",
       "icon": "./icon/Lemmy_Logo.png",
       "desktop": {
@@ -48,6 +50,11 @@
         "icon": "./icon/Lemmy_Logo.png",
         "Encoding": "UTF-8"
       }
+    },
+    "publish": {
+      "provider": "github",
+      "repo": "lemmy-modder",
+      "owner": "tgxn"
     }
   }
 }
