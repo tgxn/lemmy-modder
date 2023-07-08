@@ -5,22 +5,15 @@ import Moment from "react-moment";
 import Alert from "@mui/joy/Alert";
 import Card from "@mui/joy/Card";
 import Box from "@mui/joy/Box";
-import Button from "@mui/joy/Button";
 import Typography from "@mui/joy/Typography";
-import Tooltip from "@mui/joy/Tooltip";
 import Link from "@mui/joy/Link";
 
-import Chip from "@mui/joy/Chip";
-
-import PersonIcon from "@mui/icons-material/Person";
-import MessageIcon from "@mui/icons-material/Message";
 import ForumIcon from "@mui/icons-material/Forum";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import InfoIcon from "@mui/icons-material/Info";
 import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 
-import Image from "./Image.jsx";
+import { SquareChip } from "../Display.jsx";
+import Image from "../Image.jsx";
 
 import {
   ResolvePostReportButton,
@@ -29,11 +22,9 @@ import {
   PurgePostButton,
   BanPostUserCommunityButton,
   BanPostUserSiteButton,
-} from "./ActionButtons.jsx";
+} from "../Actions/PostButtons.jsx";
 
-import { SquareChip } from "./Display.jsx";
-
-export function PostReportItem({ report }) {
+export default function PostListItem({ report }) {
   return (
     <Card
       sx={{
@@ -253,22 +244,6 @@ export function PostReportItem({ report }) {
           </Box>
         </Box>
       </Box>
-    </Card>
-  );
-}
-
-export function CommentReportItem({ report }) {
-  return (
-    <Card>
-      <pre>{JSON.stringify(report, null, 2)}</pre>
-    </Card>
-  );
-}
-
-export function PMReportItem({ report }) {
-  return (
-    <Card>
-      <pre>{JSON.stringify(report, null, 2)}</pre>
     </Card>
   );
 }

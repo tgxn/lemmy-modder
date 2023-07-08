@@ -13,7 +13,9 @@ import SoapIcon from "@mui/icons-material/Soap";
 
 import { LemmyHttp } from "lemmy-js-client";
 
-import { PostReportItem, CommentReportItem, PMReportItem } from "./ReportListItem";
+import PostReportItem from "./ListItem/Post.jsx";
+import CommentReportItem from "./ListItem/Comment.jsx";
+import PMReportItem from "./ListItem/PM.jsx";
 
 import { useLemmyHttp } from "../hooks/useLemmyHttp";
 
