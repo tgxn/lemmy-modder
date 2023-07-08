@@ -1,17 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
+import React from "react";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import Box from "@mui/joy/Box";
 import Checkbox from "@mui/joy/Checkbox";
 import Sheet from "@mui/joy/Sheet";
-import Tooltip from "@mui/joy/Tooltip";
 import CircularProgress from "@mui/joy/CircularProgress";
 
 import SoapIcon from "@mui/icons-material/Soap";
-
-import { LemmyHttp } from "lemmy-js-client";
 
 import PostReportItem from "./ListItem/Post.jsx";
 import CommentReportItem from "./ListItem/Comment.jsx";
