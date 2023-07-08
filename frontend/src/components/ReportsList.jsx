@@ -6,6 +6,10 @@ import Box from "@mui/joy/Box";
 import Checkbox from "@mui/joy/Checkbox";
 import Sheet from "@mui/joy/Sheet";
 import CircularProgress from "@mui/joy/CircularProgress";
+import Chip from "@mui/joy/Chip";
+import Select from "@mui/joy/Select";
+import Option from "@mui/joy/Option";
+import Typography from "@mui/joy/Typography";
 
 import SoapIcon from "@mui/icons-material/Soap";
 
@@ -20,6 +24,13 @@ export default function ReportsList() {
 
   const [showResolved, setShowResolved] = React.useState(false);
   const [showDeleted, setShowDeleted] = React.useState(true);
+  const [showReportType, setShowReportType] = React.useState("all");
+
+  const {
+    data: reportCountsData,
+    loading: reportCountsLoading,
+    error: reportCountsError,
+  } = useLemmyHttp("getReportCount");
 
   const {
     data: commentReportsData,
@@ -48,6 +59,8 @@ export default function ReportsList() {
         type: "post",
         time: report.post_report.published,
         resolved: report.post_report.resolved,
+        deleted: report.post_report.deleted,
+        removed: report.post_report.removed,
       };
     });
 
@@ -57,6 +70,8 @@ export default function ReportsList() {
         type: "comment",
         time: report.comment_report.published,
         resolved: report.comment_report.resolved,
+        deleted: report.comment.deleted,
+        removed: report.comment.removed,
       };
     });
 
@@ -66,10 +81,21 @@ export default function ReportsList() {
         type: "pm",
         time: report.private_message_report.published,
         resolved: report.private_message_report.resolved,
+        deleted: report.private_message.deleted,
+        removed: false,
       };
     });
 
     let mergedReports = [...normalPostReports, ...normalCommentReports, ...normalPMReports];
+
+    // filter type
+    if (showReportType !== "all") {
+      mergedReports = mergedReports.filter((report) => {
+        if (showReportType === "posts") return report.type === "post";
+        if (showReportType === "comments") return report.type === "comment";
+        if (showReportType === "pms") return report.type === "pm";
+      });
+    }
 
     // filter to one community
     if (selectedCommunity !== "all") {
@@ -88,7 +114,7 @@ export default function ReportsList() {
     // filter out deleted/removed posts
     if (!showDeleted) {
       mergedReports = mergedReports.filter((report) => {
-        return !report.post.removed;
+        return !report.removed;
       });
     }
 
@@ -104,9 +130,22 @@ export default function ReportsList() {
 
     console.log("mergedReports", mergedReports);
     return mergedReports;
-  }, [commentReportsData, postReportsData, pmReportsData, selectedCommunity, showResolved, showDeleted]);
+  }, [
+    commentReportsData,
+    postReportsData,
+    pmReportsData,
+    selectedCommunity,
+    showReportType,
+    showResolved,
+    showDeleted,
+  ]);
 
   const isLoading = commentReportsLoading || postReportsLoading || pmReportsLoading;
+
+  const totalReports =
+    reportCountsData?.post_reports +
+    reportCountsData?.comment_reports +
+    reportCountsData?.private_message_reports;
 
   if (isLoading) {
     return (
@@ -142,29 +181,117 @@ export default function ReportsList() {
         sx={{
           display: "flex",
           flexDirection: "row",
-          borderRadius: 4,
+          alignItems: "center",
+
+          borderRadius: 8,
           p: 1,
           gap: 2,
           mb: 0,
-          pb: 0,
+          // pb: 0,
         }}
       >
-        <Box>
-          <Checkbox
-            label="Show Resolved"
-            variant="outlined"
-            checked={showResolved}
-            onChange={() => setShowResolved(!showResolved)}
-          />
-        </Box>
-        <Box>
-          <Checkbox
-            label="Show Deleted"
-            variant="outlined"
-            checked={showDeleted}
-            onChange={() => setShowDeleted(!showDeleted)}
-          />
-        </Box>
+        <Select
+          defaultValue={showReportType}
+          color="neutral"
+          variant="outlined"
+          size="sm"
+          onChange={(e, newValue) => {
+            setShowReportType(newValue);
+          }}
+          sx={{
+            minWidth: 150,
+          }}
+        >
+          <Option key={"post"} value={"all"} label={"All"} color="neutral">
+            <Typography component="span">All</Typography>
+
+            <Chip
+              size="sm"
+              variant="outlined"
+              color={totalReports > 0 ? "warning" : "success"}
+              sx={{
+                ml: "auto",
+                borderRadius: 4,
+                minHeight: "20px",
+                paddingInline: "4px",
+                fontSize: "xs",
+              }}
+            >
+              {totalReports}
+            </Chip>
+          </Option>
+
+          <Option key={"posts"} value={"posts"} label={"Posts"} color="neutral">
+            <Typography component="span">Posts</Typography>
+
+            <Chip
+              size="sm"
+              variant="outlined"
+              color={reportCountsData?.post_reports > 0 ? "warning" : "success"}
+              sx={{
+                ml: "auto",
+                borderRadius: 4,
+                minHeight: "20px",
+                paddingInline: "4px",
+                fontSize: "xs",
+              }}
+            >
+              {reportCountsData?.post_reports}
+            </Chip>
+          </Option>
+
+          <Option key={"comments"} value={"comments"} label={"Comments"} color="neutral">
+            <Typography component="span">Comments</Typography>
+
+            <Chip
+              size="sm"
+              variant="outlined"
+              color={reportCountsData?.comment_reports > 0 ? "warning" : "success"}
+              sx={{
+                ml: "auto",
+                borderRadius: 4,
+                minHeight: "20px",
+                paddingInline: "4px",
+                fontSize: "xs",
+              }}
+            >
+              {reportCountsData?.comment_reports}
+            </Chip>
+          </Option>
+
+          <Option key={"pms"} value={"pms"} label={"PMs"} color="neutral">
+            <Typography component="span">PMs</Typography>
+
+            <Chip
+              size="sm"
+              variant="outlined"
+              color={reportCountsData?.private_message_reports > 0 ? "warning" : "success"}
+              sx={{
+                ml: "auto",
+                borderRadius: 4,
+                minHeight: "20px",
+                paddingInline: "4px",
+                fontSize: "xs",
+              }}
+            >
+              {reportCountsData?.private_message_reports}
+            </Chip>
+          </Option>
+        </Select>
+
+        <Checkbox
+          label="Show Resolved"
+          variant="outlined"
+          checked={showResolved}
+          onChange={() => setShowResolved(!showResolved)}
+        />
+
+        <Checkbox
+          label="Show Deleted"
+          variant="outlined"
+          checked={showDeleted}
+          onChange={() => setShowDeleted(!showDeleted)}
+        />
       </Sheet>
 
       {mergedReports.length == 0 && (
