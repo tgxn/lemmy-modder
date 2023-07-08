@@ -9,10 +9,10 @@
   "scripts": {
     "start": "electron src/app.js",
     "bundle:prod": "cd ./frontend && npm run build",
-    "build:win": "npm run bundle:prod && electron-builder --win --x64",
-    "build:win32": "npm run bundle:prod && electron-builder --win --ia32",
-    "build:linux": "npm run bundle:prod && electron-builder --linux --x64",
-    "build:mac": "npm run bundle:prod && electron-builder --mac --x64"
+    "build:win": "electron-builder --win --x64",
+    "build:win32": "electron-builder --win --ia32",
+    "build:linux": "electron-builder --linux --x64",
+    "build:mac": "electron-builder --mac --x64"
   },
   "devDependencies": {
     "electron": "^25.2.0",

@@ -25,9 +25,14 @@ jobs:
         with:
           path: ./frontend/node_modules/
           key: cache-frontend-npm-${{ hashFiles('frontend/package-lock.json') }}
+
       - name: Install Dependencies
         if: steps.cache-frontend-npm.outputs.cache-hit != 'true'
         run: npm ci
+        working-directory: ./frontend
+
+      - name: Build Frontend
+        run: npm run build
         working-directory: ./frontend
 
       - name: build
@@ -42,7 +47,7 @@ jobs:
           -v ~/.cache/electron:/root/.cache/electron \
           -v ~/.cache/electron-builder:/root/.cache/electron-builder \
           electronuserland/builder:wine \
-          bash -c "npm ci && npm run build:win"
+          bash -c "npm i && npm run build:win"
 
       # - uses: actions/upload-artifact@v2
       #   with:
