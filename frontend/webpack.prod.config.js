@@ -12,6 +12,9 @@ module.exports = merge(common, {
   output: {
     filename: "[name].bundle.[contenthash].js",
     chunkFilename: "[name].bundle.[contenthash].js",
+
+    publicPath: "./",
+    clean: true,
   },
   plugins: [
     new webpack.EnvironmentPlugin({
@@ -25,37 +28,13 @@ module.exports = merge(common, {
   },
 
   optimization: {
-    minimize: true,
-    runtimeChunk: "single",
-    minimizer: [
-      new CssMinimizerPlugin(),
-      new TerserPlugin({
-        parallel: true,
-        terserOptions: {
-          ecma: 6,
-        },
-      }),
-    ],
-    splitChunks: {
-      chunks: "all",
-      minSize: 50000,
-      maxSize: 150000,
-      minChunks: 1,
-      maxAsyncRequests: 10,
-      maxInitialRequests: 5,
-      // enforceSizeThreshold: 50000,
-      cacheGroups: {
-        defaultVendors: {
-          test: /[\\/]node_modules[\\/]/,
-          priority: -10,
-          reuseExistingChunk: true,
-        },
-        default: {
-          minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true,
-        },
-      },
-    },
+    moduleIds: "deterministic",
+    minimizer: [new CssMinimizerPlugin({})],
+  },
+
+  performance: {
+    hints: false,
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000,
   },
 });

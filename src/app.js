@@ -1,5 +1,8 @@
 const { app, ipcMain, BrowserWindow, session } = require("electron");
 
+const path = require("path");
+const url = require("url");
+
 let mainWindow = null;
 
 const isDevelop = require("electron-is-dev");
@@ -10,7 +13,7 @@ function localUrl() {
     returnUrl = "http://localhost:9696/";
   } else {
     returnUrl = url.format({
-      pathname: path.join(__dirname, "frontend", "dist", `index.html`),
+      pathname: path.join(__dirname, "..", "frontend", "dist", `index.html`),
       protocol: "file",
       slashes: true,
     });
@@ -18,11 +21,17 @@ function localUrl() {
   return returnUrl;
 }
 
+// Quit when all windows are closed.
+app.on("window-all-closed", function () {
+  console.log("app window-all-closed");
+  app.quit();
+});
+
 app.once("ready", () => {
   mainWindow = new BrowserWindow({
     //name
     title: "Lemmy Modder",
-    icon: `${__dirname}/Lemmy_Logo.png`,
+    icon: `${__dirname}/icon/Lemmy_Logo.png`,
     width: 850,
     height: 1000,
     show: false,

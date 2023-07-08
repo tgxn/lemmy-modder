@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { LemmyHttp } from "lemmy-js-client";
 
-export default function useLemmyHttp(callLemmyMethod, formData) {
+export function useLemmyHttp(callLemmyMethod, formData) {
   // const userJwt = useSelector((state) => state.configReducer.userJwt);
   // const instanceBase = useSelector((state) => state.configReducer.instanceBase);
 
@@ -46,5 +46,43 @@ export default function useLemmyHttp(callLemmyMethod, formData) {
     isError,
     error,
     data,
+  };
+}
+
+export function useLemmyHttpAction(callLemmyMethod) {
+  const currentUser = useSelector((state) => state.configReducer.currentUser);
+
+  // const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (formData) => {
+      const lemmyClient = new LemmyHttp(`https://${currentUser.base}`);
+
+      const resultData = await lemmyClient[callLemmyMethod]({
+        auth: currentUser.jwt,
+        ...formData,
+      });
+
+      return resultData;
+    },
+    // onSuccess: (data) => {
+    //   console.log("useLemmyHttpAction", callLemmyMethod, "onSuccess", data);
+    //   // queryClient.setQueryData(["todo", { id: 5 }], resultData);
+
+    // },
+  });
+
+  const callAction = (formData) => {
+    mutation.mutate(formData);
+  };
+
+  console.log("useLemmyHttpAction", mutation.error);
+
+  return {
+    callAction,
+    isLoading: mutation.isLoading,
+    isSuccess: mutation.isSuccess,
+    error: mutation.error,
+    data: mutation.data,
   };
 }

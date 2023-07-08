@@ -17,6 +17,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: "Lemmy Modder",
       template: "index.html",
+      inject: "body",
     }),
     new CopyWebpackPlugin({
       patterns: [{ from: "public", to: "" }],
@@ -26,10 +27,12 @@ module.exports = {
     rules: [
       {
         test: /\.s?[ac]ss$/i,
+        exclude: /(node_modules)/,
         use: ["style-loader", "css-loader", "sass-loader"],
       },
       {
         test: /\.(png|jp(e*)g|svg|gif)$/,
+        exclude: /(node_modules)/,
         use: [
           {
             loader: "file-loader",
@@ -45,6 +48,7 @@ module.exports = {
         use: {
           loader: "babel-loader",
           options: {
+            cacheDirectory: true,
             presets: ["@babel/preset-env", "@babel/preset-react"],
           },
         },

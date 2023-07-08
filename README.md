@@ -35,6 +35,51 @@ This is a hacky quick and dirty app, so running it is in beta
 
 The reason for the electron app is CORS on most lemmy instances returning invalid unless the origin header is overridden... which the electron app does.
 
+clean reports
+![Alt text](image.png)
+
+easy switch between accounts
+![Alt text](image-1.png)
+
+auto-login to lemmy instance with saved jwt
+
+
+# todo implement
+
+ > ticked when i added hte button functionality :)
+
+# "resolve"/"unresolve" reports
+✅ https://join-lemmy.org/api/classes/LemmyHttp.html#resolvePostReport
+https://join-lemmy.org/api/classes/LemmyHttp.html#resolveCommentReport
+https://join-lemmy.org/api/classes/LemmyHttp.html#resolvePrivateMessageReport
+
+# delete content
+✅ https://join-lemmy.org/api/classes/LemmyHttp.html#deletePost
+https://join-lemmy.org/api/classes/LemmyHttp.html#deleteComment
+https://join-lemmy.org/api/classes/LemmyHttp.html#deletePrivateMessage
+
+# purge content
+✅ https://join-lemmy.org/api/classes/LemmyHttp.html#purgePost
+https://join-lemmy.org/api/classes/LemmyHttp.html#purgeComment
+https://join-lemmy.org/api/classes/LemmyHttp.html#purgePerson
+
+# get / ban users
+https://join-lemmy.org/api/classes/LemmyHttp.html#getBannedPersons
+✅ https://join-lemmy.org/api/classes/LemmyHttp.html#banFromCommunity
+✅ https://join-lemmy.org/api/classes/LemmyHttp.html#banPerson
+
+# lock / comment / distinguish
+https://join-lemmy.org/api/classes/LemmyHttp.html#lockPost
+https://join-lemmy.org/api/classes/LemmyHttp.html#createComment
+https://join-lemmy.org/api/classes/LemmyHttp.html#distinguishComment
+
+# manage community mods
+https://join-lemmy.org/api/classes/LemmyHttp.html#addModToCommunity
+https://join-lemmy.org/api/classes/LemmyHttp.html#approveRegistrationApplication
+
+
+https://join-lemmy.org/api/classes/LemmyHttp.html#getModlog
+
 
 # Credits
 

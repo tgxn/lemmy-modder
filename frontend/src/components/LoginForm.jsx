@@ -147,7 +147,7 @@ export default function LoginForm() {
                 <Checkbox
                   label="Save Session"
                   variant="outlined"
-                  value={saveSession}
+                  checked={saveSession}
                   onChange={() => setSaveSession(!saveSession)}
                 />
               </Tooltip>
