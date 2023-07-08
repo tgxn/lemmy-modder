@@ -47,7 +47,7 @@ jobs:
           -v ~/.cache/electron:/root/.cache/electron \
           -v ~/.cache/electron-builder:/root/.cache/electron-builder \
           electronuserland/builder:wine \
-          bash -c "npm i && electron-builder --win nsis portable --x64 --publish always"
+          bash -c "npm i && npx electron-builder --win nsis portable --x64 --publish always"
 
       # store the json files as artifacts
       # - name: Archive Built App
