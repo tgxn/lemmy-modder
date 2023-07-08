@@ -9,7 +9,8 @@
   "scripts": {
     "start": "electron src/app.js",
     "bundle:prod": "cd ./frontend && npm run build",
-    "build:win": "electron-builder --win nsis portable --x64 --publish",
+    "build:win": "electron-builder --win nsis portable --x64",
+    "build:win:publish": "electron-builder --win nsis portable --x64 --publish always",
     "build:win32": "electron-builder --win --ia32",
     "build:linux": "electron-builder --linux --x64",
     "build:mac": "electron-builder --mac --x64"
