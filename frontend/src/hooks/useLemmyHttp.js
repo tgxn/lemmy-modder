@@ -1,16 +1,21 @@
 import { useEffect } from "react";
 
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { getSiteData } from "../hooks/getSiteData";
 
 import { useSelector } from "react-redux";
 
 import { LemmyHttp } from "lemmy-js-client";
 
-export function useLemmyHttp(callLemmyMethod, formData) {
+export function useLemmyHttp(callLemmyMethod, formData, ignore = null) {
   const currentUser = useSelector((state) => state.accountReducer.currentUser);
 
+  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+
+  console.log("useLemmyHttp", callLemmyMethod, ignore, !!currentUser && !ignore);
+
   const { isSuccess, isLoading, isError, error, data, isFetching, refetch } = useQuery({
-    queryKey: ["lemmyHttp", callLemmyMethod],
+    queryKey: ["lemmyHttp", localPerson.id, callLemmyMethod],
     queryFn: async () => {
       const lemmyClient = new LemmyHttp(`https://${currentUser.base}`);
 
@@ -31,10 +36,11 @@ export function useLemmyHttp(callLemmyMethod, formData) {
 
   // trigger when we have jwt
   useEffect(() => {
-    if (currentUser.jwt) {
-      refetch();
-    }
-  }, [currentUser]);
+    // if (currentUser.jwt) {
+    //   console.log("useLemmyHttp refetch");
+    //   refetch();
+    // }
+  }, [currentUser.jwt]);
 
   return {
     isLoading,

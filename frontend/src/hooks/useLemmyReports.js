@@ -5,10 +5,19 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 
 import { LemmyHttp } from "lemmy-js-client";
+import { getSiteData } from "../hooks/getSiteData";
 
 import { useLemmyHttp } from "./useLemmyHttp";
 
 export function useLemmyReports() {
+  const orderBy = useSelector((state) => state.configReducer.orderBy);
+  const filterType = useSelector((state) => state.configReducer.filterType);
+  const filterCommunity = useSelector((state) => state.configReducer.filterCommunity);
+  const showResolved = useSelector((state) => state.configReducer.showResolved);
+  const showRemoved = useSelector((state) => state.configReducer.showRemoved);
+
+  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+
   const {
     isLoading: commentReportsLoading,
     isFetching: commentReportsFetching,
@@ -23,15 +32,21 @@ export function useLemmyReports() {
     data: postReportsData,
   } = useLemmyHttp("listPostReports");
 
+  console.log("postReportsData", userRole === "admin");
   const {
     isLoading: pmReportsLoading,
     isFetching: pmReportsFetching,
     error: pmReportsError,
     data: pmReportsData,
-  } = useLemmyHttp("listPrivateMessageReports");
+  } = useLemmyHttp("listPrivateMessageReports", userRole === "admin");
 
   const mergedReports = useMemo(() => {
+    if (commentReportsLoading || postReportsLoading || pmReportsLoading) return [];
     if (!commentReportsData || !postReportsData || !pmReportsData) return [];
+
+    if (pmReportsError && pmReportsError.response.status === 400) {
+      pmReportsData.private_message_reports = [];
+    }
 
     let normalPostReports = postReportsData.post_reports.map((report) => {
       return {
@@ -68,14 +83,62 @@ export function useLemmyReports() {
 
     let mergedReports = [...normalPostReports, ...normalCommentReports, ...normalPMReports];
 
+    // filter type
+    if (filterType !== "all") {
+      mergedReports = mergedReports.filter((report) => {
+        if (filterType === "posts") return report.type === "post";
+        if (filterType === "comments") return report.type === "comment";
+        if (filterType === "pms") return report.type === "pm";
+      });
+    }
+
+    // filter to one community
+    if (filterCommunity !== "all") {
+      mergedReports = mergedReports.filter((report) => {
+        return report.community?.name === filterCommunity;
+      });
+    }
+
+    // filter out resolved reports
+    if (!showResolved) {
+      mergedReports = mergedReports.filter((report) => {
+        return !report.resolved;
+      });
+    }
+
+    // filter out deleted/removed posts
+    if (!showRemoved) {
+      mergedReports = mergedReports.filter((report) => {
+        return !report.removed;
+      });
+    }
+
+    console.log("mergedReports", mergedReports);
+
+    mergedReports.sort((a, b) => {
+      // check for values that are null
+      if (!a.post_report?.published) return 1;
+      if (!b.post_report?.published) return -1;
+
+      return new Date(b.post_report.published).getTime() - new Date(a.post_report.published).getTime();
+    });
+
     // console.log("mergedReports", mergedReports);
     return mergedReports;
-  }, [commentReportsData, postReportsData, pmReportsData]);
+  }, [
+    commentReportsData,
+    postReportsData,
+    pmReportsData,
+    filterType,
+    filterCommunity,
+    showResolved,
+    showRemoved,
+  ]);
 
   const isLoading = commentReportsLoading || postReportsLoading || pmReportsLoading;
   const isFetching = commentReportsFetching || postReportsFetching || pmReportsFetching;
 
-  const isError = commentReportsError || postReportsError || pmReportsError;
+  const isError = commentReportsError || postReportsError;
 
   return {
     isLoading,

@@ -16,13 +16,18 @@ import Option from "@mui/joy/Option";
 
 import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
 
+import { useLemmyReports } from "../../hooks/useLemmyReports";
+
 export const BaseActionButton = ({ icon = null, text, tooltip, color = "neutral", ...props }) => {
+  const { isFetching } = useLemmyReports();
+
   return (
     <Tooltip title={tooltip} color={color} variant="plain" placement="top">
       <Button
         variant="outlined"
         color={color}
         size={"small"}
+        disabled={isFetching}
         sx={{
           userSelect: "none",
           // borderRadius: 4,
@@ -62,7 +67,8 @@ export const CheckboxElement = ({ value, setValue, inputText }) => {
   return (
     <FormControl
       sx={{
-        py: 0.5,
+        py: 1,
+        px: 1,
       }}
     >
       <Checkbox label={inputText} variant="outlined" checked={value} onChange={() => setValue(!value)} />
@@ -108,7 +114,7 @@ export const ConfirmDialog = ({
   onConfirm,
   onCancel,
 }) => {
-  console.log("ConfirmDialog", { error });
+  // console.log("ConfirmDialog", { error });
   return (
     <Modal open={open} onClose={() => onCancel()}>
       <ModalDialog

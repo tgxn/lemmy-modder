@@ -14,30 +14,26 @@ import DraftsIcon from "@mui/icons-material/Drafts";
 
 import { SanitizedLink, SquareChip } from "../Display.jsx";
 
-import { useLemmyReports } from "../../hooks/useLemmyReports";
-
 export function ReportListItem({ itemType, resolved = false, children }) {
-  const { isLoading, isFetching, isError, reportsList } = useLemmyReports();
-
   let itemColor;
   let itemIcon;
   if (itemType == "post") {
     itemColor = "primary";
-    itemIcon = <StickyNote2Icon fontSize="sm" />;
+    itemIcon = <StickyNote2Icon fontSize="md" />;
   } else if (itemType == "comment") {
     itemColor = "info";
-    itemIcon = <ForumIcon fontSize="sm" />;
+    itemIcon = <ForumIcon fontSize="md" />;
   } else if (itemType == "pm") {
     itemColor = "warning";
-    itemIcon = <DraftsIcon fontSize="sm" />;
+    itemIcon = <DraftsIcon fontSize="md" />;
   }
 
   return (
     <Badge
       badgeContent={itemIcon}
       color={itemColor}
-      size="md"
-      variant="outlined"
+      size="lg"
+      variant="plain"
       badgeInset="5px 0 0 5px"
       anchorOrigin={{
         vertical: "top",
@@ -46,20 +42,20 @@ export function ReportListItem({ itemType, resolved = false, children }) {
       sx={{
         "& .MuiBadge-badge": {
           height: "25px",
-          zIndex: 1100,
+          zIndex: 950,
         },
       }}
     >
       <Card
         sx={{
-          // outline: "1px solid #5f35ae",
+          outline: resolved ? "1px solid #35ae716e" : null,
           display: "flex",
           flexDirection: "row",
           gap: 0,
           width: "100%",
         }}
       >
-        {isFetching && (
+        {/* {isFetching && (
           <Card
             color="neutral"
             sx={{
@@ -75,7 +71,7 @@ export function ReportListItem({ itemType, resolved = false, children }) {
           >
             Loading...
           </Card>
-        )}
+        )} */}
         {children}
       </Card>
     </Badge>

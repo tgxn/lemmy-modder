@@ -23,13 +23,14 @@ import {
   BanPostUserCommunityButton,
   BanPostUserSiteButton,
 } from "../Actions/PostButtons.jsx";
+import { BanUserCommunityButton, BanUserSiteButton } from "../Actions/GenButtons.jsx";
 
 import { ReportListItem, PersonMetaLine, ReportDetails } from "./Common.jsx";
 import { SanitizedLink } from "../Display.jsx";
 
 export default function PostListItem({ report }) {
   return (
-    <ReportListItem itemType="post">
+    <ReportListItem resolved={report.post_report.resolved} itemType="post">
       {/* Show External Link or Image for URLs */}
       {report.post.url && (
         <Box
@@ -150,9 +151,10 @@ export default function PostListItem({ report }) {
             {/* only show purge is post is deleted */}
             {report.post.removed && <PurgePostButton report={report} />}
 
-            <BanPostUserCommunityButton report={report} />
+            {/* <BanPostUserCommunityButton report={report} /> */}
 
-            <BanPostUserSiteButton report={report} />
+            <BanUserCommunityButton person={report.post_creator} community={report.community} />
+            <BanUserSiteButton person={report.post_creator} />
           </Box>
           <Box
             sx={{

@@ -13,13 +13,14 @@ import DraftsIcon from "@mui/icons-material/Drafts";
 import { SquareChip } from "../Display.jsx";
 
 import { ResolvePMReportButton, DeletePMButton } from "../Actions/PMButtons.jsx";
+import { BanUserSiteButton } from "../Actions/GenButtons.jsx";
 
 import { ReportListItem, PersonMetaLine, ReportDetails } from "./Common.jsx";
 import { SanitizedLink } from "../Display.jsx";
 
 export default function PMListItem({ report }) {
   return (
-    <ReportListItem itemType="pm">
+    <ReportListItem resolved={report.private_message_report.resolved} itemType="pm">
       <Box
         sx={{
           flexGrow: 1,
@@ -85,10 +86,10 @@ export default function PMListItem({ report }) {
               gap: 1,
             }}
           >
-            {/* @TODO ONLY SHOW WHEN IT IS THE OWN USERS CONTENT */}
-            <DeletePMButton report={report} />
+            {/* @TODO  SHOW WHEN IT IS THE OWN USERS CONTENT */}
+            {/* <DeletePMButton report={report} /> */}
 
-            {/* <BanPostUserSiteButton report={report} /> */}
+            <BanUserSiteButton person={report.private_message_creator} />
           </Box>
           <Box
             sx={{

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Box from "@mui/joy/Box";
 import Checkbox from "@mui/joy/Checkbox";
@@ -22,10 +22,20 @@ import CommunitySelect from "./CommunitySelect";
 import { useLemmyHttp } from "../hooks/useLemmyHttp";
 import { useLemmyReports } from "../hooks/useLemmyReports";
 
+import { setConfigItem } from "../reducers/configReducer";
+
 export default function ReportsList() {
-  const [showResolved, setShowResolved] = React.useState(false);
-  const [showDeleted, setShowDeleted] = React.useState(true);
-  const [showReportType, setShowReportType] = React.useState("all");
+  const dispatch = useDispatch();
+
+  const orderBy = useSelector((state) => state.configReducer.orderBy);
+  const filterType = useSelector((state) => state.configReducer.filterType);
+  // const filterCommunity = useSelector((state) => state.configReducer.filterCommunity);
+  const showResolved = useSelector((state) => state.configReducer.showResolved);
+  const showRemoved = useSelector((state) => state.configReducer.showRemoved);
+
+  // const [showResolved, setShowResolved] = React.useState(false);
+  // const [showDeleted, setShowDeleted] = React.useState(true);
+  // const [showReportType, setShowReportType] = React.useState("all");
 
   const {
     isLoading: reportCountsLoading,
@@ -34,14 +44,24 @@ export default function ReportsList() {
     data: reportCountsData,
   } = useLemmyHttp("getReportCount");
 
-  const { isLoading, isFetching, isError, reportsList } = useLemmyReports();
+  const {
+    isLoading: loadingReports,
+    isFetching: isFetchingReports,
+    isError: isReportsError,
+    reportsList,
+  } = useLemmyReports();
+
+  const isLoading = reportCountsLoading || loadingReports;
+  const isFetching = reportCountsFetching || isFetchingReports;
+
+  const isError = reportCountsError || isReportsError;
 
   const totalReports =
     reportCountsData?.post_reports +
     reportCountsData?.comment_reports +
     reportCountsData?.private_message_reports;
 
-  if (isLoading || isFetching) {
+  if (isLoading) {
     return (
       <Box
         sx={{
@@ -83,6 +103,7 @@ export default function ReportsList() {
   return (
     <Box
       sx={{
+        // pt: ,
         display: "flex",
         flexDirection: "column",
         gap: 2,
@@ -93,6 +114,7 @@ export default function ReportsList() {
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
+
           borderRadius: 8,
           p: 1,
           gap: 2,
@@ -102,12 +124,12 @@ export default function ReportsList() {
         <CommunitySelect />
 
         <Select
-          defaultValue={showReportType}
+          defaultValue={filterType}
           color="neutral"
           variant="outlined"
           // size="sm"
           onChange={(e, newValue) => {
-            setShowReportType(newValue);
+            dispatch(setConfigItem("filterType", newValue));
           }}
           sx={{
             minWidth: 150,
@@ -115,78 +137,18 @@ export default function ReportsList() {
         >
           <Option key={"post"} value={"all"} label={"All"} color="neutral">
             <Typography component="span">All</Typography>
-
-            <Chip
-              size="sm"
-              variant="outlined"
-              color={totalReports > 0 ? "warning" : "success"}
-              sx={{
-                ml: 1,
-                borderRadius: 4,
-                minHeight: "20px",
-                paddingInline: "4px",
-                fontSize: "xs",
-              }}
-            >
-              {totalReports}
-            </Chip>
           </Option>
 
           <Option key={"posts"} value={"posts"} label={"Posts"} color="neutral">
             <Typography component="span">Posts</Typography>
-
-            <Chip
-              size="sm"
-              variant="outlined"
-              color={reportCountsData?.post_reports > 0 ? "warning" : "success"}
-              sx={{
-                ml: "auto",
-                borderRadius: 4,
-                minHeight: "20px",
-                paddingInline: "4px",
-                fontSize: "xs",
-              }}
-            >
-              {reportCountsData?.post_reports}
-            </Chip>
           </Option>
 
           <Option key={"comments"} value={"comments"} label={"Comments"} color="neutral">
             <Typography component="span">Comments</Typography>
-
-            <Chip
-              size="sm"
-              variant="outlined"
-              color={reportCountsData?.comment_reports > 0 ? "warning" : "success"}
-              sx={{
-                ml: "auto",
-                borderRadius: 4,
-                minHeight: "20px",
-                paddingInline: "4px",
-                fontSize: "xs",
-              }}
-            >
-              {reportCountsData?.comment_reports}
-            </Chip>
           </Option>
 
           <Option key={"pms"} value={"pms"} label={"PMs"} color="neutral">
             <Typography component="span">PMs</Typography>
-
-            <Chip
-              size="sm"
-              variant="outlined"
-              color={reportCountsData?.private_message_reports > 0 ? "warning" : "success"}
-              sx={{
-                ml: "auto",
-                borderRadius: 4,
-                minHeight: "20px",
-                paddingInline: "4px",
-                fontSize: "xs",
-              }}
-            >
-              {reportCountsData?.private_message_reports}
-            </Chip>
           </Option>
         </Select>
 
@@ -194,14 +156,18 @@ export default function ReportsList() {
           label="Show Resolved"
           variant="outlined"
           checked={showResolved}
-          onChange={() => setShowResolved(!showResolved)}
+          onChange={() => {
+            dispatch(setConfigItem("showResolved", !showResolved));
+          }}
         />
 
         <Checkbox
-          label="Show Deleted"
+          label="Show Removed/Deleted"
           variant="outlined"
-          checked={showDeleted}
-          onChange={() => setShowDeleted(!showDeleted)}
+          checked={showRemoved}
+          onChange={() => {
+            dispatch(setConfigItem("showRemoved", !showRemoved));
+          }}
         />
       </Sheet>
 

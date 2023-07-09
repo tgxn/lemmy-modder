@@ -19,6 +19,7 @@ import {
   RemoveCommentButton,
   PurgeCommentButton,
 } from "../Actions/CommentButtons.jsx";
+import { BanUserCommunityButton, BanUserSiteButton } from "../Actions/GenButtons.jsx";
 
 import { ReportListItem, PersonMetaLine, ReportDetails } from "./Common.jsx";
 
@@ -26,7 +27,7 @@ import { SanitizedLink } from "../Display.jsx";
 
 export default function CommentListItem({ report }) {
   return (
-    <ReportListItem itemType="comment">
+    <ReportListItem resolved={report.comment_report.resolved} itemType="comment">
       <Box
         sx={{
           flexGrow: 1,
@@ -113,12 +114,12 @@ export default function CommentListItem({ report }) {
               gap: 1,
             }}
           >
+            {/* @ TODO SHOW FOR CREATOR? */}
             {/* <DeletePostButton report={report} /> */}
             <RemoveCommentButton report={report} />
 
-            {/* <BanPostUserCommunityButton report={report} />
-
-            <BanPostUserSiteButton report={report} /> */}
+            <BanUserCommunityButton person={report.comment_creator} community={report.community} />
+            <BanUserSiteButton person={report.comment_creator} />
           </Box>
           <Box
             sx={{

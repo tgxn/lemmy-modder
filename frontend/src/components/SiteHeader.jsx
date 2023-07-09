@@ -34,6 +34,8 @@ import { HeaderChip } from "./Display.jsx";
 function UserMenu() {
   const dispatch = useDispatch();
 
+  const queryClient = useQueryClient();
+
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -102,6 +104,8 @@ function UserMenu() {
           }}
           onClick={() => {
             handleClose();
+
+            queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "getReportCount"] });
             dispatch(logoutCurrent());
           }}
         >
@@ -216,14 +220,16 @@ export default function SiteHeader() {
                 >
                   {reportCountsData.comment_reports}
                 </HeaderChip>
-                <HeaderChip
-                  variant="soft"
-                  tooltip={"PM Reports"}
-                  startDecorator={<DraftsIcon />}
-                  count={reportCountsData.private_message_reports}
-                >
-                  {reportCountsData.private_message_reports}
-                </HeaderChip>
+                {reportCountsData?.private_message_reports && (
+                  <HeaderChip
+                    variant="soft"
+                    tooltip={"PM Reports"}
+                    startDecorator={<DraftsIcon />}
+                    count={reportCountsData.private_message_reports}
+                  >
+                    {reportCountsData.private_message_reports}
+                  </HeaderChip>
+                )}
               </Box>
             )}
           </Box>
