@@ -27,27 +27,31 @@ export default function ReportsList() {
   const [showReportType, setShowReportType] = React.useState("all");
 
   const {
-    data: reportCountsData,
-    loading: reportCountsLoading,
+    isLoading: reportCountsLoading,
+    isFetching: reportCountsFetching,
     error: reportCountsError,
+    data: reportCountsData,
   } = useLemmyHttp("getReportCount");
 
   const {
-    data: commentReportsData,
-    loading: commentReportsLoading,
+    isLoading: commentReportsLoading,
+    isFetching: commentReportsFetching,
     error: commentReportsError,
+    data: commentReportsData,
   } = useLemmyHttp("listCommentReports");
 
   const {
-    data: postReportsData,
-    loading: postReportsLoading,
+    isLoading: postReportsLoading,
+    isFetching: postReportsFetching,
     error: postReportsError,
+    data: postReportsData,
   } = useLemmyHttp("listPostReports");
 
   const {
-    data: pmReportsData,
-    loading: pmReportsLoading,
+    isLoading: pmReportsLoading,
+    isFetching: pmReportsFetching,
     error: pmReportsError,
+    data: pmReportsData,
   } = useLemmyHttp("listPrivateMessageReports");
 
   const mergedReports = React.useMemo(() => {
@@ -140,30 +144,54 @@ export default function ReportsList() {
     showDeleted,
   ]);
 
-  const isLoading = commentReportsLoading || postReportsLoading || pmReportsLoading;
+  const isLoading = reportCountsLoading || commentReportsLoading || postReportsLoading || pmReportsLoading;
+  const isFetching =
+    reportCountsFetching || commentReportsFetching || postReportsFetching || pmReportsFetching;
+
+  const isError = reportCountsError || commentReportsError || postReportsError || pmReportsError;
 
   const totalReports =
     reportCountsData?.post_reports +
     reportCountsData?.comment_reports +
     reportCountsData?.private_message_reports;
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: 2,
+          gap: 4,
           p: 2,
-          mt: 4,
+          mt: 8,
           borderRadius: 4,
-          border: "1px solid",
-          borderColor: "grey.500",
+          // border: "1px solid",
+          // borderColor: "grey.500",
         }}
       >
-        <CircularProgress size="lg" />
-        <Box sx={{ fontWeight: "bold" }}>Loading reports...</Box>
+        <CircularProgress size="lg" color="info" />
+        <Box sx={{ fontWeight: "bold" }}>Loading...</Box>
+      </Box>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 4,
+          p: 2,
+          mt: 8,
+          borderRadius: 4,
+          // border: "1px solid",
+          // borderColor: "grey.500",
+        }}
+      >
+        <Box sx={{ fontWeight: "bold" }}>Error!</Box>
       </Box>
     );
   }

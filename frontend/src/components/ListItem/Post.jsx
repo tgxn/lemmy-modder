@@ -2,11 +2,9 @@ import React from "react";
 
 import Moment from "react-moment";
 
-import Alert from "@mui/joy/Alert";
 import Card from "@mui/joy/Card";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
-import Link from "@mui/joy/Link";
 
 import ForumIcon from "@mui/icons-material/Forum";
 import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
@@ -23,6 +21,9 @@ import {
   BanPostUserCommunityButton,
   BanPostUserSiteButton,
 } from "../Actions/PostButtons.jsx";
+
+import { PersonMetaLine, ReportDetails } from "./Common.jsx";
+import { SanitizedLink } from "../Display.jsx";
 
 export default function PostListItem({ report }) {
   return (
@@ -57,59 +58,13 @@ export default function PostListItem({ report }) {
           flexDirection: "column",
         }}
       >
-        {/* Post Author */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            gap: 1,
-          }}
-        >
-          <Typography variant="body3" component="p">
-            <Link href={report.post_creator.actor_id} target="_blank" rel="noopener noreferrer">
-              @{report.post_creator.name}
-            </Link>
-          </Typography>
-
-          {/* Post Author Meta */}
-          <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
-            {report.post_creator.published && (
-              <SquareChip color="neutral" variant="outlined" tooltip={"User Published"}>
-                registered <Moment fromNow>{report.post_creator.published}</Moment>
-              </SquareChip>
-            )}
-
-            {report.post_creator.admin && (
-              <SquareChip color={"info"} tooltip="User is site admin">
-                ADMIN
-              </SquareChip>
-            )}
-
-            {report.post_creator.banned && (
-              <SquareChip color={"danger"} tooltip="User is banned">
-                B&
-              </SquareChip>
-            )}
-
-            {report.post_creator.bot_account && (
-              <SquareChip color={"danger"} tooltip="User is bot account">
-                BOT
-              </SquareChip>
-            )}
-
-            {report.post_creator.deleted && (
-              <SquareChip color={"danger"} tooltip="User is deleted">
-                DELETED
-              </SquareChip>
-            )}
-          </Typography>
-        </Box>
+        <PersonMetaLine creator={report.post_creator} />
 
         {/* Post Title */}
         <Typography variant="h4" component="h2">
-          <Link href={report.post.ap_id} target="_blank" rel="noopener noreferrer">
+          <SanitizedLink href={report.post.ap_id} target="_blank" rel="noopener noreferrer">
             {report.post.name}
-          </Link>
+          </SanitizedLink>
         </Typography>
 
         {/* Post Meta */}
@@ -171,41 +126,7 @@ export default function PostListItem({ report }) {
           {report.post.body}
         </Typography>
 
-        {/* Report Status */}
-        <Typography variant="body1" component="p">
-          {report.report_status}
-        </Typography>
-
-        {/* Report Details */}
-
-        <Alert
-          variant={"soft"}
-          color="warning"
-          sx={{
-            p: 1,
-          }}
-        >
-          <div>
-            <Typography fontWeight="lg">
-              <Link
-                underline="always"
-                color="neutral"
-                onClick={() => {
-                  //open window
-                  window.open(
-                    report.creator.actor_id,
-                    "_new",
-                    // size
-                    "width=1300,height=900",
-                  );
-                }}
-              >
-                @{report.creator.name} ({report.creator.display_name})
-              </Link>
-            </Typography>
-            <Typography fontSize="sm">{report.post_report.reason}</Typography>
-          </div>
-        </Alert>
+        <ReportDetails report={report.post_report} creator={report.creator} />
 
         {/* Report Actions */}
         <Box

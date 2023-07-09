@@ -1,26 +1,11 @@
 import React from "react";
 
-import Moment from "react-moment";
+import { sanitizeUrl } from "@braintree/sanitize-url";
 
-import Alert from "@mui/joy/Alert";
-import Card from "@mui/joy/Card";
-import Box from "@mui/joy/Box";
-import Button from "@mui/joy/Button";
-import Typography from "@mui/joy/Typography";
 import Tooltip from "@mui/joy/Tooltip";
 import Link from "@mui/joy/Link";
 
 import Chip from "@mui/joy/Chip";
-
-import PersonIcon from "@mui/icons-material/Person";
-import MessageIcon from "@mui/icons-material/Message";
-import ForumIcon from "@mui/icons-material/Forum";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import InfoIcon from "@mui/icons-material/Info";
-import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
-
-import Image from "./Image.jsx";
 
 export const HeaderChip = ({ children, tooltip = null, count = 0, ...props }) => (
   <Tooltip title={tooltip} color={"neutral"} variant="plain" placement="bottom">
@@ -58,3 +43,13 @@ export const SquareChip = ({ children, tooltip = null, color = "neutral", ...pro
     </Chip>
   </Tooltip>
 );
+
+export const SanitizedLink = ({ children, href, ...props }) => {
+  const sanitizedUrl = sanitizeUrl(href);
+  console.log(sanitizedUrl);
+  return (
+    <Link href={sanitizedUrl} {...props}>
+      {children}
+    </Link>
+  );
+};

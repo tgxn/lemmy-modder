@@ -20,12 +20,12 @@ import Delete from "@mui/icons-material/Delete";
 
 import { LemmyHttp } from "lemmy-js-client";
 
-import { addUser, setUsers, setCurrentUser } from "../reducers/configReducer";
+import { addUser, setUsers, setCurrentUser } from "../reducers/accountReducer";
 
 export default function LoginForm() {
   const dispatch = useDispatch();
 
-  const users = useSelector((state) => state.configReducer.users);
+  const users = useSelector((state) => state.accountReducer.users);
 
   const [instanceBase, setInstanceBase] = React.useState("lemmy.tgxn.net");
   const [username, setUsername] = React.useState("");

@@ -1,26 +1,21 @@
 import React from "react";
 
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { useDispatch, useSelector } from "react-redux";
 
 import Box from "@mui/joy/Box";
-import Typography from "@mui/joy/Typography";
-import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 
 import IconButton from "@mui/joy/IconButton";
-import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import CachedIcon from "@mui/icons-material/Cached";
 
 import Chip from "@mui/joy/Chip";
 
-import CheckIcon from "@mui/icons-material/Check";
-
 import { setSelectedCommunity } from "../reducers/configReducer";
 
-import { useLemmyHttp } from "../hooks/useLemmyHttp";
+import { getSiteData } from "../hooks/getSiteData";
 
 export default function CommunitySelect() {
   const dispatch = useDispatch();
@@ -28,14 +23,7 @@ export default function CommunitySelect() {
 
   const queryClient = useQueryClient();
 
-  const { data: siteData, loading: siteLoading, error: siteError } = useLemmyHttp("getSite");
-
-  // extract the communitites that the user moderates
-  const modCommms = React.useMemo(() => {
-    if (!siteData) return [];
-
-    return siteData.my_user.moderates;
-  }, [siteData]);
+  const { modCommms } = getSiteData();
 
   return (
     <Box>

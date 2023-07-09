@@ -1,31 +1,27 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 
-import { useDispatch, useSelector } from "react-redux";
-
-// import { setUserJwt, setSelectedCommunity } from "../reducers/configReducer";
+import { useSelector } from "react-redux";
 
 import { LemmyHttp } from "lemmy-js-client";
 
 export function useLemmyHttp(callLemmyMethod, formData) {
-  // const userJwt = useSelector((state) => state.configReducer.userJwt);
-  // const instanceBase = useSelector((state) => state.configReducer.instanceBase);
-
-  const currentUser = useSelector((state) => state.configReducer.currentUser);
+  const currentUser = useSelector((state) => state.accountReducer.currentUser);
 
   const { isSuccess, isLoading, isError, error, data, isFetching, refetch } = useQuery({
     queryKey: ["lemmyHttp", callLemmyMethod], // single string key
     queryFn: async () => {
       const lemmyClient = new LemmyHttp(`https://${currentUser.base}`);
-      // lemmyClient.jwt = userJwt;
+
       const siteData = await lemmyClient[callLemmyMethod]({
         auth: currentUser.jwt,
         ...formData,
       });
+
       return siteData;
     },
-    retry: 1,
+    retry: 0,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     staleTime: Infinity,
@@ -42,6 +38,7 @@ export function useLemmyHttp(callLemmyMethod, formData) {
 
   return {
     isLoading,
+    isFetching,
     isSuccess,
     isError,
     error,

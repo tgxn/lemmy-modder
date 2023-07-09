@@ -11,7 +11,7 @@ import CommunitySelect from "../components/CommunitySelect";
 import ReportsList from "../components/ReportsList";
 
 export default function MainPage() {
-  const currentUser = useSelector((state) => state.configReducer.currentUser);
+  const currentUser = useSelector((state) => state.accountReducer.currentUser);
 
   // when we get a jwt, set the cookie in electron
   React.useEffect(() => {

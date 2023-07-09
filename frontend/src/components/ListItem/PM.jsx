@@ -6,7 +6,7 @@ import Alert from "@mui/joy/Alert";
 import Card from "@mui/joy/Card";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
-import Link from "@mui/joy/Link";
+// import Link from "@mui/joy/Link";
 
 import ForumIcon from "@mui/icons-material/Forum";
 import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
@@ -16,6 +16,9 @@ import { SquareChip } from "../Display.jsx";
 import Image from "../Image.jsx";
 
 import { ResolvePMReportButton, DeletePMButton } from "../Actions/PMButtons.jsx";
+
+import { PersonMetaLine, ReportDetails } from "./Common.jsx";
+import { SanitizedLink } from "../Display.jsx";
 
 export default function PMListItem({ report }) {
   return (
@@ -35,49 +38,7 @@ export default function PMListItem({ report }) {
           flexDirection: "column",
         }}
       >
-        {/* PM Author */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            gap: 1,
-          }}
-        >
-          <Typography variant="body3" component="p">
-            <Link href={report.private_message_creator.actor_id} target="_blank" rel="noopener noreferrer">
-              @{report.private_message_creator.name}
-            </Link>
-          </Typography>
-
-          {/* PM Author Meta */}
-          <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
-            {report.private_message_creator.published && (
-              <SquareChip color="neutral" variant="outlined" tooltip={"User Published"}>
-                registered <Moment fromNow>{report.private_message_creator.published}</Moment>
-              </SquareChip>
-            )}
-
-            {report.private_message_creator.admin && (
-              <SquareChip color={"info"} tooltip="User is Site Admin">
-                ADMIN
-              </SquareChip>
-            )}
-
-            {report.private_message_creator.banned && <SquareChip color={"danger"}>Banned</SquareChip>}
-
-            {report.private_message_creator.bot_account && (
-              <SquareChip color={"danger"} tooltip="User is Bot Account">
-                BOT
-              </SquareChip>
-            )}
-
-            {report.private_message_creator.deleted && (
-              <SquareChip color={"danger"} tooltip="User is Deleted">
-                DELETED
-              </SquareChip>
-            )}
-          </Typography>
-        </Box>
+        <PersonMetaLine creator={report.private_message_creator} />
 
         {/* PM */}
         <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
@@ -123,7 +84,7 @@ export default function PMListItem({ report }) {
         >
           <div>
             <Typography fontWeight="lg">
-              <Link
+              <SanitizedLink
                 underline="always"
                 color="neutral"
                 onClick={() => {
@@ -137,7 +98,7 @@ export default function PMListItem({ report }) {
                 }}
               >
                 @{report.creator.name} ({report.creator.display_name})
-              </Link>
+              </SanitizedLink>
             </Typography>
             <Typography fontSize="sm">{report.private_message_report.reason}</Typography>
           </div>
