@@ -148,10 +148,8 @@ export default function PostListItem({ report }) {
             {/* <DeletePostButton report={report} /> */}
             <RemovePostButton report={report} />
 
-            {/* only show purge is post is deleted */}
-            {report.post.removed && <PurgePostButton report={report} />}
-
-            {/* <BanPostUserCommunityButton report={report} /> */}
+            {/* @TODO Maybe only show purge is post is deleted?? */}
+            <PurgePostButton report={report} />
 
             <BanUserCommunityButton person={report.post_creator} community={report.community} />
             <BanUserSiteButton person={report.post_creator} />

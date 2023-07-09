@@ -33,7 +33,7 @@ export function ReportListItem({ itemType, resolved = false, children }) {
       badgeContent={itemIcon}
       color={itemColor}
       size="lg"
-      variant="plain"
+      variant="outlined"
       badgeInset="5px 0 0 5px"
       anchorOrigin={{
         vertical: "top",
