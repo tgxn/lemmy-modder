@@ -1,13 +1,13 @@
-name: build-app
+name: publish-app
 
 on:
   push:
     branches:
-      - develop
+      - main
 
 jobs:
 
-  build_app:
+  publish_app:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -45,4 +45,4 @@ jobs:
           -v ~/.cache/electron:/root/.cache/electron \
           -v ~/.cache/electron-builder:/root/.cache/electron-builder \
           electronuserland/builder:wine \
-          bash -c "npm i && npx electron-builder --win nsis portable --x64"
+          bash -c "npm i && npx electron-builder --win nsis portable --x64 --publish always"
