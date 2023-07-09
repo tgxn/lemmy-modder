@@ -46,3 +46,10 @@ jobs:
           -v ~/.cache/electron-builder:/root/.cache/electron-builder \
           electronuserland/builder:wine \
           bash -c "npm i && npx electron-builder --win nsis portable --x64"
+
+      - name: store the app artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-installer
+          path: |
+            ./dist/*.exe
