@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 
 import AspectRatio from "@mui/joy/AspectRatio";
 import Typography from "@mui/joy/Typography";
-import Link from "@mui/joy/Link";
 
 import LaunchIcon from "@mui/icons-material/Launch";
+
+import { SanitizedLink } from "./Display.jsx";
 
 function RenderImage({ imageSrc, imageAlt = "" }) {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -72,7 +73,7 @@ export default function LazyImage({ imageSrc, imageAlt = "" }) {
 
   return (
     <AspectRatio sx={{ width: 125 }}>
-      <Link underline={"none"} href={imageSrc} target="_new">
+      <SanitizedLink underline={"none"} href={imageSrc} target="_new">
         {isImage ? (
           <RenderImage imageSrc={imageSrc} imageAlt={imageAlt} />
         ) : (
@@ -80,7 +81,7 @@ export default function LazyImage({ imageSrc, imageAlt = "" }) {
             <LaunchIcon color="neutral" />
           </Typography>
         )}
-      </Link>
+      </SanitizedLink>
     </AspectRatio>
   );
 }

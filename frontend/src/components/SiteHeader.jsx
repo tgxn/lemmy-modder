@@ -1,44 +1,132 @@
 import React from "react";
 
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-
 import { useDispatch, useSelector } from "react-redux";
+
+import { useQueryClient } from "@tanstack/react-query";
 
 import Sheet from "@mui/joy/Sheet";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
 import Chip from "@mui/joy/Chip";
-import Typography from "@mui/joy/Typography";
 import Tooltip from "@mui/joy/Tooltip";
-
-import LogoutIcon from "@mui/icons-material/Logout";
-import PersonIcon from "@mui/icons-material/Person";
-import MessageIcon from "@mui/icons-material/Message";
-import ForumIcon from "@mui/icons-material/Forum";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import InfoIcon from "@mui/icons-material/Info";
-import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
-
+import Switch from "@mui/joy/Switch";
+import Menu from "@mui/joy/Menu";
+import MenuItem from "@mui/joy/MenuItem";
+import FormLabel from "@mui/joy/FormLabel";
+import ListItem from "@mui/joy/ListItem";
+import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import IconButton from "@mui/joy/IconButton";
-import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+
+import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 import CachedIcon from "@mui/icons-material/Cached";
 
-import { logoutCurrent } from "../reducers/configReducer";
+import StickyNote2Icon from "@mui/icons-material/StickyNote2";
+import ForumIcon from "@mui/icons-material/Forum";
+import DraftsIcon from "@mui/icons-material/Drafts";
+
+import { logoutCurrent } from "../reducers/accountReducer";
 
 import { useLemmyHttp } from "../hooks/useLemmyHttp";
+import { getSiteData } from "../hooks/getSiteData";
 
 import { HeaderChip } from "./Display.jsx";
 
+function UserMenu() {
+  const dispatch = useDispatch();
+
+  const queryClient = useQueryClient();
+
+  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [menuOpen, setMenuOpen] = React.useState(false);
+
+  const handleClick = (event) => {
+    if (menuOpen) return handleClose();
+
+    setAnchorEl(event.currentTarget);
+    setMenuOpen(true);
+  };
+
+  const handleClose = () => {
+    setMenuOpen(false);
+    setAnchorEl(null);
+  };
+
+  let userTooltip = "You are a regular user";
+  if (userRole == "admin") userTooltip = "You are a site admin";
+  if (userRole == "mod") userTooltip = "You are a community moderator";
+
+  return (
+    <>
+      <Tooltip title={userTooltip} placement="left">
+        <Button
+          aria-controls={menuOpen ? "user-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={menuOpen ? "true" : undefined}
+          size="sm"
+          color="info"
+          onClick={handleClick}
+          endDecorator={<ArrowDropDown />}
+          sx={{
+            ml: 1,
+            borderRadius: 4,
+          }}
+        >
+          {localPerson?.name}
+        </Button>
+      </Tooltip>
+      <Menu id="user-menu" anchorEl={anchorEl} open={menuOpen} onClose={handleClose} placement="bottom-end">
+        {/* <ListItem
+          sx={{
+            px: 2,
+            py: 1,
+            fontSize: "0.75rem",
+            color: "text.secondary",
+          }}
+        >
+          <ListItemDecorator sx={{ p: 1, alignSelf: "center" }}>
+            <Switch
+              color={mandatoryModComment ? "warning" : "success"}
+              checked={mandatoryModComment}
+              onChange={(event) => {
+                dispatch(setConfigItem({ mandatoryModComment: event.target.checked }));
+              }}
+            />
+          </ListItemDecorator>
+
+          <FormLabel>Mandatory Comment</FormLabel>
+        </ListItem> */}
+
+        <MenuItem
+          sx={{
+            color: "text.body",
+          }}
+          onClick={() => {
+            handleClose();
+
+            queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
+            dispatch(logoutCurrent());
+          }}
+        >
+          End Session
+        </MenuItem>
+      </Menu>
+    </>
+  );
+}
+
 export default function SiteHeader() {
   const dispatch = useDispatch();
-  const currentUser = useSelector((state) => state.configReducer.currentUser);
+  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+
   const queryClient = useQueryClient();
 
   const {
-    data: reportCountsData,
-    loading: reportCountsLoading,
+    isLoading: reportCountsLoading,
+    isFetching: reportCountsFetching,
     error: reportCountsError,
+    data: reportCountsData,
   } = useLemmyHttp("getReportCount");
 
   return (
@@ -59,26 +147,43 @@ export default function SiteHeader() {
             alignItems: "center",
           }}
         >
+          <Tooltip title="Reload all data">
+            <IconButton
+              size="sm"
+              variant="outlined"
+              color="info"
+              sx={{
+                borderRadius: 4,
+                mr: 1,
+              }}
+              onClick={() => {
+                queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
+              }}
+            >
+              <CachedIcon />
+            </IconButton>
+          </Tooltip>
+
           <Tooltip title="View Site">
             <Chip
-              color="info"
+              color="primary"
               sx={{
                 borderRadius: 4,
               }}
               onClick={() => {
                 window.open(
-                  `https://${currentUser.base}`,
+                  `https://${baseUrl}`,
                   "_new",
                   // set size
                   "width=1300,height=900",
                 );
               }}
             >
-              {currentUser.site.site_view.site.name}
+              {siteData.name}
             </Chip>
           </Tooltip>
         </Box>
-        {currentUser.site && (
+        {siteData && (
           <Box
             sx={{
               display: "flex",
@@ -99,17 +204,8 @@ export default function SiteHeader() {
               >
                 <HeaderChip
                   variant="soft"
-                  tooltip={"Comment Reports"}
-                  startDecorator={<ForumIcon />}
-                  count={reportCountsData.comment_reports}
-                >
-                  {reportCountsData.comment_reports}
-                </HeaderChip>
-
-                <HeaderChip
-                  variant="soft"
                   tooltip={"Post Reports"}
-                  startDecorator={<MessageIcon />}
+                  startDecorator={<StickyNote2Icon />}
                   count={reportCountsData.post_reports}
                 >
                   {reportCountsData.post_reports}
@@ -117,17 +213,27 @@ export default function SiteHeader() {
 
                 <HeaderChip
                   variant="soft"
-                  tooltip={"PM Reports"}
+                  tooltip={"Comment Reports"}
                   startDecorator={<ForumIcon />}
-                  count={reportCountsData.private_message_reports}
+                  count={reportCountsData.comment_reports}
                 >
-                  {reportCountsData.private_message_reports}
+                  {reportCountsData.comment_reports}
                 </HeaderChip>
+                {reportCountsData?.private_message_reports && (
+                  <HeaderChip
+                    variant="soft"
+                    tooltip={"PM Reports"}
+                    startDecorator={<DraftsIcon />}
+                    count={reportCountsData.private_message_reports}
+                  >
+                    {reportCountsData.private_message_reports}
+                  </HeaderChip>
+                )}
               </Box>
             )}
           </Box>
         )}
-        {currentUser.site && (
+        {siteData && (
           <Box
             sx={{
               display: "flex",
@@ -135,16 +241,57 @@ export default function SiteHeader() {
               alignItems: "center",
             }}
           >
-            <Button
-              variant="soft"
-              size="sm"
-              color="warning"
-              onClick={() => {
-                dispatch(logoutCurrent());
-              }}
-            >
-              <LogoutIcon />
-            </Button>
+            <UserMenu />
+            {/* {userRole == "admin" && (
+              <Tooltip title="You are a site admin">
+                <Chip
+                  size="md"
+                  variant="outlined"
+                  color="info"
+                  sx={{
+                    borderRadius: 8,
+                  }}
+                >
+                  {localPerson?.name}
+                </Chip>
+              </Tooltip>
+            )}
+
+            {userRole == "mod" && (
+              <Tooltip title="You are a community moderator">
+                <Chip
+                  color="warning"
+                  sx={{
+                    borderRadius: 8,
+                  }}
+                  onClick={() => {
+                    window.open(
+                      `https://${baseUrl}`,
+                      "_new",
+                      // set size
+                      "width=1300,height=900",
+                    );
+                  }}
+                >
+                  {siteData.name}
+                </Chip>
+              </Tooltip>
+            )} */}
+            {/* <Tooltip title="End session">
+              <Button
+                variant="soft"
+                size="sm"
+                color="warning"
+                onClick={() => {
+                  dispatch(logoutCurrent());
+                }}
+                sx={{
+                  ml: 1,
+                }}
+              >
+                <LogoutIcon />
+              </Button>
+            </Tooltip> */}
           </Box>
         )}
       </Sheet>

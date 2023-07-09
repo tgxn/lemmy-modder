@@ -20,14 +20,14 @@ import Delete from "@mui/icons-material/Delete";
 
 import { LemmyHttp } from "lemmy-js-client";
 
-import { addUser, setUsers, setCurrentUser } from "../reducers/configReducer";
+import { addUser, setUsers, setCurrentUser } from "../reducers/accountReducer";
 
 export default function LoginForm() {
   const dispatch = useDispatch();
 
-  const users = useSelector((state) => state.configReducer.users);
+  const users = useSelector((state) => state.accountReducer.users);
 
-  const [instanceBase, setInstanceBase] = React.useState("lemmy.tgxn.net");
+  const [instanceBase, setInstanceBase] = React.useState("");
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
 
@@ -98,14 +98,14 @@ export default function LoginForm() {
           }}
         >
           <Typography
-            isLoading={isLoading}
+            // isLoading={isLoading}
             sx={{
               // px: 2,
               display: "flex",
               justifyContent: "center",
             }}
           >
-            Login
+            Login to a Lemmy Instance
           </Typography>
           <Box
             sx={{
@@ -141,8 +141,16 @@ export default function LoginForm() {
               sx={{ mb: 1 }}
             />
 
-            <Box>
-              <Tooltip title="Your session will be saved locally" placement="top">
+            <Button fullWidth onClick={loginClick} disabled={username.length === 0 || password.length === 0}>
+              Login
+            </Button>
+
+            <Box
+              sx={{
+                pt: 1,
+              }}
+            >
+              <Tooltip title="Your session will be saved locally" placement="bottom">
                 <Checkbox
                   label="Save Session"
                   variant="outlined"
@@ -151,10 +159,6 @@ export default function LoginForm() {
                 />
               </Tooltip>
             </Box>
-
-            <Button fullWidth onClick={loginClick} disabled={username.length === 0 || password.length === 0}>
-              Login
-            </Button>
           </Box>
 
           {loginError && (
@@ -192,7 +196,7 @@ export default function LoginForm() {
             }}
           >
             <Typography
-              isLoading={isLoading}
+              // isLoading={isLoading}
               sx={{
                 // px: 2,
                 display: "flex",
@@ -204,6 +208,7 @@ export default function LoginForm() {
             <List sx={{ width: "100%" }}>
               {users.map((user, index) => (
                 <ListItem
+                  key={index}
                   disabled={isLoading}
                   endAction={
                     <IconButton

@@ -29,8 +29,7 @@ export const ResolvePMReportButton = ({ report, ...props }) => {
       // update store state
       // queryClient.setQueryData(["todo", { id: 5 }], resultData);
 
-      queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "getReportCount"] });
-      queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "listPrivateMessageReports"] });
+      queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
 
       setConfirmOpen(false);
     }
@@ -90,8 +89,7 @@ export const DeletePMButton = ({ report, ...props }) => {
       // update store state
       // queryClient.setQueryData(["todo", { id: 5 }], resultData);
 
-      queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "getReportCount"] });
-      queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "listPrivateMessageReports"] });
+      queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
 
       setConfirmOpen(false);
     }

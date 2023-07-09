@@ -52,6 +52,15 @@ app.once("ready", () => {
     });
   }
 
+  mainWindow.webContents.on("before-input-event", (event, input) => {
+    if (input.control && input.shift && input.key.toLowerCase() === "k") {
+      event.preventDefault();
+      mainWindow.webContents.openDevTools({
+        mode: "detach",
+      });
+    }
+  });
+
   // this lets us set cookies for the users lemmy instance so it's already loggeed in
   ipcMain.handle("set_jwt", async (event, instanceBase, userJwt) => {
     const cookie = {

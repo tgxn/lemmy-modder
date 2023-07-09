@@ -1,3 +1,36 @@
+# Lemmy Modder
+
+A moderation tool for lemmy mods/admins. Basically like the reports page, but an app, and you can quick-switch lemmy acocunts.
+
+Features:
+- Quick Actions 
+    - Resolve/Unresolve Reports
+    - Remove/Restore Posts & Comments
+    - Ban/Unban Users (from Community or Site)
+    - Lock/Unlock Posts
+
+- Quick Switch Accounts
+- Lemmy Instance Auto-Login in popups
+
+Coming Soon?
+- "Canned" Reply/Distinguish Comments
+- Manage Community & Site-Wide Bans
+- Manage Community Mods
+- View Modlog
+
+
+Image Table
+| | | |
+| --- | --- | --- |
+| ![Alt text](image-1.png) | ![Alt text](image.png)   | ![Alt text](image-2.png) |
+
+
+You can use the portable version or the installer which can auto-update from GitHub. Check the latest release for the files.
+
+----------------
+
+Original Thinking etc. below
+
 # mod lemmy ayyy
 
 I'm thinking of building a quick and dirty electron app that can:
@@ -35,15 +68,6 @@ This is a hacky quick and dirty app, so running it is in beta
 
 The reason for the electron app is CORS on most lemmy instances returning invalid unless the origin header is overridden... which the electron app does.
 
-clean reports
-![Alt text](image.png)
-
-easy switch between accounts
-![Alt text](image-1.png)
-
-![Alt text](image-2.png)
-
-auto-login to lemmy instance with saved jwt
 
 
 # todo implement

@@ -1,118 +1,40 @@
-export function addUser(base, jwt, site) {
+export function setConfigItem(configKey, configValue) {
+  console.log("setConfigItem", configKey, configValue);
   return {
-    type: "addUser",
-    payload: { base, jwt, site },
+    type: "setConfigItem",
+    payload: { configKey, configValue },
   };
 }
-
-export function setCurrentUser(base, jwt, site) {
-  return {
-    type: "setCurrentUser",
-    payload: { base, jwt, site },
-  };
-}
-
-export function logoutCurrent() {
-  return {
-    type: "logoutCurrent",
-  };
-}
-
-export function setUsers(users) {
-  return {
-    type: "setUsers",
-    payload: { users },
-  };
-}
-
-export function setSelectedCommunity(selectedCommunity) {
-  console.log("setSelectedCommunity", selectedCommunity);
-  return {
-    type: "setSelectedCommunity",
-    payload: { selectedCommunity },
-  };
-}
-
-const lsUsers = localStorage.getItem("users");
-const cUser = localStorage.getItem("currentUser");
 
 const initialState = {
-  // easy switch accounts
-  users: lsUsers ? JSON.parse(lsUsers) : [], // { base, jwt, user, active }
-  currentUser: cUser ? JSON.parse(cUser) : null, // { base, jwt, user, active }
+  orderBy: localStorage.getItem("config.orderBy") || "hot",
+  filterType: localStorage.getItem("config.filterType") || "all",
+  filterCommunity: localStorage.getItem("config.filterCommunity") || "all",
+  showResolved: localStorage.getItem("config.showResolved")
+    ? JSON.parse(localStorage.getItem("config.showResolved"))
+    : false,
+  showRemoved: localStorage.getItem("config.showRemoved")
+    ? JSON.parse(localStorage.getItem("config.showRemoved"))
+    : false,
 
-  selectedCommunity: "all",
+  // are comments required on mod actions?
+  mandatoryModComment: localStorage.getItem("config.mandatoryModComment")
+    ? JSON.parse(localStorage.getItem("config.mandatoryModComment"))
+    : false,
+
+  // can you purge contenbt wihtout removing it first
+  purgeWithoutDelete: localStorage.getItem("config.purgeWithoutDelete"),
 };
 
 const configReducer = (state = initialState, action = {}) => {
   switch (action.type) {
-    case "setUsers":
-      if (action.payload) {
-        localStorage.setItem("users", JSON.stringify(action.payload.users));
-      }
-      return {
+    case "setConfigItem":
+      const newConfig = {
         ...state,
-        users: action.payload.users,
+        [action.payload.configKey]: action.payload.configValue,
       };
-
-    case "addUser":
-      const newUsers = [...state.users, action.payload];
-      if (action.payload == null) {
-        localStorage.removeItem("users");
-      } else {
-        localStorage.setItem("users", JSON.stringify(newUsers));
-      }
-      return {
-        ...state,
-        users: newUsers,
-        currentUser: action.payload,
-      };
-
-    case "setCurrentUser":
-      if (action.payload === null) {
-        localStorage.removeItem("currentUser");
-      } else {
-        localStorage.setItem("currentUser", JSON.stringify(action.payload));
-      }
-      return {
-        ...state,
-        currentUser: action.payload,
-      };
-
-    case "logoutCurrent":
-      localStorage.removeItem("currentUser");
-      return {
-        ...state,
-        currentUser: null,
-      };
-
-    // case "setUserJwt":
-    //   if (action.payload.userJwt === null) {
-    //     localStorage.removeItem("userJwt");
-    //   } else {
-    //     localStorage.setItem("userJwt", action.payload.userJwt);
-    //   }
-    //   return {
-    //     ...state,
-    //     userJwt: action.payload.userJwt,
-    //   };
-
-    // case "setInstanceBase":
-    //   if (action.payload.instanceBase === null) {
-    //     localStorage.removeItem("instanceBase");
-    //   } else {
-    //     localStorage.setItem("instanceBase", action.payload.instanceBase);
-    //   }
-    //   return {
-    //     ...state,
-    //     instanceBase: action.payload.instanceBase,
-    //   };
-
-    case "setSelectedCommunity":
-      return {
-        ...state,
-        selectedCommunity: action.payload.selectedCommunity,
-      };
+      localStorage.setItem(`config.${action.payload.configKey}`, action.payload.configValue);
+      return newConfig;
 
     default:
       return state;
