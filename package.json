@@ -8,15 +8,14 @@
   "main": "src/app.js",
   "scripts": {
     "start": "electron src/app.js",
-    "builder:shortcut": "npm exec --package=electron-builder -- electron-builder",
-    "builder:snap": "npm run builder:shortcut -- --linux snap --publish never",
-    "builder:snap:publish": "npm run builder:shortcut -- --linux snap --publish always",
-    "builder:mac": "npm run builder:shortcut -- --mac --publish never",
-    "builder:mac:publish": "npm run builder:shortcut -- --mac --publish always",
-    "build:win": "npm run builder:shortcut -- --win portable nsis --x64 --publish never",
-    "build:win:publish": "npm run builder:shortcut -- --win portable nsis --x64 --publish always",
-    "build:win32": "npm run builder:shortcut -- --win portable nsis --ia32 --publish never",
-    "build:win32:publish": "npm run builder:shortcut -- --win portable nsis --ia32 --publish always"
+    "builder:snap": "electron-builder --linux snap --publish never",
+    "builder:snap:publish": "electron-builder --linux snap --publish always",
+    "builder:mac": "electron-builder --mac --publish never",
+    "builder:mac:publish": "electron-builder --mac --publish always",
+    "build:win": "electron-builder --win portable nsis --x64 --publish never",
+    "build:win:publish": "electron-builder --win portable nsis --x64 --publish always",
+    "build:win32": "electron-builder --win portable nsis --ia32 --publish never",
+    "build:win32:publish": "electron-builder --win portable nsis --ia32 --publish always"
   },
   "devDependencies": {
     "electron": "^25.2.0",
