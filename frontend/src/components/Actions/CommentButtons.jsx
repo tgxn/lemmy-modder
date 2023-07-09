@@ -186,7 +186,7 @@ export const PurgeCommentButton = ({ report, ...props }) => {
             placeholder={`purge reason`}
           />,
         ]}
-        disabled={purgeReason == ""}
+        // disabled={purgeReason == ""}
         buttonMessage={"Purge"}
         color={"danger"}
         onConfirm={() => {

@@ -75,6 +75,14 @@ export const BanUserCommunityButton = ({ person, community, isBanned, ...props }
             placeholder={`${actionText.toLowerCase()} reason`}
           />,
           !isBanned ? (
+            <ExpiryLengthElement
+              key="banExpires"
+              // inputText="Ban Expires"
+              value={expires}
+              setValue={setExpires}
+            />
+          ) : null,
+          !isBanned ? (
             <CheckboxElement
               key="removeData"
               inputText="Remove Data"
@@ -82,16 +90,8 @@ export const BanUserCommunityButton = ({ person, community, isBanned, ...props }
               setValue={setRemoveData}
             />
           ) : null,
-          !isBanned ? (
-            <ExpiryLengthElement
-              key="banExpires"
-              inputText="Ban Expires"
-              value={expires}
-              setValue={setExpires}
-            />
-          ) : null,
         ]}
-        disabled={banReason == ""}
+        // disabled={banReason == ""}
         buttonMessage={actionText}
         color={actionColor}
         onConfirm={() => {
