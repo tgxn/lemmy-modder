@@ -2,6 +2,8 @@ import React from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
+import { useQueryClient } from "@tanstack/react-query";
+
 import Sheet from "@mui/joy/Sheet";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
@@ -13,11 +15,14 @@ import MenuItem from "@mui/joy/MenuItem";
 import FormLabel from "@mui/joy/FormLabel";
 import ListItem from "@mui/joy/ListItem";
 import ListItemDecorator from "@mui/joy/ListItemDecorator";
+import IconButton from "@mui/joy/IconButton";
 
-import LogoutIcon from "@mui/icons-material/Logout";
-import MessageIcon from "@mui/icons-material/Message";
-import ForumIcon from "@mui/icons-material/Forum";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
+import CachedIcon from "@mui/icons-material/Cached";
+
+import StickyNote2Icon from "@mui/icons-material/StickyNote2";
+import ForumIcon from "@mui/icons-material/Forum";
+import DraftsIcon from "@mui/icons-material/Drafts";
 
 import { logoutCurrent } from "../reducers/accountReducer";
 import { setUiConfig } from "../reducers/configReducer";
@@ -114,6 +119,8 @@ export default function SiteHeader() {
   const dispatch = useDispatch();
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
+  const queryClient = useQueryClient();
+
   const {
     isLoading: reportCountsLoading,
     isFetching: reportCountsFetching,
@@ -157,6 +164,24 @@ export default function SiteHeader() {
               {siteData.name}
             </Chip>
           </Tooltip>
+
+          <Tooltip title="Reload all data">
+            <IconButton
+              size="sm"
+              variant="outlined"
+              color="info"
+              sx={{
+                borderRadius: 4,
+                ml: 1,
+              }}
+              onClick={() => {
+                // invalidate everything
+                queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
+              }}
+            >
+              <CachedIcon />
+            </IconButton>
+          </Tooltip>
         </Box>
         {siteData && (
           <Box
@@ -179,17 +204,8 @@ export default function SiteHeader() {
               >
                 <HeaderChip
                   variant="soft"
-                  tooltip={"Comment Reports"}
-                  startDecorator={<ForumIcon />}
-                  count={reportCountsData.comment_reports}
-                >
-                  {reportCountsData.comment_reports}
-                </HeaderChip>
-
-                <HeaderChip
-                  variant="soft"
                   tooltip={"Post Reports"}
-                  startDecorator={<MessageIcon />}
+                  startDecorator={<StickyNote2Icon />}
                   count={reportCountsData.post_reports}
                 >
                   {reportCountsData.post_reports}
@@ -197,8 +213,16 @@ export default function SiteHeader() {
 
                 <HeaderChip
                   variant="soft"
-                  tooltip={"PM Reports"}
+                  tooltip={"Comment Reports"}
                   startDecorator={<ForumIcon />}
+                  count={reportCountsData.comment_reports}
+                >
+                  {reportCountsData.comment_reports}
+                </HeaderChip>
+                <HeaderChip
+                  variant="soft"
+                  tooltip={"PM Reports"}
+                  startDecorator={<DraftsIcon />}
                   count={reportCountsData.private_message_reports}
                 >
                   {reportCountsData.private_message_reports}

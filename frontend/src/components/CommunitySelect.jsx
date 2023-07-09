@@ -1,15 +1,10 @@
 import React from "react";
 
-import { useQueryClient } from "@tanstack/react-query";
-
 import { useDispatch, useSelector } from "react-redux";
 
 import Box from "@mui/joy/Box";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
-
-import IconButton from "@mui/joy/IconButton";
-import CachedIcon from "@mui/icons-material/Cached";
 
 import Chip from "@mui/joy/Chip";
 
@@ -21,13 +16,10 @@ export default function CommunitySelect() {
   const dispatch = useDispatch();
   const selectedCommunity = useSelector((state) => state.configReducer.selectedCommunity);
 
-  const queryClient = useQueryClient();
-
   const { modCommms } = getSiteData();
 
   return (
     <Box>
-      {/* Community Select */}
       {modCommms && (
         <Box
           sx={{
@@ -36,16 +28,6 @@ export default function CommunitySelect() {
             gap: 1,
           }}
         >
-          <IconButton
-            variant="outlined"
-            color="neutral"
-            onClick={() => {
-              // invalidate everything
-              queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
-            }}
-          >
-            <CachedIcon />
-          </IconButton>
           <Select
             defaultValue={selectedCommunity}
             value={selectedCommunity}

@@ -35,8 +35,6 @@ export default function MainPage() {
           py: 2,
         }}
       >
-        <CommunitySelect />
-
         <ReportsList />
       </Container>
     </React.Fragment>

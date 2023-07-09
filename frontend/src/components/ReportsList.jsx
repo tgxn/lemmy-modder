@@ -17,6 +17,8 @@ import PostReportItem from "./ListItem/Post.jsx";
 import CommentReportItem from "./ListItem/Comment.jsx";
 import PMReportItem from "./ListItem/PM.jsx";
 
+import CommunitySelect from "./CommunitySelect";
+
 import { useLemmyHttp } from "../hooks/useLemmyHttp";
 
 export default function ReportsList() {
@@ -187,8 +189,6 @@ export default function ReportsList() {
           p: 2,
           mt: 8,
           borderRadius: 4,
-          // border: "1px solid",
-          // borderColor: "grey.500",
         }}
       >
         <Box sx={{ fontWeight: "bold" }}>Error!</Box>
@@ -199,7 +199,7 @@ export default function ReportsList() {
   return (
     <Box
       sx={{
-        pt: 2,
+        // pt: ,
         display: "flex",
         flexDirection: "column",
         gap: 2,
@@ -215,14 +215,15 @@ export default function ReportsList() {
           p: 1,
           gap: 2,
           mb: 0,
-          // pb: 0,
         }}
       >
+        <CommunitySelect />
+
         <Select
           defaultValue={showReportType}
           color="neutral"
           variant="outlined"
-          size="sm"
+          // size="sm"
           onChange={(e, newValue) => {
             setShowReportType(newValue);
           }}
@@ -238,7 +239,7 @@ export default function ReportsList() {
               variant="outlined"
               color={totalReports > 0 ? "warning" : "success"}
               sx={{
-                ml: "auto",
+                ml: 1,
                 borderRadius: 4,
                 minHeight: "20px",
                 paddingInline: "4px",
