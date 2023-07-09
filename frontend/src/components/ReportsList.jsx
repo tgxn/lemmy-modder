@@ -100,7 +100,7 @@ export default function ReportsList() {
     // filter to one community
     if (selectedCommunity !== "all") {
       mergedReports = mergedReports.filter((report) => {
-        return report.community.name === selectedCommunity;
+        return report.community?.name === selectedCommunity;
       });
     }
 
