@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -8,21 +8,11 @@ import Sheet from "@mui/joy/Sheet";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
 import Chip from "@mui/joy/Chip";
-import Typography from "@mui/joy/Typography";
 import Tooltip from "@mui/joy/Tooltip";
 
 import LogoutIcon from "@mui/icons-material/Logout";
-import PersonIcon from "@mui/icons-material/Person";
 import MessageIcon from "@mui/icons-material/Message";
 import ForumIcon from "@mui/icons-material/Forum";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import InfoIcon from "@mui/icons-material/Info";
-import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
-
-import IconButton from "@mui/joy/IconButton";
-import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
-import CachedIcon from "@mui/icons-material/Cached";
 
 import { logoutCurrent } from "../reducers/configReducer";
 
@@ -33,7 +23,6 @@ import { HeaderChip } from "./Display.jsx";
 export default function SiteHeader() {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.configReducer.currentUser);
-  const queryClient = useQueryClient();
 
   const {
     data: reportCountsData,

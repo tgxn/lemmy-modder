@@ -80,21 +80,25 @@ export default function PostListItem({ report }) {
             )}
 
             {report.post_creator.admin && (
-              <SquareChip color={"info"} tooltip="User is Site Admin">
+              <SquareChip color={"info"} tooltip="User is site admin">
                 ADMIN
               </SquareChip>
             )}
 
-            {report.post_creator.banned && <SquareChip color={"danger"}>Banned</SquareChip>}
+            {report.post_creator.banned && (
+              <SquareChip color={"danger"} tooltip="User is banned">
+                B&
+              </SquareChip>
+            )}
 
             {report.post_creator.bot_account && (
-              <SquareChip color={"danger"} tooltip="User is Bot Account">
+              <SquareChip color={"danger"} tooltip="User is bot account">
                 BOT
               </SquareChip>
             )}
 
             {report.post_creator.deleted && (
-              <SquareChip color={"danger"} tooltip="User is Deleted">
+              <SquareChip color={"danger"} tooltip="User is deleted">
                 DELETED
               </SquareChip>
             )}
