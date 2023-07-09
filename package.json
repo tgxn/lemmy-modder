@@ -8,14 +8,10 @@
   "main": "src/app.js",
   "scripts": {
     "start": "electron src/app.js",
+    "build:win": "electron-builder --windows portable:x64 portable:ia32 nsis:x64 nsis:ia32 --publish never",
+    "build:win:publish": "electron-builder --windows portable:x64 portable:ia32 nsis:x64 nsis:ia32 --publish always",
     "builder:snap": "electron-builder --linux snap --publish never",
-    "builder:snap:publish": "electron-builder --linux snap --publish always",
-    "builder:mac": "electron-builder --mac --publish never",
-    "builder:mac:publish": "electron-builder --mac --publish always",
-    "build:win": "electron-builder --win portable nsis --x64 --publish never",
-    "build:win:publish": "electron-builder --win portable nsis --x64 --publish always",
-    "build:win32": "electron-builder --win portable nsis --ia32 --publish never",
-    "build:win32:publish": "electron-builder --win portable nsis --ia32 --publish always"
+    "builder:snap:publish": "electron-builder --linux snap --publish always"
   },
   "devDependencies": {
     "electron": "^25.2.0",
