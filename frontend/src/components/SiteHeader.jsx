@@ -59,7 +59,7 @@ function UserMenu() {
 
   return (
     <>
-      <Tooltip title={userTooltip}>
+      <Tooltip title={userTooltip} placement="left">
         <Button
           aria-controls={menuOpen ? "user-menu" : undefined}
           aria-haspopup="true"
@@ -105,7 +105,7 @@ function UserMenu() {
           onClick={() => {
             handleClose();
 
-            queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "getReportCount"] });
+            queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
             dispatch(logoutCurrent());
           }}
         >
@@ -147,6 +147,23 @@ export default function SiteHeader() {
             alignItems: "center",
           }}
         >
+          <Tooltip title="Reload all data">
+            <IconButton
+              size="sm"
+              variant="outlined"
+              color="info"
+              sx={{
+                borderRadius: 4,
+                mr: 1,
+              }}
+              onClick={() => {
+                queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
+              }}
+            >
+              <CachedIcon />
+            </IconButton>
+          </Tooltip>
+
           <Tooltip title="View Site">
             <Chip
               color="primary"
@@ -164,24 +181,6 @@ export default function SiteHeader() {
             >
               {siteData.name}
             </Chip>
-          </Tooltip>
-
-          <Tooltip title="Reload all data">
-            <IconButton
-              size="sm"
-              variant="outlined"
-              color="info"
-              sx={{
-                borderRadius: 4,
-                ml: 1,
-              }}
-              onClick={() => {
-                // invalidate everything
-                queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
-              }}
-            >
-              <CachedIcon />
-            </IconButton>
           </Tooltip>
         </Box>
         {siteData && (

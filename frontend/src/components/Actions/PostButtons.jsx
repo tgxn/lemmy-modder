@@ -28,8 +28,7 @@ export const ResolvePostReportButton = ({ report, ...props }) => {
       // update store state
       // queryClient.setQueryData(["todo", { id: 5 }], resultData);
 
-      queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "getReportCount"] });
-      queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "listPostReports"] });
+      queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
 
       setConfirmOpen(false);
     }
@@ -137,7 +136,7 @@ export const RemovePostButton = ({ report, ...props }) => {
       // queryClient.setQueryData(["todo", { id: 5 }], resultData);
 
       // queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "getReportCount"] });
-      queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "listPostReports"] });
+      queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
 
       setConfirmOpen(false);
     }
@@ -209,7 +208,7 @@ export const PurgePostButton = ({ report, ...props }) => {
       // queryClient.setQueryData(["todo", { id: 5 }], resultData);
 
       // queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "getReportCount"] });
-      queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "listPostReports"] });
+      queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
 
       setConfirmOpen(false);
     }

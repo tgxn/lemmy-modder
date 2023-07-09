@@ -27,8 +27,7 @@ export const ResolveCommentReportButton = ({ report, ...props }) => {
       // update store state
       // queryClient.setQueryData(["todo", { id: 5 }], resultData);
 
-      queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "getReportCount"] });
-      queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "listCommentReports"] });
+      queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
 
       setConfirmOpen(false);
     }
@@ -81,11 +80,10 @@ export const RemoveCommentButton = ({ report, ...props }) => {
     if (isSuccess) {
       console.log("useLemmyHttpAction", "onSuccess", data);
 
-      // update store state
+      // @TODO update store state
       // queryClient.setQueryData(["todo", { id: 5 }], resultData);
 
-      // queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "getReportCount"] });
-      queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "listCommentReports"] });
+      queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
 
       setConfirmOpen(false);
     }
@@ -159,8 +157,7 @@ export const PurgeCommentButton = ({ report, ...props }) => {
       // update store state
       // queryClient.setQueryData(["todo", { id: 5 }], resultData);
 
-      // queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "getReportCount"] });
-      queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "listPostReports"] });
+      queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
 
       setConfirmOpen(false);
     }
