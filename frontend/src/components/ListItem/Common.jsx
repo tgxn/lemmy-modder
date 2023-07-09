@@ -46,7 +46,7 @@ export function ReportListItem({ itemType, resolved = false, children }) {
       sx={{
         "& .MuiBadge-badge": {
           height: "25px",
-          zIndex: 1600,
+          zIndex: 1100,
         },
       }}
     >
@@ -125,7 +125,7 @@ export function PersonMetaLine({ creator }) {
         )}
 
         {creator.bot_account && (
-          <SquareChip color={"danger"} tooltip="User is bot account">
+          <SquareChip color={"warning"} tooltip="User is bot account">
             BOT
           </SquareChip>
         )}
@@ -146,13 +146,20 @@ export function ReportDetails({ report, creator }) {
       variant={"soft"}
       color="warning"
       sx={{
-        p: 1,
+        p: 2,
       }}
     >
       <div>
         <PersonMetaLine display="outline" creator={creator} />
 
-        <Typography fontSize="sm">{report.reason}</Typography>
+        <Typography
+          fontSize="sm"
+          sx={{
+            p: 0,
+          }}
+        >
+          {report.reason}
+        </Typography>
       </div>
     </Alert>
   );

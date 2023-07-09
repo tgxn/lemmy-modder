@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import Box from "@mui/joy/Box";
 import Checkbox from "@mui/joy/Checkbox";
@@ -19,18 +19,13 @@ import PMReportItem from "./ListItem/PM.jsx";
 
 import CommunitySelect from "./CommunitySelect";
 
-import { setConfigItem } from "../reducers/configReducer";
-
 import { useLemmyHttp } from "../hooks/useLemmyHttp";
 import { useLemmyReports } from "../hooks/useLemmyReports";
 
 export default function ReportsList() {
-  const dispatch = useDispatch();
-
-  const orderBy = useSelector((state) => state.configReducer.orderBy);
-  const filterType = useSelector((state) => state.configReducer.filterType);
-  const showResolved = useSelector((state) => state.configReducer.showResolved);
-  const showRemoved = useSelector((state) => state.configReducer.showRemoved);
+  const [showResolved, setShowResolved] = React.useState(false);
+  const [showDeleted, setShowDeleted] = React.useState(true);
+  const [showReportType, setShowReportType] = React.useState("all");
 
   const {
     isLoading: reportCountsLoading,
@@ -39,14 +34,14 @@ export default function ReportsList() {
     data: reportCountsData,
   } = useLemmyHttp("getReportCount");
 
-  const { isLoading, isError, reportsList } = useLemmyReports();
+  const { isLoading, isFetching, isError, reportsList } = useLemmyReports();
 
   const totalReports =
     reportCountsData?.post_reports +
     reportCountsData?.comment_reports +
     reportCountsData?.private_message_reports;
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <Box
         sx={{
@@ -107,12 +102,12 @@ export default function ReportsList() {
         <CommunitySelect />
 
         <Select
-          defaultValue={filterType}
+          defaultValue={showReportType}
           color="neutral"
           variant="outlined"
           // size="sm"
           onChange={(e, newValue) => {
-            dispatch(setConfigItem("filterType", newValue));
+            setShowReportType(newValue);
           }}
           sx={{
             minWidth: 150,
@@ -120,18 +115,78 @@ export default function ReportsList() {
         >
           <Option key={"post"} value={"all"} label={"All"} color="neutral">
             <Typography component="span">All</Typography>
+
+            <Chip
+              size="sm"
+              variant="outlined"
+              color={totalReports > 0 ? "warning" : "success"}
+              sx={{
+                ml: 1,
+                borderRadius: 4,
+                minHeight: "20px",
+                paddingInline: "4px",
+                fontSize: "xs",
+              }}
+            >
+              {totalReports}
+            </Chip>
           </Option>
 
           <Option key={"posts"} value={"posts"} label={"Posts"} color="neutral">
             <Typography component="span">Posts</Typography>
+
+            <Chip
+              size="sm"
+              variant="outlined"
+              color={reportCountsData?.post_reports > 0 ? "warning" : "success"}
+              sx={{
+                ml: "auto",
+                borderRadius: 4,
+                minHeight: "20px",
+                paddingInline: "4px",
+                fontSize: "xs",
+              }}
+            >
+              {reportCountsData?.post_reports}
+            </Chip>
           </Option>
 
           <Option key={"comments"} value={"comments"} label={"Comments"} color="neutral">
             <Typography component="span">Comments</Typography>
+
+            <Chip
+              size="sm"
+              variant="outlined"
+              color={reportCountsData?.comment_reports > 0 ? "warning" : "success"}
+              sx={{
+                ml: "auto",
+                borderRadius: 4,
+                minHeight: "20px",
+                paddingInline: "4px",
+                fontSize: "xs",
+              }}
+            >
+              {reportCountsData?.comment_reports}
+            </Chip>
           </Option>
 
           <Option key={"pms"} value={"pms"} label={"PMs"} color="neutral">
             <Typography component="span">PMs</Typography>
+
+            <Chip
+              size="sm"
+              variant="outlined"
+              color={reportCountsData?.private_message_reports > 0 ? "warning" : "success"}
+              sx={{
+                ml: "auto",
+                borderRadius: 4,
+                minHeight: "20px",
+                paddingInline: "4px",
+                fontSize: "xs",
+              }}
+            >
+              {reportCountsData?.private_message_reports}
+            </Chip>
           </Option>
         </Select>
 
@@ -139,18 +194,14 @@ export default function ReportsList() {
           label="Show Resolved"
           variant="outlined"
           checked={showResolved}
-          onChange={() => {
-            dispatch(setConfigItem("showResolved", !showResolved));
-          }}
+          onChange={() => setShowResolved(!showResolved)}
         />
 
         <Checkbox
           label="Show Deleted"
           variant="outlined"
-          checked={showRemoved}
-          onChange={() => {
-            dispatch(setConfigItem("showRemoved", !showRemoved));
-          }}
+          checked={showDeleted}
+          onChange={() => setShowDeleted(!showDeleted)}
         />
       </Sheet>
 
@@ -164,6 +215,8 @@ export default function ReportsList() {
             p: 2,
             mt: 4,
             borderRadius: 4,
+            // border: "1px solid",
+            // borderColor: "grey.500",
           }}
         >
           <SoapIcon sx={{ fontSize: 64 }} />
@@ -176,6 +229,7 @@ export default function ReportsList() {
           if (report.type === "comment") {
             return <CommentReportItem key={index} report={report} />;
           } else if (report.type === "post") {
+            console.log("WERGFERGHERGERG", report);
             return <PostReportItem key={index} report={report} />;
           } else if (report.type === "pm") {
             return <PMReportItem key={index} report={report} />;

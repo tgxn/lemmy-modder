@@ -9,12 +9,6 @@ import { LemmyHttp } from "lemmy-js-client";
 import { useLemmyHttp } from "./useLemmyHttp";
 
 export function useLemmyReports() {
-  const orderBy = useSelector((state) => state.configReducer.orderBy);
-  const filterType = useSelector((state) => state.configReducer.filterType);
-  const filterCommunity = useSelector((state) => state.configReducer.filterCommunity);
-  const showResolved = useSelector((state) => state.configReducer.showResolved);
-  const showRemoved = useSelector((state) => state.configReducer.showRemoved);
-
   const {
     isLoading: commentReportsLoading,
     isFetching: commentReportsFetching,
@@ -36,9 +30,9 @@ export function useLemmyReports() {
     data: pmReportsData,
   } = useLemmyHttp("listPrivateMessageReports");
 
-  let mergedReports = [];
+  const mergedReports = useMemo(() => {
+    if (!commentReportsData || !postReportsData || !pmReportsData) return [];
 
-  if (commentReportsData && postReportsData && pmReportsData) {
     let normalPostReports = postReportsData.post_reports.map((report) => {
       return {
         ...report,
@@ -72,50 +66,11 @@ export function useLemmyReports() {
       };
     });
 
-    mergedReports = [...normalPostReports, ...normalCommentReports, ...normalPMReports];
+    let mergedReports = [...normalPostReports, ...normalCommentReports, ...normalPMReports];
 
-    // filter type
-    if (filterType !== "all") {
-      mergedReports = mergedReports.filter((report) => {
-        if (filterType === "posts") return report.type === "post";
-        if (filterType === "comments") return report.type === "comment";
-        if (filterType === "pms") return report.type === "pm";
-      });
-    }
-
-    // filter to one community
-    if (filterCommunity !== "all") {
-      mergedReports = mergedReports.filter((report) => {
-        return report.community?.name === filterCommunity;
-      });
-    }
-
-    // filter out resolved reports
-    if (!showResolved) {
-      mergedReports = mergedReports.filter((report) => {
-        return !report.resolved;
-      });
-    }
-
-    // filter out deleted/removed posts
-    if (!showRemoved) {
-      mergedReports = mergedReports.filter((report) => {
-        return !report.removed;
-      });
-    }
-
-    console.log("mergedReports", mergedReports);
-
-    mergedReports.sort((a, b) => {
-      // check for values that are null
-      if (!a.post_report?.published) return 1;
-      if (!b.post_report?.published) return -1;
-
-      return new Date(b.post_report.published).getTime() - new Date(a.post_report.published).getTime();
-    });
-
-    console.log("mergedReports", mergedReports);
-  }
+    // console.log("mergedReports", mergedReports);
+    return mergedReports;
+  }, [commentReportsData, postReportsData, pmReportsData]);
 
   const isLoading = commentReportsLoading || postReportsLoading || pmReportsLoading;
   const isFetching = commentReportsFetching || postReportsFetching || pmReportsFetching;
