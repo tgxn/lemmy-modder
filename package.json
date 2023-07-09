@@ -1,19 +1,22 @@
 {
   "name": "lemmy-modder-app",
   "productName": "Lemmy Modder",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Lemmy Moderation Frontend",
   "author": "tgxn",
   "license": "MIT",
   "main": "src/app.js",
   "scripts": {
     "start": "electron src/app.js",
-    "bundle:prod": "cd ./frontend && npm run build",
-    "build:win": "electron-builder --win nsis portable --x64",
-    "build:win:publish": "electron-builder --win nsis portable --x64 --publish always",
-    "build:win32": "electron-builder --win --ia32",
-    "build:linux": "electron-builder --linux --x64",
-    "build:mac": "electron-builder --mac --x64"
+    "builder:shortcut": "npm exec --package=electron-builder -- electron-builder",
+    "builder:snap": "npm run builder:shortcut -- --linux snap --publish never",
+    "builder:snap:publish": "npm run builder:shortcut -- --linux snap --publish always",
+    "builder:mac": "npm run builder:shortcut -- --mac --publish never",
+    "builder:mac:publish": "npm run builder:shortcut -- --mac --publish always",
+    "build:win": "npm run builder:shortcut -- --win portable nsis --x64 --publish never",
+    "build:win:publish": "npm run builder:shortcut -- --win portable nsis --x64 --publish always",
+    "build:win32": "npm run builder:shortcut -- --win portable nsis --ia32 --publish never",
+    "build:win32:publish": "npm run builder:shortcut -- --win portable nsis --ia32 --publish always"
   },
   "devDependencies": {
     "electron": "^25.2.0",
@@ -21,41 +24,5 @@
   },
   "dependencies": {
     "electron-is-dev": "^2.0.0"
-  },
-  "build": {
-    "appId": "net.tgxn.lemmy.modder",
-    "productName": "Lemmy Modder",
-    "generateUpdatesFilesForAllChannels": false,
-    "asarUnpack": "**\\*.{node,dll}",
-    "files": [
-      "src/",
-      "frontend/dist/",
-      "icon/"
-    ],
-    "win": {
-      "artifactName": "LemmyModder.${version}.Portable.x64.${ext}",
-      "compression": "maximum",
-      "publisherName": "tgxn",
-      "icon": "./icon/Lemmy_Logo.png"
-    },
-    "nsis": {
-      "artifactName": "LemmyModder.${version}.Setup.x64.${ext}",
-      "deleteAppDataOnUninstall": true
-    },
-    "linux": {
-      "artifactName": "LemmyModder-${version}-Snap.${ext}",
-      "target": "snap",
-      "icon": "./icon/Lemmy_Logo.png",
-      "desktop": {
-        "Name": "LemmyModder",
-        "icon": "./icon/Lemmy_Logo.png",
-        "Encoding": "UTF-8"
-      }
-    },
-    "publish": {
-      "provider": "github",
-      "repo": "lemmy-modder",
-      "owner": "tgxn"
-    }
   }
 }

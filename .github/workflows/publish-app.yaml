@@ -33,7 +33,7 @@ jobs:
         working-directory: ./frontend
         run: npm run build
 
-      - name: build electron app
+      - name: publish electron app (win 64)
         run: |
           docker run --rm -i \
           --env-file <(env | grep -iE 'DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS_TAG|TRAVIS|TRAVIS_REPO_|TRAVIS_BUILD_|TRAVIS_BRANCH|TRAVIS_PULL_REQUEST_|APPVEYOR_|CSC_|GH_|GITHUB_|BT_|AWS_|STRIP|BUILD_') \
@@ -45,4 +45,18 @@ jobs:
           -v ~/.cache/electron:/root/.cache/electron \
           -v ~/.cache/electron-builder:/root/.cache/electron-builder \
           electronuserland/builder:wine \
-          bash -c "npm i && npx electron-builder --win nsis portable --x64 --publish always"
+          bash -c "npm i && npm run build:win:publish"
+
+      - name: publish electron app (win 32)
+        run: |
+          docker run --rm -i \
+          --env-file <(env | grep -iE 'DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS_TAG|TRAVIS|TRAVIS_REPO_|TRAVIS_BUILD_|TRAVIS_BRANCH|TRAVIS_PULL_REQUEST_|APPVEYOR_|CSC_|GH_|GITHUB_|BT_|AWS_|STRIP|BUILD_') \
+          --env ELECTRON_CACHE="/root/.cache/electron" \
+          --env ELECTRON_BUILDER_CACHE="/root/.cache/electron-builder" \
+          --env GH_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+          -v ${PWD}:/project \
+          -v ${PWD##*/}-node-modules:/project/node_modules \
+          -v ~/.cache/electron:/root/.cache/electron \
+          -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+          electronuserland/builder:wine \
+          bash -c "npm i && npm run build:win32:publish"
