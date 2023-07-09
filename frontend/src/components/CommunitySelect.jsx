@@ -8,13 +8,13 @@ import Option from "@mui/joy/Option";
 
 import Chip from "@mui/joy/Chip";
 
-import { setSelectedCommunity } from "../reducers/configReducer";
+import { setConfigItem } from "../reducers/configReducer";
 
 import { getSiteData } from "../hooks/getSiteData";
 
 export default function CommunitySelect() {
   const dispatch = useDispatch();
-  const selectedCommunity = useSelector((state) => state.configReducer.selectedCommunity);
+  const filterCommunity = useSelector((state) => state.configReducer.filterCommunity);
 
   const { modCommms } = getSiteData();
 
@@ -29,10 +29,10 @@ export default function CommunitySelect() {
           }}
         >
           <Select
-            defaultValue={selectedCommunity}
-            value={selectedCommunity}
+            defaultValue={filterCommunity}
+            value={filterCommunity}
             onChange={(event, newValue) => {
-              dispatch(setSelectedCommunity(newValue));
+              dispatch(setConfigItem("filterCommunity", newValue));
             }}
             sx={{
               flewxGrow: 1,

@@ -1,50 +1,40 @@
-export function setSelectedCommunity(selectedCommunity) {
-  console.log("setSelectedCommunity", selectedCommunity);
+export function setConfigItem(configKey, configValue) {
+  console.log("setConfigItem", configKey, configValue);
   return {
-    type: "setSelectedCommunity",
-    payload: { selectedCommunity },
+    type: "setConfigItem",
+    payload: { configKey, configValue },
   };
 }
-
-export function setUiConfig(newKeys) {
-  console.log("setUiConfig", newKeys);
-  return {
-    type: "setUiConfig",
-    payload: { newKeys },
-  };
-}
-
-const uiConfig = localStorage.getItem("uiConfig");
 
 const initialState = {
-  selectedCommunity: "all",
+  orderBy: localStorage.getItem("config.orderBy") || "hot",
+  filterType: localStorage.getItem("config.filterType") || "all",
+  filterCommunity: localStorage.getItem("config.filterCommunity") || "all",
+  showResolved: localStorage.getItem("config.showResolved")
+    ? JSON.parse(localStorage.getItem("config.showResolved"))
+    : false,
+  showRemoved: localStorage.getItem("config.showRemoved")
+    ? JSON.parse(localStorage.getItem("config.showRemoved"))
+    : false,
 
-  uiConfig: uiConfig
-    ? JSON.parse(uiConfig)
-    : {
-        mandatoryModComment: true, // are comments required on mod actions?
-        purgeWithoutDelete: false, // can you purge contenbt wihtout removing it first
-      },
+  // are comments required on mod actions?
+  mandatoryModComment: localStorage.getItem("config.mandatoryModComment")
+    ? JSON.parse(localStorage.getItem("config.mandatoryModComment"))
+    : false,
+
+  // can you purge contenbt wihtout removing it first
+  purgeWithoutDelete: localStorage.getItem("config.purgeWithoutDelete"),
 };
 
 const configReducer = (state = initialState, action = {}) => {
   switch (action.type) {
-    case "setSelectedCommunity":
-      return {
+    case "setConfigItem":
+      const newConfig = {
         ...state,
-        selectedCommunity: action.payload.selectedCommunity,
+        [action.payload.configKey]: action.payload.configValue,
       };
-
-    case "setUiConfig":
-      const newUiConfig = {
-        ...state.uiConfig,
-        ...action.payload.newKeys,
-      };
-      localStorage.setItem("uiConfig", JSON.stringify(newUiConfig));
-      return {
-        ...state,
-        uiConfig: newUiConfig,
-      };
+      localStorage.setItem(`config.${action.payload.configKey}`, action.payload.configValue);
+      return newConfig;
 
     default:
       return state;

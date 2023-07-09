@@ -10,7 +10,7 @@ export function useLemmyHttp(callLemmyMethod, formData) {
   const currentUser = useSelector((state) => state.accountReducer.currentUser);
 
   const { isSuccess, isLoading, isError, error, data, isFetching, refetch } = useQuery({
-    queryKey: ["lemmyHttp", callLemmyMethod], // single string key
+    queryKey: ["lemmyHttp", callLemmyMethod],
     queryFn: async () => {
       const lemmyClient = new LemmyHttp(`https://${currentUser.base}`);
 
@@ -47,9 +47,7 @@ export function useLemmyHttp(callLemmyMethod, formData) {
 }
 
 export function useLemmyHttpAction(callLemmyMethod) {
-  const currentUser = useSelector((state) => state.configReducer.currentUser);
-
-  // const queryClient = useQueryClient();
+  const currentUser = useSelector((state) => state.accountReducer.currentUser);
 
   const mutation = useMutation({
     mutationFn: async (formData) => {
@@ -62,18 +60,13 @@ export function useLemmyHttpAction(callLemmyMethod) {
 
       return resultData;
     },
-    // onSuccess: (data) => {
-    //   console.log("useLemmyHttpAction", callLemmyMethod, "onSuccess", data);
-    //   // queryClient.setQueryData(["todo", { id: 5 }], resultData);
-
-    // },
   });
 
   const callAction = (formData) => {
     mutation.mutate(formData);
   };
 
-  console.log("useLemmyHttpAction", mutation.error);
+  // console.log("useLemmyHttpAction", mutation.error);
 
   return {
     callAction,

@@ -25,7 +25,6 @@ import ForumIcon from "@mui/icons-material/Forum";
 import DraftsIcon from "@mui/icons-material/Drafts";
 
 import { logoutCurrent } from "../reducers/accountReducer";
-import { setUiConfig } from "../reducers/configReducer";
 
 import { useLemmyHttp } from "../hooks/useLemmyHttp";
 import { getSiteData } from "../hooks/getSiteData";
@@ -34,8 +33,6 @@ import { HeaderChip } from "./Display.jsx";
 
 function UserMenu() {
   const dispatch = useDispatch();
-
-  const uiConfig = useSelector((state) => state.configReducer.uiConfig);
 
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
@@ -78,7 +75,7 @@ function UserMenu() {
         </Button>
       </Tooltip>
       <Menu id="user-menu" anchorEl={anchorEl} open={menuOpen} onClose={handleClose} placement="bottom-end">
-        <ListItem
+        {/* <ListItem
           sx={{
             px: 2,
             py: 1,
@@ -88,16 +85,16 @@ function UserMenu() {
         >
           <ListItemDecorator sx={{ p: 1, alignSelf: "center" }}>
             <Switch
-              color={uiConfig.mandatoryModComment ? "warning" : "success"}
-              checked={uiConfig.mandatoryModComment}
+              color={mandatoryModComment ? "warning" : "success"}
+              checked={mandatoryModComment}
               onChange={(event) => {
-                dispatch(setUiConfig({ mandatoryModComment: event.target.checked }));
+                dispatch(setConfigItem({ mandatoryModComment: event.target.checked }));
               }}
             />
           </ListItemDecorator>
 
           <FormLabel>Mandatory Comment</FormLabel>
-        </ListItem>
+        </ListItem> */}
 
         <MenuItem
           sx={{
