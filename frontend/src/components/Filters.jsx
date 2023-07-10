@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import Box from "@mui/joy/Box";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
+import Typography from "@mui/joy/Typography";
+import Checkbox from "@mui/joy/Checkbox";
 
 import Chip from "@mui/joy/Chip";
 
@@ -12,7 +14,7 @@ import { setConfigItem } from "../reducers/configReducer";
 
 import { getSiteData } from "../hooks/getSiteData";
 
-export default function CommunitySelect() {
+export function FilterCommunity() {
   const dispatch = useDispatch();
   const filterCommunity = useSelector((state) => state.configReducer.filterCommunity);
 
@@ -55,7 +57,6 @@ export default function CommunitySelect() {
             </Option>
             {modCommms.map((community) => {
               const { name, title } = community.community;
-              console.log("community", community.community.name);
               return (
                 <Option
                   key={name}
@@ -77,5 +78,72 @@ export default function CommunitySelect() {
         </Box>
       )}
     </Box>
+  );
+}
+
+export function FilterTypeSelect() {
+  const dispatch = useDispatch();
+  const filterType = useSelector((state) => state.configReducer.filterType);
+
+  return (
+    <Select
+      defaultValue={filterType}
+      color="neutral"
+      variant="outlined"
+      onChange={(e, newValue) => {
+        dispatch(setConfigItem("filterType", newValue));
+      }}
+      sx={{
+        minWidth: 150,
+      }}
+    >
+      <Option key={"post"} value={"all"} label={"All"} color="neutral">
+        <Typography component="span">All</Typography>
+      </Option>
+
+      <Option key={"posts"} value={"posts"} label={"Posts"} color="neutral">
+        <Typography component="span">Posts</Typography>
+      </Option>
+
+      <Option key={"comments"} value={"comments"} label={"Comments"} color="neutral">
+        <Typography component="span">Comments</Typography>
+      </Option>
+
+      <Option key={"pms"} value={"pms"} label={"PMs"} color="neutral">
+        <Typography component="span">PMs</Typography>
+      </Option>
+    </Select>
+  );
+}
+
+export function FilterResolved() {
+  const dispatch = useDispatch();
+  const showResolved = useSelector((state) => state.configReducer.showResolved);
+
+  return (
+    <Checkbox
+      label="Show Resolved"
+      variant="outlined"
+      checked={showResolved}
+      onChange={() => {
+        dispatch(setConfigItem("showResolved", !showResolved));
+      }}
+    />
+  );
+}
+
+export function FilterRemoved() {
+  const dispatch = useDispatch();
+  const showRemoved = useSelector((state) => state.configReducer.showRemoved);
+
+  return (
+    <Checkbox
+      label="Show Removed/Deleted"
+      variant="outlined"
+      checked={showRemoved}
+      onChange={() => {
+        dispatch(setConfigItem("showRemoved", !showRemoved));
+      }}
+    />
   );
 }

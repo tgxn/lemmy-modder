@@ -77,27 +77,6 @@ function UserMenu() {
         </Button>
       </Tooltip>
       <Menu id="user-menu" anchorEl={anchorEl} open={menuOpen} onClose={handleClose} placement="bottom-end">
-        {/* <ListItem
-          sx={{
-            px: 2,
-            py: 1,
-            fontSize: "0.75rem",
-            color: "text.secondary",
-          }}
-        >
-          <ListItemDecorator sx={{ p: 1, alignSelf: "center" }}>
-            <Switch
-              color={mandatoryModComment ? "warning" : "success"}
-              checked={mandatoryModComment}
-              onChange={(event) => {
-                dispatch(setConfigItem({ mandatoryModComment: event.target.checked }));
-              }}
-            />
-          </ListItemDecorator>
-
-          <FormLabel>Mandatory Comment</FormLabel>
-        </ListItem> */}
-
         <MenuItem
           sx={{
             color: "text.body",
@@ -242,56 +221,6 @@ export default function SiteHeader() {
             }}
           >
             <UserMenu />
-            {/* {userRole == "admin" && (
-              <Tooltip title="You are a site admin">
-                <Chip
-                  size="md"
-                  variant="outlined"
-                  color="info"
-                  sx={{
-                    borderRadius: 8,
-                  }}
-                >
-                  {localPerson?.name}
-                </Chip>
-              </Tooltip>
-            )}
-
-            {userRole == "mod" && (
-              <Tooltip title="You are a community moderator">
-                <Chip
-                  color="warning"
-                  sx={{
-                    borderRadius: 8,
-                  }}
-                  onClick={() => {
-                    window.open(
-                      `https://${baseUrl}`,
-                      "_new",
-                      // set size
-                      "width=1300,height=900",
-                    );
-                  }}
-                >
-                  {siteData.name}
-                </Chip>
-              </Tooltip>
-            )} */}
-            {/* <Tooltip title="End session">
-              <Button
-                variant="soft"
-                size="sm"
-                color="warning"
-                onClick={() => {
-                  dispatch(logoutCurrent());
-                }}
-                sx={{
-                  ml: 1,
-                }}
-              >
-                <LogoutIcon />
-              </Button>
-            </Tooltip> */}
           </Box>
         )}
       </Sheet>

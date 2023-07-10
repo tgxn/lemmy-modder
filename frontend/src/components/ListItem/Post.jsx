@@ -30,7 +30,7 @@ import { SanitizedLink } from "../Display.jsx";
 
 export default function PostListItem({ report }) {
   return (
-    <ReportListItem resolved={report.post_report.resolved} itemType="post">
+    <React.Fragment>
       {/* Show External Link or Image for URLs */}
       {report.post.url && (
         <Box
@@ -166,6 +166,6 @@ export default function PostListItem({ report }) {
           </Box>
         </Box>
       </Box>
-    </ReportListItem>
+    </React.Fragment>
   );
 }

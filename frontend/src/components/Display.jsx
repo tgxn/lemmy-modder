@@ -46,7 +46,6 @@ export const SquareChip = ({ children, tooltip = null, color = "neutral", ...pro
 
 export const SanitizedLink = ({ children, href, ...props }) => {
   const sanitizedUrl = sanitizeUrl(href);
-  console.log(sanitizedUrl);
   return (
     <Link href={sanitizedUrl} {...props}>
       {children}

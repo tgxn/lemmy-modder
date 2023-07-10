@@ -27,112 +27,110 @@ import { SanitizedLink } from "../Display.jsx";
 
 export default function CommentListItem({ report }) {
   return (
-    <ReportListItem resolved={report.comment_report.resolved} itemType="comment">
-      <Box
+    <Box
+      sx={{
+        flexGrow: 1,
+        flexShrink: 1,
+        flexBasis: "auto",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <PersonMetaLine creator={report.comment_creator} />
+
+      {/* Comment Title */}
+      <Typography variant="h4" component="h2">
+        Comment:{" "}
+        <SanitizedLink href={report.comment.ap_id} target="_blank" rel="noopener noreferrer">
+          Show
+        </SanitizedLink>
+      </Typography>
+
+      {/* Comment Meta */}
+      <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
+        {report.comment.published && (
+          <SquareChip color="neutral" variant="outlined" tooltip={report.comment.published}>
+            <Moment fromNow>{report.comment.published}</Moment>
+          </SquareChip>
+        )}
+
+        <SquareChip color={"primary"} tooltip="Child Comments" startDecorator={<ForumIcon />}>
+          {report.counts.child_count}
+        </SquareChip>
+
+        <SquareChip color={"info"} tooltip="Score" startDecorator={<ThumbsUpDownIcon />}>
+          {report.counts.score}
+        </SquareChip>
+
+        <SquareChip color={"info"} tooltip="Downvotes" startDecorator={<ThumbDownIcon />}>
+          {report.counts.downvotes}
+        </SquareChip>
+
+        {report.comment_report.resolved && (
+          <SquareChip color={"success"} tooltip={`Resolved by @${report.resolver.name}`}>
+            Resolved
+          </SquareChip>
+        )}
+
+        {report.comment.removed && (
+          <SquareChip color={"danger"} tooltip="Removed">
+            Removed
+          </SquareChip>
+        )}
+
+        {report.comment.deleted && <SquareChip color={"danger"}>deleted</SquareChip>}
+      </Typography>
+
+      {/* Comment Content */}
+      <Typography
+        variant="body1"
+        component="p"
         sx={{
-          flexGrow: 1,
-          flexShrink: 1,
-          flexBasis: "auto",
-          display: "flex",
-          flexDirection: "column",
+          p: 1,
         }}
       >
-        <PersonMetaLine creator={report.comment_creator} />
+        {report.comment.content}
+      </Typography>
 
-        {/* Comment Title */}
-        <Typography variant="h4" component="h2">
-          Comment:{" "}
-          <SanitizedLink href={report.comment.ap_id} target="_blank" rel="noopener noreferrer">
-            Show
-          </SanitizedLink>
-        </Typography>
+      <ReportDetails report={report.comment_report} creator={report.creator} />
 
-        {/* Comment Meta */}
-        <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
-          {report.comment.published && (
-            <SquareChip color="neutral" variant="outlined" tooltip={report.comment.published}>
-              <Moment fromNow>{report.comment.published}</Moment>
-            </SquareChip>
-          )}
-
-          <SquareChip color={"primary"} tooltip="Child Comments" startDecorator={<ForumIcon />}>
-            {report.counts.child_count}
-          </SquareChip>
-
-          <SquareChip color={"info"} tooltip="Score" startDecorator={<ThumbsUpDownIcon />}>
-            {report.counts.score}
-          </SquareChip>
-
-          <SquareChip color={"info"} tooltip="Downvotes" startDecorator={<ThumbDownIcon />}>
-            {report.counts.downvotes}
-          </SquareChip>
-
-          {report.comment_report.resolved && (
-            <SquareChip color={"success"} tooltip={`Resolved by @${report.resolver.name}`}>
-              Resolved
-            </SquareChip>
-          )}
-
-          {report.comment.removed && (
-            <SquareChip color={"danger"} tooltip="Removed">
-              Removed
-            </SquareChip>
-          )}
-
-          {report.comment.deleted && <SquareChip color={"danger"}>deleted</SquareChip>}
-        </Typography>
-
-        {/* Comment Content */}
-        <Typography
-          variant="body1"
-          component="p"
-          sx={{
-            p: 1,
-          }}
-        >
-          {report.comment.content}
-        </Typography>
-
-        <ReportDetails report={report.comment_report} creator={report.creator} />
-
-        {/* Report Actions */}
+      {/* Report Actions */}
+      <Box
+        sx={{
+          // bottom right with flex
+          pt: 1,
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          gap: 1,
+        }}
+      >
         <Box
           sx={{
-            // bottom right with flex
-            pt: 1,
             display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
+            alignItems: "flex-end",
             gap: 1,
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "flex-end",
-              gap: 1,
-            }}
-          >
-            {/* @ TODO SHOW FOR CREATOR? */}
-            {/* <DeletePostButton report={report} /> */}
-            <RemoveCommentButton report={report} />
+          {/* @ TODO SHOW FOR CREATOR? */}
+          {/* <DeletePostButton report={report} /> */}
+          <RemoveCommentButton report={report} />
 
-            <BanUserCommunityButton person={report.comment_creator} community={report.community} />
-            <BanUserSiteButton person={report.comment_creator} />
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "flex-start",
-              gap: 1,
-            }}
-          >
-            <ResolveCommentReportButton report={report} />
-          </Box>
+          <BanUserCommunityButton person={report.comment_creator} community={report.community} />
+          <BanUserSiteButton person={report.comment_creator} />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "flex-start",
+            gap: 1,
+          }}
+        >
+          <ResolveCommentReportButton report={report} />
         </Box>
       </Box>
-    </ReportListItem>
+    </Box>
   );
 }

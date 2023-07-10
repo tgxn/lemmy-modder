@@ -49,13 +49,9 @@ export default function LoginForm() {
       });
 
       if (auth.jwt) {
-        console.log("Logged in!");
-
         const getSite = await lemmyClient.getSite({
           auth: auth.jwt,
         });
-
-        console.log("getSite", getSite);
 
         if (saveSession) {
           dispatch(addUser(instanceBase, auth.jwt, getSite));
@@ -63,11 +59,9 @@ export default function LoginForm() {
           dispatch(setCurrentUser(instanceBase, auth.jwt, getSite));
         }
       } else {
-        console.log(auth);
         setLoginError(auth);
       }
     } catch (e) {
-      console.log(e);
       setLoginError(e);
     } finally {
       setIsLoading(false);
