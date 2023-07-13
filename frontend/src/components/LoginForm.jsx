@@ -210,17 +210,8 @@ export default function LoginForm() {
             </Typography>
             <List sx={{ width: "100%" }}>
               {users.map((user, index) => {
-                let expired = false;
-
+                // @TODO when Lemmy adds `expires_at` to the JWT, we can use this to check if the session is expired
                 const jwt = jwt_decode(user.jwt, { complete: true });
-
-                console.log(jwt);
-
-                const token_lemgth = 60 * 60 * 60;
-
-                if ((jwt.iat + token_lemgth) * 1000 < Date.now()) {
-                  expired = true;
-                }
 
                 return (
                   <ListItem

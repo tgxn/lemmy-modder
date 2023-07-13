@@ -32,14 +32,6 @@ export function useLemmyHttp(callLemmyMethod, formData) {
     enabled: !!currentUser,
   });
 
-  // // trigger when we have jwt
-  // useEffect(() => {
-  //   // if (currentUser.jwt) {
-  //   //   console.log("useLemmyHttp refetch");
-  //   //   refetch();
-  //   // }
-  // }, [currentUser.jwt]);
-
   return {
     isLoading,
     isFetching,
@@ -69,8 +61,6 @@ export function useLemmyHttpAction(callLemmyMethod) {
   const callAction = (formData) => {
     mutation.mutate(formData);
   };
-
-  // console.log("useLemmyHttpAction", mutation.error);
 
   return {
     callAction,

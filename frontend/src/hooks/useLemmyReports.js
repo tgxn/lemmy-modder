@@ -143,8 +143,6 @@ export function useLemmyReports() {
   function mapPagesData(startList, mapFunction) {
     let reportsList = [];
     for (let i = 0; i < startList.length; i++) {
-      console.log("startList[i]", startList[i]);
-
       const pageEntries = startList[i].data.map(mapFunction);
       reportsList = reportsList.concat(pageEntries);
     }
@@ -154,8 +152,6 @@ export function useLemmyReports() {
   const mergedReports = useMemo(() => {
     if (!postReportsData || !commentReportsData || !pmReportsData) return;
     if (postReportsLoading || commentReportsLoading || pmReportsLoading) return;
-
-    console.log("commentReportsData", commentReportsData);
 
     if (pmReportsError && pmReportsError.response.status === 400) {
       console.log("pmReportsError - may not be site admin", pmReportsError);
@@ -172,7 +168,7 @@ export function useLemmyReports() {
         removed: report.post.removed,
       };
     });
-    console.log("normalPostReports", normalPostReports);
+    console.log("normalPostReports", normalPostReports.length);
 
     let normalCommentReports = mapPagesData(commentReportsData.pages, (report) => {
       return {
@@ -184,7 +180,7 @@ export function useLemmyReports() {
         removed: report.comment.removed,
       };
     });
-    console.log("normalCommentReports", normalCommentReports);
+    console.log("normalCommentReports", normalCommentReports.length);
 
     let normalPMReports = [];
 
@@ -199,7 +195,7 @@ export function useLemmyReports() {
           removed: false,
         };
       });
-      console.log("normalPMReports", normalPMReports);
+      console.log("normalPMReports", normalPMReports.length);
     }
 
     let mergedReports = [...normalPostReports, ...normalCommentReports, ...normalPMReports];
@@ -234,8 +230,6 @@ export function useLemmyReports() {
       });
     }
 
-    console.log("mergedReports", mergedReports);
-
     mergedReports.sort((a, b) => {
       // check for values that are null
       if (!a.post_report?.published) return 1;
@@ -244,7 +238,7 @@ export function useLemmyReports() {
       return new Date(b.post_report.published).getTime() - new Date(a.post_report.published).getTime();
     });
 
-    // console.log("mergedReports", mergedReports);
+    console.log("mergedReports", mergedReports);
     return mergedReports;
   }, [
     commentReportsData,

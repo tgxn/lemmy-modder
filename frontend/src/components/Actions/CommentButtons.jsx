@@ -24,9 +24,6 @@ export const ResolveCommentReportButton = ({ report, ...props }) => {
     if (isSuccess) {
       console.log("useLemmyHttpAction", "onSuccess", data);
 
-      // update store state
-      // queryClient.setQueryData(["todo", { id: 5 }], resultData);
-
       queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
 
       setConfirmOpen(false);
@@ -79,9 +76,6 @@ export const RemoveCommentButton = ({ report, ...props }) => {
   React.useEffect(() => {
     if (isSuccess) {
       console.log("useLemmyHttpAction", "onSuccess", data);
-
-      // @TODO update store state
-      // queryClient.setQueryData(["todo", { id: 5 }], resultData);
 
       queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
 
@@ -153,9 +147,6 @@ export const PurgeCommentButton = ({ report, ...props }) => {
   React.useEffect(() => {
     if (isSuccess) {
       console.log("useLemmyHttpAction", "onSuccess", data);
-
-      // update store state
-      // queryClient.setQueryData(["todo", { id: 5 }], resultData);
 
       queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
 

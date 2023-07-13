@@ -114,7 +114,6 @@ export const ConfirmDialog = ({
   onConfirm,
   onCancel,
 }) => {
-  // console.log("ConfirmDialog", { error });
   return (
     <Modal open={open} onClose={() => onCancel()}>
       <ModalDialog

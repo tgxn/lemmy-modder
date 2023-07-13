@@ -34,40 +34,6 @@ function RenderImage({ imageSrc, imageAlt = "" }) {
   );
 }
 
-function RenderVideo({ videoSrc, videoAlt = "" }) {
-  // const [imageLoaded, setImageLoaded] = useState(false);
-  // const [imageError, setImageError] = useState(false);
-  // if (imageError) {
-  //   return (
-  //     <Typography level="h2" component="div">
-  //       😿
-  //     </Typography>
-  //   );
-  // }
-  // return (
-  //   {isVideo && !error && isInView && (
-  //     <video
-  //       onMouseOver={(e) => {
-  //         e.target.play();
-  //         // console.log("on");
-  //       }}
-  //       onMouseOut={(e) => {
-  //         e.target.pause();
-  //         e.target.currentTime = 0;
-  //         // console.log("off");
-  //       }}
-  //       height={"100%"}
-  //       onLoadedData={() => setLoaded(true)}
-  //       onError={() => setError(true)}
-  //       className={loaded ? "loaded" : ""}
-  //     >
-  //       <source src={sourceUrl} type="video/webm" />
-  //       Sorry, your browser doesn't support embedded videos.
-  //     </video>
-  //   )} */}
-  // );
-}
-
 export default function LazyImage({ imageSrc, imageAlt = "" }) {
   const isImage = imageSrc.match(/\.(jpeg|jpg|gif|png)$/) != null;
 
