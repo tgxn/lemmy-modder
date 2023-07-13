@@ -88,6 +88,12 @@ export default function ReportsList() {
     reportsList,
   } = useLemmyReports();
 
+  React.useEffect(() => {
+    if (inView) {
+      loadNextPageReports();
+    }
+  }, [inView]);
+
   const isLoading = reportCountsLoading || loadingReports;
   const isError = reportCountsError || isReportsError;
 
