@@ -83,6 +83,7 @@ function useLemmyInfinite(callLemmyMethod, formData, countResultElement, enabled
   };
 }
 
+// gets paginated / infinite list of reports from lemmy
 export function useLemmyReports() {
   const orderBy = useSelector((state) => state.configReducer.orderBy);
   const filterType = useSelector((state) => state.configReducer.filterType);
@@ -140,6 +141,13 @@ export function useLemmyReports() {
     "private_message_reports",
     userRole === "admin",
   );
+
+  useEffect(() => {
+    // if any of the query params change, we need to clear and re-fetch
+    postReportsFetchNextPage(1);
+    commentReportsFetchNextPage(1);
+    pmReportsFetchNextPage(1);
+  }, [orderBy, filterType, filterCommunity, showResolved, showRemoved]);
 
   const mergedReports = useMemo(() => {
     if (!postReportsData || !commentReportsData || !pmReportsData) return;

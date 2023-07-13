@@ -243,6 +243,7 @@ export default function LoginForm() {
                     }
                   >
                     <ListItemButton
+                      disabled={isLoading}
                       onClick={async () => {
                         setIsLoading(true);
 

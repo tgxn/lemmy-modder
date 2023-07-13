@@ -18,6 +18,7 @@ import CachedIcon from "@mui/icons-material/Cached";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import ForumIcon from "@mui/icons-material/Forum";
 import DraftsIcon from "@mui/icons-material/Drafts";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 import { logoutCurrent } from "../reducers/accountReducer";
 
@@ -54,21 +55,41 @@ function UserMenu() {
 
   return (
     <>
-      <Tooltip title={userTooltip} placement="left">
+      <Tooltip title={userTooltip} placement="bottom" variant="soft">
         <Button
-          aria-controls={menuOpen ? "user-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={menuOpen ? "true" : undefined}
+          // aria-controls={menuOpen ? "user-menu" : undefined}
+          // aria-haspopup="true"
+          // aria-expanded={menuOpen ? "true" : undefined}
           size="sm"
+          variant="soft"
           color="info"
-          onClick={handleClick}
-          endDecorator={<ArrowDropDown />}
+          // onClick={handleClick}
+          // endDecorator={<ArrowDropDown />}
           sx={{
             ml: 1,
             borderRadius: 4,
           }}
         >
           {localPerson?.name}
+        </Button>
+      </Tooltip>
+      <Tooltip title={"End Session"} placement="bottom" variant="soft">
+        <Button
+          size="sm"
+          variant="outlined"
+          color="warning"
+          onClick={() => {
+            handleClose();
+
+            queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
+            dispatch(logoutCurrent());
+          }}
+          sx={{
+            ml: 1,
+            borderRadius: 4,
+          }}
+        >
+          <LogoutIcon fontSize="sm" />
         </Button>
       </Tooltip>
       <Menu id="user-menu" anchorEl={anchorEl} open={menuOpen} onClose={handleClose} placement="bottom-end">
@@ -121,7 +142,7 @@ export default function SiteHeader() {
             alignItems: "center",
           }}
         >
-          <Tooltip title="Reload all data">
+          <Tooltip title="Reload all data" placement="bottom" variant="soft">
             <IconButton
               size="sm"
               variant="outlined"
@@ -138,7 +159,7 @@ export default function SiteHeader() {
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="View Site">
+          <Tooltip title="View Site" placement="bottom" variant="soft">
             <Chip
               color="primary"
               sx={{

@@ -15,7 +15,7 @@ const initialState = {
     : false,
   showRemoved: localStorage.getItem("config.showRemoved")
     ? JSON.parse(localStorage.getItem("config.showRemoved"))
-    : false,
+    : true,
 
   // are comments required on mod actions?
   mandatoryModComment: localStorage.getItem("config.mandatoryModComment")

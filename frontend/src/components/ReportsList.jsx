@@ -7,6 +7,8 @@ import CircularProgress from "@mui/joy/CircularProgress";
 
 import SoapIcon from "@mui/icons-material/Soap";
 
+import { useSelector } from "react-redux";
+
 import PostReportItem from "./ListItem/Post.jsx";
 import CommentReportItem from "./ListItem/Comment.jsx";
 import PMReportItem from "./ListItem/PM.jsx";
@@ -62,6 +64,7 @@ function RenderReports({ reportsList }) {
 }
 
 export default function ReportsList() {
+  const showResolved = useSelector((state) => state.configReducer.showResolved);
   const {
     isLoading: reportCountsLoading,
     isFetching: reportCountsFetching,
@@ -77,7 +80,7 @@ export default function ReportsList() {
     fetchNextPage: loadNextPageReports,
     fetchingNextPage: fetchingNextPageReports,
     reportsList,
-  } = useLemmyReports();
+  } = useLemmyReports(showResolved);
 
   const isLoading = reportCountsLoading || loadingReports;
   const isError = reportCountsError || isReportsError;
