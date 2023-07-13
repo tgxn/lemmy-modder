@@ -12,8 +12,6 @@ export function useLemmyHttp(callLemmyMethod, formData) {
 
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
-  console.log("useLemmyHttp", callLemmyMethod);
-
   const { isSuccess, isLoading, isError, error, data, isFetching, refetch } = useQuery({
     queryKey: ["lemmyHttp", localPerson.id, callLemmyMethod],
     queryFn: async () => {
@@ -34,13 +32,13 @@ export function useLemmyHttp(callLemmyMethod, formData) {
     enabled: !!currentUser,
   });
 
-  // trigger when we have jwt
-  useEffect(() => {
-    // if (currentUser.jwt) {
-    //   console.log("useLemmyHttp refetch");
-    //   refetch();
-    // }
-  }, [currentUser.jwt]);
+  // // trigger when we have jwt
+  // useEffect(() => {
+  //   // if (currentUser.jwt) {
+  //   //   console.log("useLemmyHttp refetch");
+  //   //   refetch();
+  //   // }
+  // }, [currentUser.jwt]);
 
   return {
     isLoading,
