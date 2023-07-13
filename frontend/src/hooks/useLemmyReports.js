@@ -23,14 +23,22 @@ export function useLemmyReports() {
     isFetching: commentReportsFetching,
     error: commentReportsError,
     data: commentReportsData,
-  } = useLemmyHttp("listCommentReports");
+  } = useLemmyHttp("listCommentReports", {
+    unresolved_only: true,
+    page: 1,
+    limit: 25,
+  });
 
   const {
     isLoading: postReportsLoading,
     isFetching: postReportsFetching,
     error: postReportsError,
     data: postReportsData,
-  } = useLemmyHttp("listPostReports");
+  } = useLemmyHttp("listPostReports", {
+    unresolved_only: true,
+    page: 1,
+    limit: 25,
+  });
 
   console.log("postReportsData", userRole === "admin");
   const {
@@ -38,7 +46,15 @@ export function useLemmyReports() {
     isFetching: pmReportsFetching,
     error: pmReportsError,
     data: pmReportsData,
-  } = useLemmyHttp("listPrivateMessageReports", userRole === "admin");
+  } = useLemmyHttp(
+    "listPrivateMessageReports",
+    {
+      unresolved_only: true,
+      page: 1,
+      limit: 25,
+    },
+    userRole === "admin",
+  );
 
   const mergedReports = useMemo(() => {
     if (commentReportsLoading || postReportsLoading || pmReportsLoading) return [];
@@ -54,10 +70,11 @@ export function useLemmyReports() {
         type: "post",
         time: report.post_report.published,
         resolved: report.post_report.resolved,
-        deleted: report.post_report.deleted,
-        removed: report.post_report.removed,
+        deleted: report.post.deleted,
+        removed: report.post.removed,
       };
     });
+    console.log("normalPostReports", normalPostReports);
 
     let normalCommentReports = commentReportsData.comment_reports.map((report) => {
       return {
@@ -69,6 +86,7 @@ export function useLemmyReports() {
         removed: report.comment.removed,
       };
     });
+    console.log("normalCommentReports", normalCommentReports);
 
     let normalPMReports = pmReportsData.private_message_reports.map((report) => {
       return {
@@ -80,6 +98,7 @@ export function useLemmyReports() {
         removed: false,
       };
     });
+    console.log("normalPMReports", normalPMReports);
 
     let mergedReports = [...normalPostReports, ...normalCommentReports, ...normalPMReports];
 
