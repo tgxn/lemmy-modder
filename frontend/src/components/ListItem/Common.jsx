@@ -7,6 +7,7 @@ import Card from "@mui/joy/Card";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 import Badge from "@mui/joy/Badge";
+import Tooltip from "@mui/joy/Tooltip";
 
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import ForumIcon from "@mui/icons-material/Forum";
@@ -14,18 +15,39 @@ import DraftsIcon from "@mui/icons-material/Drafts";
 
 import { SanitizedLink, SquareChip } from "../Display.jsx";
 
-export function ReportListItem({ itemType, resolved = false, children }) {
+export function ReportListItem({ itemType, report, children }) {
   let itemColor;
   let itemIcon;
+  let resolved = true;
   if (itemType == "post") {
+    resolved = report.post_report.resolved;
     itemColor = "primary";
-    itemIcon = <StickyNote2Icon fontSize="md" />;
+    itemIcon = (
+      <Tooltip title={`Post: /c/${report.community.name}`} variant="plain" placement="right" color="primary">
+        <StickyNote2Icon fontSize="md" />
+      </Tooltip>
+    );
   } else if (itemType == "comment") {
+    resolved = report.comment_report.resolved;
     itemColor = "info";
-    itemIcon = <ForumIcon fontSize="md" />;
+    itemIcon = (
+      <Tooltip title={`Comment: /c/${report.community.name}`} variant="plain" placement="right" color="info">
+        <ForumIcon fontSize="md" />
+      </Tooltip>
+    );
   } else if (itemType == "pm") {
+    resolved = report.private_message_report.resolved;
     itemColor = "warning";
-    itemIcon = <DraftsIcon fontSize="md" />;
+    itemIcon = (
+      <Tooltip
+        title={`PM: @${report.private_message_creator.name}`}
+        variant="plain"
+        placement="right"
+        color="warning"
+      >
+        <DraftsIcon fontSize="md" />
+      </Tooltip>
+    );
   }
 
   return (

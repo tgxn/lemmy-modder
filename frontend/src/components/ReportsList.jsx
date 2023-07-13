@@ -1,15 +1,8 @@
 import React from "react";
 
-import { useDispatch, useSelector } from "react-redux";
-
 import Box from "@mui/joy/Box";
-import Checkbox from "@mui/joy/Checkbox";
 import Sheet from "@mui/joy/Sheet";
 import CircularProgress from "@mui/joy/CircularProgress";
-import Chip from "@mui/joy/Chip";
-import Select from "@mui/joy/Select";
-import Option from "@mui/joy/Option";
-import Typography from "@mui/joy/Typography";
 
 import SoapIcon from "@mui/icons-material/Soap";
 
@@ -17,26 +10,57 @@ import PostReportItem from "./ListItem/Post.jsx";
 import CommentReportItem from "./ListItem/Comment.jsx";
 import PMReportItem from "./ListItem/PM.jsx";
 
-import CommunitySelect from "./CommunitySelect";
+import { FilterCommunity, FilterTypeSelect, FilterResolved, FilterRemoved } from "./Filters";
 
 import { useLemmyHttp } from "../hooks/useLemmyHttp";
 import { useLemmyReports } from "../hooks/useLemmyReports";
 
-import { setConfigItem } from "../reducers/configReducer";
+import { ReportListItem } from "./ListItem/Common.jsx";
+
+function RenderReports({ reportsList }) {
+  if (reportsList.length == 0) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 2,
+          p: 2,
+          mt: 4,
+          borderRadius: 4,
+        }}
+      >
+        <SoapIcon sx={{ fontSize: 64 }} />
+        <Box sx={{ fontWeight: "bold" }}>No reports found</Box>
+      </Box>
+    );
+  }
+
+  return reportsList.map((report, index) => {
+    if (report.type === "comment") {
+      return (
+        <ReportListItem report={report} itemType="comment">
+          <CommentReportItem key={index} report={report} />
+        </ReportListItem>
+      );
+    } else if (report.type === "post") {
+      return (
+        <ReportListItem report={report} itemType="post">
+          <PostReportItem key={index} report={report} />
+        </ReportListItem>
+      );
+    } else if (report.type === "pm") {
+      return (
+        <ReportListItem report={report} itemType="pm">
+          <PMReportItem key={index} report={report} />
+        </ReportListItem>
+      );
+    }
+  });
+}
 
 export default function ReportsList() {
-  const dispatch = useDispatch();
-
-  const orderBy = useSelector((state) => state.configReducer.orderBy);
-  const filterType = useSelector((state) => state.configReducer.filterType);
-  // const filterCommunity = useSelector((state) => state.configReducer.filterCommunity);
-  const showResolved = useSelector((state) => state.configReducer.showResolved);
-  const showRemoved = useSelector((state) => state.configReducer.showRemoved);
-
-  // const [showResolved, setShowResolved] = React.useState(false);
-  // const [showDeleted, setShowDeleted] = React.useState(true);
-  // const [showReportType, setShowReportType] = React.useState("all");
-
   const {
     isLoading: reportCountsLoading,
     isFetching: reportCountsFetching,
@@ -52,14 +76,7 @@ export default function ReportsList() {
   } = useLemmyReports();
 
   const isLoading = reportCountsLoading || loadingReports;
-  const isFetching = reportCountsFetching || isFetchingReports;
-
   const isError = reportCountsError || isReportsError;
-
-  const totalReports =
-    reportCountsData?.post_reports +
-    reportCountsData?.comment_reports +
-    reportCountsData?.private_message_reports;
 
   if (isLoading) {
     return (
@@ -103,7 +120,6 @@ export default function ReportsList() {
   return (
     <Box
       sx={{
-        // pt: ,
         display: "flex",
         flexDirection: "column",
         gap: 2,
@@ -114,93 +130,22 @@ export default function ReportsList() {
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-
           borderRadius: 8,
           p: 1,
           gap: 2,
           mb: 0,
         }}
       >
-        <CommunitySelect />
+        <FilterCommunity />
 
-        <Select
-          defaultValue={filterType}
-          color="neutral"
-          variant="outlined"
-          // size="sm"
-          onChange={(e, newValue) => {
-            dispatch(setConfigItem("filterType", newValue));
-          }}
-          sx={{
-            minWidth: 150,
-          }}
-        >
-          <Option key={"post"} value={"all"} label={"All"} color="neutral">
-            <Typography component="span">All</Typography>
-          </Option>
+        <FilterTypeSelect />
 
-          <Option key={"posts"} value={"posts"} label={"Posts"} color="neutral">
-            <Typography component="span">Posts</Typography>
-          </Option>
+        <FilterResolved />
 
-          <Option key={"comments"} value={"comments"} label={"Comments"} color="neutral">
-            <Typography component="span">Comments</Typography>
-          </Option>
-
-          <Option key={"pms"} value={"pms"} label={"PMs"} color="neutral">
-            <Typography component="span">PMs</Typography>
-          </Option>
-        </Select>
-
-        <Checkbox
-          label="Show Resolved"
-          variant="outlined"
-          checked={showResolved}
-          onChange={() => {
-            dispatch(setConfigItem("showResolved", !showResolved));
-          }}
-        />
-
-        <Checkbox
-          label="Show Removed/Deleted"
-          variant="outlined"
-          checked={showRemoved}
-          onChange={() => {
-            dispatch(setConfigItem("showRemoved", !showRemoved));
-          }}
-        />
+        <FilterRemoved />
       </Sheet>
 
-      {reportsList.length == 0 && (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 2,
-            p: 2,
-            mt: 4,
-            borderRadius: 4,
-            // border: "1px solid",
-            // borderColor: "grey.500",
-          }}
-        >
-          <SoapIcon sx={{ fontSize: 64 }} />
-          <Box sx={{ fontWeight: "bold" }}>No reports found</Box>
-        </Box>
-      )}
-
-      {reportsList.length > 0 &&
-        reportsList.map((report, index) => {
-          if (report.type === "comment") {
-            return <CommentReportItem key={index} report={report} />;
-          } else if (report.type === "post") {
-            console.log("WERGFERGHERGERG", report);
-            return <PostReportItem key={index} report={report} />;
-          } else if (report.type === "pm") {
-            return <PMReportItem key={index} report={report} />;
-          }
-        })}
+      <RenderReports reportsList={reportsList} />
     </Box>
   );
 }

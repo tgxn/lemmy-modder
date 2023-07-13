@@ -7,7 +7,6 @@ import Container from "@mui/joy/Container";
 import LoginForm from "../components/LoginForm";
 
 import SiteHeader from "../components/SiteHeader";
-import CommunitySelect from "../components/CommunitySelect";
 import ReportsList from "../components/ReportsList";
 
 export default function MainPage() {
