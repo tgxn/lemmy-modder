@@ -1,6 +1,10 @@
 import React from "react";
 
+import Moment from "react-moment";
+
 import { useDispatch, useSelector } from "react-redux";
+
+import jwt_decode from "jwt-decode";
 
 import Card from "@mui/joy/Card";
 import Box from "@mui/joy/Box";
@@ -14,8 +18,8 @@ import Container from "@mui/joy/Container";
 import List from "@mui/joy/List";
 import ListItem from "@mui/joy/ListItem";
 import ListItemButton from "@mui/joy/ListItemButton";
+import ListItemContent from "@mui/joy/ListItemContent";
 import IconButton from "@mui/joy/IconButton";
-import Add from "@mui/icons-material/Add";
 import Delete from "@mui/icons-material/Delete";
 
 import { LemmyHttp } from "lemmy-js-client";
@@ -135,7 +139,12 @@ export default function LoginForm() {
               sx={{ mb: 1 }}
             />
 
-            <Button fullWidth onClick={loginClick} disabled={username.length === 0 || password.length === 0}>
+            <Button
+              fullWidth
+              onClick={loginClick}
+              disabled={username.length === 0 || password.length === 0}
+              loading={isLoading}
+            >
               Login
             </Button>
 
@@ -200,35 +209,107 @@ export default function LoginForm() {
               Saved Sessions
             </Typography>
             <List sx={{ width: "100%" }}>
-              {users.map((user, index) => (
-                <ListItem
-                  key={index}
-                  disabled={isLoading}
-                  endAction={
-                    <IconButton
-                      aria-label="Delete"
-                      size="sm"
-                      color="danger"
-                      onClick={() => {
-                        // remove the current index
-                        const newUsers = users.filter((_, i) => i !== index);
+              {users.map((user, index) => {
+                let expired = false;
 
-                        dispatch(setUsers(newUsers));
+                const jwt = jwt_decode(user.jwt, { complete: true });
+
+                console.log(jwt);
+
+                const token_lemgth = 60 * 60 * 60;
+
+                if ((jwt.iat + token_lemgth) * 1000 < Date.now()) {
+                  expired = true;
+                }
+
+                return (
+                  <ListItem
+                    key={index}
+                    disabled={isLoading}
+                    endAction={
+                      <IconButton
+                        aria-label="Delete"
+                        size="sm"
+                        color="danger"
+                        onClick={() => {
+                          // remove the current index
+                          const newUsers = users.filter((_, i) => i !== index);
+
+                          dispatch(setUsers(newUsers));
+                        }}
+                      >
+                        <Delete />
+                      </IconButton>
+                    }
+                  >
+                    <ListItemButton
+                      onClick={async () => {
+                        setIsLoading(true);
+
+                        try {
+                          const lemmyClient = new LemmyHttp(`https://${user.base}`);
+
+                          const getSite = await lemmyClient.getSite({
+                            auth: user.jwt,
+                          });
+
+                          if (!getSite.my_user) {
+                            throw new Error("User not found");
+                          }
+
+                          // if (saveSession) {
+                          //   dispatch(addUser(user.base, auth.jwt, getSite));
+                          // } else {
+                          // dispatch(setCurrentUser(user.base, auth.jwt, getSite));
+                          dispatch(setCurrentUser(user.base, user.jwt, getSite));
+                          // }
+                        } catch (e) {
+                          setLoginError(e);
+                        } finally {
+                          setIsLoading(false);
+                        }
+
+                        // if (!expired) {
+
+                        // dispatch(setCurrentUser(user.base, user.jwt, user.site));
+                        // } else {
+                        //   // set the form values
+                        //   setInstanceBase(jwt.iss);
+                        //   setUsername(user.site.my_user?.local_user_view?.person.name);
+                        //   setPassword("");
+                        // }
                       }}
                     >
-                      <Delete />
-                    </IconButton>
-                  }
-                >
-                  <ListItemButton
-                    onClick={() => {
-                      dispatch(setCurrentUser(user.base, user.jwt, user.site));
-                    }}
-                  >
-                    {user.site.my_user?.local_user_view?.person.name}@{user.base}
-                  </ListItemButton>
-                </ListItem>
-              ))}
+                      <ListItemContent
+                        sx={
+                          {
+                            //strikethrough
+                            // textDecoration: expired ? "line-through" : "none",
+                          }
+                        }
+                      >
+                        {user.site.my_user?.local_user_view?.person.name}@{user.base}
+                      </ListItemContent>
+                      {/* <ListItemContent>
+                        {!expired && (
+                          <Typography sx={{ color: "#00ff00" }}>
+                            (expires in{" "}
+                            <Moment fromNow ago>
+                              {jwt.iat * 1000}
+                            </Moment>
+                            )
+                          </Typography>
+                        )}
+                        {expired && (
+                          <Typography sx={{ color: "#ff0000" }}>
+                            (expired <Moment fromNow>{jwt.iat * 1000}</Moment>)
+                          </Typography>
+                        )}
+                      </ListItemContent> */}
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
             </List>
           </Card>
         )}
