@@ -1,13 +1,87 @@
 import { useEffect, useMemo } from "react";
 
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useInfiniteQuery } from "@tanstack/react-query";
+import { getSiteData } from "../hooks/getSiteData";
 
 import { useSelector } from "react-redux";
 
 import { LemmyHttp } from "lemmy-js-client";
-import { getSiteData } from "../hooks/getSiteData";
 
-import { useLemmyHttp } from "./useLemmyHttp";
+function useLemmyInfinite(callLemmyMethod, formData, countResultElement) {
+  const currentUser = useSelector((state) => state.accountReducer.currentUser);
+
+  const perPage = 5;
+
+  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+
+  console.log("useLemmyInfinite", callLemmyMethod);
+
+  const {
+    isSuccess,
+    isLoading,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+    isError,
+    error,
+    data,
+    isFetching,
+    isRefetching,
+    // refetch,
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["lemmyHttp", localPerson.id, callLemmyMethod],
+    queryFn: async ({ pageParam = 1 }) => {
+      const lemmyClient = new LemmyHttp(`https://${currentUser.base}`);
+
+      console.log("LemmyHttp inner infinite", callLemmyMethod, pageParam);
+
+      const siteData = await lemmyClient[callLemmyMethod]({
+        auth: currentUser.jwt,
+        page: pageParam,
+        limit: perPage,
+        ...formData,
+      });
+
+      const result = countResultElement ? siteData[countResultElement] : siteData;
+
+      return {
+        data: result,
+        nextPage: result.length < perPage ? undefined : pageParam + 1,
+        prevPage: pageParam == 1 ? undefined : pageParam - 1,
+      };
+    },
+
+    getNextPageParam: (lastPage, allPages) => lastPage.nextPage,
+    // getPreviousPageParam: (firstPage, allPages) => firstPage.prevPage,
+
+    keepPreviousData: true,
+
+    retry: 0,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: Infinity,
+    cacheTime: Infinity,
+    enabled: !!currentUser,
+  });
+
+  return {
+    isSuccess,
+    isLoading,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+    isError,
+    error,
+    data,
+    isFetching,
+    isRefetching,
+    // refetch,
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
+  };
+}
 
 export function useLemmyReports() {
   const orderBy = useSelector((state) => state.configReducer.orderBy);
@@ -19,85 +93,114 @@ export function useLemmyReports() {
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
   const {
-    isLoading: commentReportsLoading,
-    isFetching: commentReportsFetching,
-    error: commentReportsError,
-    data: commentReportsData,
-  } = useLemmyHttp("listCommentReports", {
-    unresolved_only: true,
-    page: 1,
-    limit: 25,
-  });
-
-  const {
     isLoading: postReportsLoading,
     isFetching: postReportsFetching,
+    isFetchingNextPage: postReportsFetchingNextPage,
+    hasNextPage: postReportsHasNextPage,
+    fetchNextPage: postReportsFetchNextPage,
     error: postReportsError,
     data: postReportsData,
-  } = useLemmyHttp("listPostReports", {
-    unresolved_only: true,
-    page: 1,
-    limit: 25,
-  });
+  } = useLemmyInfinite(
+    "listPostReports",
+    {
+      unresolved_only: !showResolved,
+    },
+    "post_reports",
+  );
 
-  console.log("postReportsData", userRole === "admin");
+  const {
+    isLoading: commentReportsLoading,
+    isFetching: commentReportsFetching,
+    isFetchingNextPage: commentReportsFetchingNextPage,
+    hasNextPage: commentReportsHasNextPage,
+    fetchNextPage: commentReportsFetchNextPage,
+    error: commentReportsError,
+    data: commentReportsData,
+  } = useLemmyInfinite(
+    "listCommentReports",
+    {
+      unresolved_only: !showResolved,
+    },
+    "comment_reports",
+  );
+
   const {
     isLoading: pmReportsLoading,
     isFetching: pmReportsFetching,
+    isFetchingNextPage: pmReportsFetchingNextPage,
+    hasNextPage: pmReportsHasNextPage,
+    fetchNextPage: pmReportsFetchNextPage,
     error: pmReportsError,
     data: pmReportsData,
-  } = useLemmyHttp(
+  } = useLemmyInfinite(
     "listPrivateMessageReports",
     {
-      unresolved_only: true,
-      page: 1,
-      limit: 25,
+      unresolved_only: !showResolved,
     },
-    userRole === "admin",
+    "private_message_reports",
   );
 
   const mergedReports = useMemo(() => {
-    if (commentReportsLoading || postReportsLoading || pmReportsLoading) return [];
-    if (!commentReportsData || !postReportsData || !pmReportsData) return [];
+    if (!postReportsData || !commentReportsData || !pmReportsData) return;
+    if (postReportsLoading || commentReportsLoading || pmReportsLoading) return;
+
+    console.log("commentReportsData", commentReportsData);
 
     if (pmReportsError && pmReportsError.response.status === 400) {
+      console.log("pmReportsError - may not be site admin", pmReportsError);
       pmReportsData.private_message_reports = [];
     }
 
-    let normalPostReports = postReportsData.post_reports.map((report) => {
-      return {
-        ...report,
-        type: "post",
-        time: report.post_report.published,
-        resolved: report.post_report.resolved,
-        deleted: report.post.deleted,
-        removed: report.post.removed,
-      };
-    });
+    let normalPostReports = [];
+    for (let i = 0; i < postReportsData.pages.length; i++) {
+      console.log("postReportsData.pages[i]", postReportsData.pages[i]);
+
+      const pageEntries = postReportsData.pages[i].data.map((report) => {
+        return {
+          ...report,
+          type: "post",
+          time: report.post_report.published,
+          resolved: report.post_report.resolved,
+          deleted: report.post.deleted,
+          removed: report.post.removed,
+        };
+      });
+      normalPostReports = normalPostReports.concat(pageEntries);
+    }
     console.log("normalPostReports", normalPostReports);
 
-    let normalCommentReports = commentReportsData.comment_reports.map((report) => {
-      return {
-        ...report,
-        type: "comment",
-        time: report.comment_report.published,
-        resolved: report.comment_report.resolved,
-        deleted: report.comment.deleted,
-        removed: report.comment.removed,
-      };
-    });
+    let normalCommentReports = [];
+    for (let i = 0; i < commentReportsData.pages.length; i++) {
+      console.log("commentReportsData.pages[i]", commentReportsData.pages[i]);
+      const commentEntries = commentReportsData.pages[i].data.map((report) => {
+        return {
+          ...report,
+          type: "comment",
+          time: report.comment_report.published,
+          resolved: report.comment_report.resolved,
+          deleted: report.comment.deleted,
+          removed: report.comment.removed,
+        };
+      });
+      normalCommentReports = normalCommentReports.concat(commentEntries);
+    }
     console.log("normalCommentReports", normalCommentReports);
 
-    let normalPMReports = pmReportsData.private_message_reports.map((report) => {
-      return {
-        ...report,
-        type: "pm",
-        time: report.private_message_report.published,
-        resolved: report.private_message_report.resolved,
-        deleted: report.private_message.deleted,
-        removed: false,
-      };
-    });
+    let normalPMReports = [];
+    for (let i = 0; i < pmReportsData.pages.length; i++) {
+      console.log("pmReportsData.pages[i]", pmReportsData.pages[i]);
+      const pmEntries = pmReportsData.pages[i].data.map((report) => {
+        return {
+          ...report,
+          type: "pm",
+          time: report.private_message_report.published,
+          resolved: report.private_message_report.resolved,
+          deleted: report.private_message.deleted,
+          removed: false,
+        };
+      });
+      normalPMReports = normalPMReports.concat(pmEntries);
+    }
     console.log("normalPMReports", normalPMReports);
 
     let mergedReports = [...normalPostReports, ...normalCommentReports, ...normalPMReports];
@@ -159,11 +262,30 @@ export function useLemmyReports() {
 
   const isError = commentReportsError || postReportsError;
 
+  const hasNextPage = commentReportsHasNextPage || postReportsHasNextPage || pmReportsHasNextPage;
+
+  const fetchingNextPage =
+    commentReportsFetchingNextPage || postReportsFetchingNextPage || pmReportsFetchingNextPage;
+
+  const fetchNextPage = function () {
+    if (postReportsHasNextPage) {
+      postReportsFetchNextPage();
+    }
+    if (commentReportsHasNextPage) {
+      commentReportsFetchNextPage();
+    }
+    if (pmReportsHasNextPage) {
+      pmReportsFetchNextPage();
+    }
+  };
+
   return {
     isLoading,
     isFetching,
     isError,
-
+    hasNextPage,
+    fetchNextPage,
+    fetchingNextPage,
     reportsList: mergedReports,
   };
 }
