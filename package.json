@@ -1,7 +1,7 @@
 {
   "name": "lemmy-modder-app",
   "productName": "Lemmy Modder",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Lemmy Moderation Frontend",
   "author": "tgxn",
   "license": "MIT",
