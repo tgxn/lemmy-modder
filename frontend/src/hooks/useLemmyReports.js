@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 
 import { LemmyHttp } from "lemmy-js-client";
 
-function useLemmyInfinite(callLemmyMethod, formData, countResultElement) {
+function useLemmyInfinite(callLemmyMethod, formData, countResultElement, enabled = true) {
   const currentUser = useSelector((state) => state.accountReducer.currentUser);
 
   const perPage = 5;
@@ -63,7 +63,7 @@ function useLemmyInfinite(callLemmyMethod, formData, countResultElement) {
     refetchOnMount: false,
     staleTime: Infinity,
     cacheTime: Infinity,
-    enabled: !!currentUser,
+    enabled: !!currentUser && enabled,
   });
 
   return {
@@ -138,6 +138,7 @@ export function useLemmyReports() {
       unresolved_only: !showResolved,
     },
     "private_message_reports",
+    userRole === "admin",
   );
 
   const mergedReports = useMemo(() => {
@@ -187,21 +188,24 @@ export function useLemmyReports() {
     console.log("normalCommentReports", normalCommentReports);
 
     let normalPMReports = [];
-    for (let i = 0; i < pmReportsData.pages.length; i++) {
-      console.log("pmReportsData.pages[i]", pmReportsData.pages[i]);
-      const pmEntries = pmReportsData.pages[i].data.map((report) => {
-        return {
-          ...report,
-          type: "pm",
-          time: report.private_message_report.published,
-          resolved: report.private_message_report.resolved,
-          deleted: report.private_message.deleted,
-          removed: false,
-        };
-      });
-      normalPMReports = normalPMReports.concat(pmEntries);
+
+    if (userRole === "admin") {
+      for (let i = 0; i < pmReportsData.pages.length; i++) {
+        console.log("pmReportsData.pages[i]", pmReportsData.pages[i]);
+        const pmEntries = pmReportsData.pages[i].data.map((report) => {
+          return {
+            ...report,
+            type: "pm",
+            time: report.private_message_report.published,
+            resolved: report.private_message_report.resolved,
+            deleted: report.private_message.deleted,
+            removed: false,
+          };
+        });
+        normalPMReports = normalPMReports.concat(pmEntries);
+      }
+      console.log("normalPMReports", normalPMReports);
     }
-    console.log("normalPMReports", normalPMReports);
 
     let mergedReports = [...normalPostReports, ...normalCommentReports, ...normalPMReports];
 
@@ -257,7 +261,7 @@ export function useLemmyReports() {
     showRemoved,
   ]);
 
-  const isLoading = commentReportsLoading || postReportsLoading || pmReportsLoading;
+  const isLoading = commentReportsLoading || postReportsLoading || (pmReportsLoading && userRole === "admin");
   const isFetching = commentReportsFetching || postReportsFetching || pmReportsFetching;
 
   const isError = commentReportsError || postReportsError;

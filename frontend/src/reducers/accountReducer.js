@@ -45,12 +45,24 @@ const accountReducer = (state = initialState, action = {}) => {
       };
 
     case "addUser":
-      const newUsers = [...state.users, action.payload];
+      // remove old if they already exist
+      const cleanUsers = state.users.filter(
+        (u) =>
+          !(
+            u.base == action.payload.base &&
+            u.site.my_user.local_user_view.person.name ==
+              action.payload.site.my_user.local_user_view.person.name
+          ),
+      );
+
+      // add new, save to local storage
+      const newUsers = [...cleanUsers, action.payload];
       if (action.payload == null) {
         localStorage.removeItem("users");
       } else {
         localStorage.setItem("users", JSON.stringify(newUsers));
       }
+
       return {
         ...state,
         users: newUsers,

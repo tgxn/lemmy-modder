@@ -1,6 +1,6 @@
 {
   "name": "lemmy-modder-frontend",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Lemmy Moderation App",
   "author": "tgxn",
   "license": "MIT",
@@ -33,6 +33,7 @@
     "css-minimizer-webpack-plugin": "^5.0.1",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.3",
+    "jwt-decode": "^3.1.2",
     "lemmy-js-client": "^0.18.1",
     "moment": "^2.29.4",
     "react": "^18.2.0",

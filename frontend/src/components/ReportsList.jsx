@@ -19,7 +19,7 @@ import { useLemmyReports } from "../hooks/useLemmyReports";
 import { ReportListItem } from "./ListItem/Common.jsx";
 
 function RenderReports({ reportsList }) {
-  if (reportsList.length == 0) {
+  if (!reportsList || reportsList.length == 0) {
     return (
       <Box
         sx={{
