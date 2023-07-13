@@ -1,6 +1,7 @@
 import React from "react";
 
 import Box from "@mui/joy/Box";
+import Button from "@mui/joy/Button";
 import Sheet from "@mui/joy/Sheet";
 import CircularProgress from "@mui/joy/CircularProgress";
 
@@ -72,6 +73,9 @@ export default function ReportsList() {
     isLoading: loadingReports,
     isFetching: isFetchingReports,
     isError: isReportsError,
+    hasNextPage: hasNextPageReports,
+    fetchNextPage: loadNextPageReports,
+    fetchingNextPage: fetchingNextPageReports,
     reportsList,
   } = useLemmyReports();
 
@@ -146,6 +150,20 @@ export default function ReportsList() {
       </Sheet>
 
       <RenderReports reportsList={reportsList} />
+
+      {hasNextPageReports && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            mt: 2,
+          }}
+        >
+          <Button variant="outlined" onClick={() => loadNextPageReports()} loading={fetchingNextPageReports}>
+            Load More
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 }
