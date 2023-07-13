@@ -8,7 +8,7 @@ import Link from "@mui/joy/Link";
 import Chip from "@mui/joy/Chip";
 
 export const HeaderChip = ({ children, tooltip = null, count = 0, ...props }) => (
-  <Tooltip title={tooltip} color={"neutral"} variant="plain" placement="bottom">
+  <Tooltip title={tooltip} color={"neutral"} variant="soft" placement="bottom">
     <Chip
       size="md"
       color={count > 0 ? "danger" : "success"}

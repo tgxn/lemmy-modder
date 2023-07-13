@@ -7,6 +7,10 @@ import CircularProgress from "@mui/joy/CircularProgress";
 
 import SoapIcon from "@mui/icons-material/Soap";
 
+import { useInView } from "react-intersection-observer";
+
+import { useSelector } from "react-redux";
+
 import PostReportItem from "./ListItem/Post.jsx";
 import CommentReportItem from "./ListItem/Comment.jsx";
 import PMReportItem from "./ListItem/PM.jsx";
@@ -69,6 +73,11 @@ export default function ReportsList() {
     data: reportCountsData,
   } = useLemmyHttp("getReportCount");
 
+  const { ref, inView, entry } = useInView({
+    /* Optional options */
+    threshold: 0,
+  });
+
   const {
     isLoading: loadingReports,
     isFetching: isFetchingReports,
@@ -78,6 +87,12 @@ export default function ReportsList() {
     fetchingNextPage: fetchingNextPageReports,
     reportsList,
   } = useLemmyReports();
+
+  React.useEffect(() => {
+    if (inView) {
+      loadNextPageReports();
+    }
+  }, [inView]);
 
   const isLoading = reportCountsLoading || loadingReports;
   const isError = reportCountsError || isReportsError;
@@ -153,13 +168,19 @@ export default function ReportsList() {
 
       {hasNextPageReports && (
         <Box
+          ref={ref}
           sx={{
             display: "flex",
             justifyContent: "center",
             mt: 2,
           }}
         >
-          <Button variant="outlined" onClick={() => loadNextPageReports()} loading={fetchingNextPageReports}>
+          <Button
+            ref={ref}
+            variant="outlined"
+            onClick={() => loadNextPageReports()}
+            loading={fetchingNextPageReports}
+          >
             Load More
           </Button>
         </Box>
