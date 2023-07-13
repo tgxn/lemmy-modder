@@ -198,7 +198,7 @@ export default function SiteHeader() {
                 >
                   {reportCountsData.comment_reports}
                 </HeaderChip>
-                {reportCountsData?.private_message_reports && (
+                {reportCountsData?.private_message_reports !== undefined && (
                   <HeaderChip
                     variant="soft"
                     tooltip={"PM Reports"}
