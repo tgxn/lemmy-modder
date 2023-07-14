@@ -1,6 +1,6 @@
 # Lemmy Modder
 
-A moderation tool for lemmy mods/admins. Basically like the reports page, but an app, and you can quick-switch lemmy acocunts.
+A moderation tool for lemmy mods/admins. Basically like the reports page, but an app, and you can quick-switch lemmy accounts.
 
 Features:
 - Quick Actions 
