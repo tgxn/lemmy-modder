@@ -10,8 +10,8 @@
     "start": "electron .",
     "build:win": "electron-builder --windows portable:x64 portable:ia32 nsis:x64 nsis:ia32 --publish never",
     "build:win:publish": "electron-builder --windows portable:x64 portable:ia32 nsis:x64 nsis:ia32 --publish always",
-    "builder:linux": "electron-builder --linux --publish never",
-    "builder:linux:publish": "electron-builder --linux --publish always"
+    "build:linux": "electron-builder --linux --publish never",
+    "build:linux:publish": "electron-builder --linux --publish always"
   },
   "devDependencies": {
     "electron": "^25.3.0",
