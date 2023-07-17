@@ -1,4 +1,4 @@
-name: publish-app
+name: publish-app-linux
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 
 jobs:
 
-  publish_app:
+  publish_app_linux:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -53,23 +53,18 @@ jobs:
         working-directory: ./frontend
         run: npm run build
 
-      - name: publish electron app (win)
-        run: |
-          docker run --rm -i \
-          --env-file <(env | grep -iE 'DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS_TAG|TRAVIS|TRAVIS_REPO_|TRAVIS_BUILD_|TRAVIS_BRANCH|TRAVIS_PULL_REQUEST_|APPVEYOR_|CSC_|GH_|GITHUB_|BT_|AWS_|STRIP|BUILD_') \
-          --env ELECTRON_CACHE="/root/.cache/electron" \
-          --env ELECTRON_BUILDER_CACHE="/root/.cache/electron-builder" \
-          --env GH_TOKEN=${{ secrets.GITHUB_TOKEN }} \
-          -v ${PWD}:/project \
-          -v ${PWD##*/}-node-modules:/project/node_modules \
-          -v ~/.cache/electron:/root/.cache/electron \
-          -v ~/.cache/electron-builder:/root/.cache/electron-builder \
-          electronuserland/builder:wine \
-          bash -c "npm i && npm run build:win:publish"
-        
-      - name: install frontend dependencies (if not cached)
-        # if: steps.cache-frontend-npm.outputs.cache-hit != 'true'
+      - name: cache app dependencies
+        id: cache-app-npm
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-app-npm
+        with:
+          path: ./node_modules/
+          key: cache-app-npm-${{ hashFiles('package-lock.json') }}
+
+      - name: install app dependencies (if not cached)
+        if: steps.cache-app-npm.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: publish linux
+      - name: publish app linux
         run: npm run build:linux:publish
