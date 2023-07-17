@@ -63,8 +63,6 @@ linux:
   executableArgs:
     - '--js-flags="--max-old-space-size=12288"'
   target:
-    - target: AppImage
-    - target: snap
     - target: deb
     - target: rpm
 

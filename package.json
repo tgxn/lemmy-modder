@@ -3,7 +3,7 @@
   "productName": "Lemmy Modder",
   "version": "0.3.2",
   "description": "Lemmy Moderation Frontend",
-  "author": "tgxn",
+  "author": "tgxn <tgxn@tgxn.net>",
   "license": "MIT",
   "main": "src/app.js",
   "scripts": {
