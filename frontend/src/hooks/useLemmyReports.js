@@ -47,7 +47,7 @@ function useLemmyInfinite(callLemmyMethod, formData, countResultElement, enabled
 
       return {
         data: result,
-        nextPage: result.length > 0 && result.length < perPage ? pageParam + 1 : undefined,
+        nextPage: result.length > 0 && result.length == perPage ? pageParam + 1 : undefined,
       };
     },
     getNextPageParam: (lastPage, allPages) => lastPage.nextPage,

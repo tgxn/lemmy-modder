@@ -9,11 +9,16 @@ import Typography from "@mui/joy/Typography";
 import Badge from "@mui/joy/Badge";
 import Tooltip from "@mui/joy/Tooltip";
 
+import Link from "@mui/joy/Link";
+import Chip from "@mui/joy/Chip";
+import AdjustIcon from "@mui/icons-material/Adjust";
+
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import ForumIcon from "@mui/icons-material/Forum";
 import DraftsIcon from "@mui/icons-material/Drafts";
 
 import { SanitizedLink, SquareChip } from "../Display.jsx";
+import { UserTooltip } from "../Tooltip.jsx";
 
 export function ReportListItem({ itemType, report, children }) {
   let itemColor;
@@ -116,9 +121,11 @@ export function PersonMetaLine({ creator }) {
           fontSize: "14px",
         }}
       >
-        <SanitizedLink href={creator.actor_id} target="_blank" rel="noopener noreferrer">
-          @{creator.name}
-        </SanitizedLink>
+        <Tooltip placement="bottom-end" variant="soft" arrow title={<UserTooltip user={creator} />}>
+          <Link href={creator.actor_id} target="_blank" rel="noopener noreferrer">
+            @{creator.name}
+          </Link>
+        </Tooltip>
         {creator.display_name && ` ${creator.display_name}`}
       </Typography>
 

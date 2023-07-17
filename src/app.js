@@ -1,11 +1,11 @@
 const { app, ipcMain, BrowserWindow, session } = require("electron");
+const isDevelop = require("electron-is-dev");
+const { autoUpdater } = require("electron-updater");
 
 const path = require("path");
 const url = require("url");
 
 let mainWindow = null;
-
-const isDevelop = require("electron-is-dev");
 
 function localUrl() {
   let returnUrl;
@@ -40,6 +40,8 @@ app.once("ready", () => {
       preload: `${__dirname}/preload.js`,
     },
   });
+
+  autoUpdater.checkForUpdatesAndNotify();
 
   const loadUrl = localUrl();
   mainWindow.loadURL(loadUrl);
