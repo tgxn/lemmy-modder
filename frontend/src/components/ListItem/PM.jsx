@@ -6,6 +6,7 @@ import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 
 import DoneAllIcon from "@mui/icons-material/DoneAll";
+
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 import { SquareChip } from "../Display.jsx";
@@ -14,9 +15,55 @@ import { ResolvePMReportButton, DeletePMButton } from "../Actions/PMButtons.jsx"
 import { BanUserSiteButton } from "../Actions/GenButtons.jsx";
 
 import { PersonMetaLine, ReportDetails } from "./Common.jsx";
-import { SanitizedLink } from "../Display.jsx";
 
-import { PMContentDetail } from "./Content.jsx";
+const PMContentDetail = ({ report }) => {
+  return (
+    <Box>
+      {/* PM */}
+      <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
+        {report.private_message.published && (
+          <SquareChip color="neutral" variant="outlined" tooltip={report.private_message.published}>
+            <Moment fromNow>{report.private_message.published}</Moment>
+          </SquareChip>
+        )}
+
+        {report.private_message_report.resolved && (
+          <SquareChip
+            color={"success"}
+            variant="soft"
+            tooltip={`Resolved by @${report.resolver.name}`}
+            iconOnly={<DoneAllIcon fontSize="small" />}
+          />
+        )}
+
+        {report.private_message.deleted && (
+          <SquareChip
+            color="danger"
+            variant="soft"
+            tooltip="Deleted"
+            iconOnly={<DeleteOutlineIcon fontSize="small" />}
+          />
+        )}
+      </Typography>
+
+      {/* Post Content */}
+      <Typography
+        variant="body1"
+        component="p"
+        sx={{
+          p: 1,
+        }}
+      >
+        {report.private_message.content}
+      </Typography>
+
+      {/* Report Status */}
+      <Typography variant="body1" component="p">
+        {report.report_status}
+      </Typography>
+    </Box>
+  );
+};
 
 export default function PMListItem({ report }) {
   return (

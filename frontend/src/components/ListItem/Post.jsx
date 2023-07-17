@@ -32,7 +32,91 @@ import { BanUserCommunityButton, BanUserSiteButton } from "../Actions/GenButtons
 import { ReportListItem, PersonMetaLine, ReportDetails } from "./Common.jsx";
 import { SanitizedLink } from "../Display.jsx";
 
-import { PostContentDetail } from "./Content.jsx";
+const PostContentDetail = ({ report }) => {
+  return (
+    <Box>
+      {/* Post Title */}
+      <Typography variant="h4" component="h2">
+        Post:{" "}
+        <SanitizedLink href={report.post.ap_id} target="_blank" rel="noopener noreferrer">
+          {report.post.name}
+        </SanitizedLink>
+      </Typography>
+
+      {/* Post Meta */}
+      <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
+        {report.post.nsfw == true && (
+          <SquareChip variant="outlined" color={"warning"}>
+            NSFW
+          </SquareChip>
+        )}
+
+        {/* // @TODO make options */}
+        {/* {report.post.nsfw == false && (
+            <SquareChip color="neutral" variant="outlined">
+              SFW
+            </SquareChip>
+          )} */}
+
+        {report.post.published && (
+          <SquareChip color="neutral" variant="outlined" tooltip={report.post.published}>
+            <Moment fromNow>{report.post.published}</Moment>
+          </SquareChip>
+        )}
+
+        <SquareChip color={"primary"} tooltip="Comments" startDecorator={<ForumIcon />}>
+          {report.counts.comments}
+        </SquareChip>
+
+        <SquareChip color={"info"} tooltip="Score" startDecorator={<ThumbsUpDownIcon />}>
+          {report.counts.score}
+        </SquareChip>
+
+        <SquareChip color={"info"} tooltip="Downvotes" startDecorator={<ThumbDownIcon />}>
+          {report.counts.downvotes}
+        </SquareChip>
+
+        {report.post_report.resolved && (
+          <SquareChip
+            color={"success"}
+            variant="soft"
+            tooltip={`Resolved by @${report.resolver.name}`}
+            iconOnly={<DoneAllIcon fontSize="small" />}
+          />
+        )}
+
+        {report.post.removed && (
+          <SquareChip
+            color={"danger"}
+            variant="soft"
+            tooltip="Removed"
+            iconOnly={<BlockIcon fontSize="small" />}
+          />
+        )}
+
+        {report.post.deleted && (
+          <SquareChip
+            color="danger"
+            variant="soft"
+            tooltip="Deleted"
+            iconOnly={<DeleteOutlineIcon fontSize="small" />}
+          />
+        )}
+      </Typography>
+
+      {/* Post Content */}
+      <Typography
+        variant="body1"
+        component="p"
+        sx={{
+          p: 1,
+        }}
+      >
+        {report.post.body}
+      </Typography>
+    </Box>
+  );
+};
 
 export default function PostListItem({ report }) {
   return (
