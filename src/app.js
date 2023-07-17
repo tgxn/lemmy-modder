@@ -1,4 +1,4 @@
-const { app, ipcMain, BrowserWindow, session } = require("electron");
+const { app, ipcMain, BrowserWindow, session, dialog } = require("electron");
 const isDevelop = require("electron-is-dev");
 const { autoUpdater } = require("electron-updater");
 
@@ -30,7 +30,7 @@ app.on("window-all-closed", function () {
 app.once("ready", () => {
   mainWindow = new BrowserWindow({
     //name
-    title: "Lemmy Modder",
+    title: `Lemmy Modder (v${app.getVersion()})`,
     icon: `${__dirname}/icon/Lemmy_Logo.png`,
     width: 950,
     height: 1000,
@@ -43,10 +43,25 @@ app.once("ready", () => {
 
   autoUpdater.checkForUpdatesAndNotify();
 
+  autoUpdater.on("update-downloaded", (event, releaseNotes, releaseName) => {
+    const dialogOpts = {
+      type: "info",
+      buttons: ["Restart", "Later"],
+      title: "Application Update",
+      message: process.platform === "win32" ? releaseNotes : releaseName,
+      detail:
+        "A new version has been downloaded. Restart the application to apply the updates.",
+    };
+
+    dialog.showMessageBox(dialogOpts).then((returnValue) => {
+      if (returnValue.response === 0) autoUpdater.quitAndInstall();
+    });
+  });
+
   const loadUrl = localUrl();
   mainWindow.loadURL(loadUrl);
 
-  mainWindow.setMenu(null);
+  mainWindow.removeMenu();
 
   if (isDevelop) {
     mainWindow.webContents.openDevTools({
@@ -60,6 +75,34 @@ app.once("ready", () => {
       mainWindow.webContents.openDevTools({
         mode: "detach",
       });
+    }
+  });
+
+  ipcMain.handle("clear_storage", async (event, keepLocal = false) => {
+    let keep = [
+      `cookies`,
+      `filesystem`,
+      `indexdb`,
+      `shadercache`,
+      `websql`,
+      `serviceworkers`,
+      `cachestorage`,
+    ];
+    if (!keepLocal) keep.push(`localstorage`);
+    try {
+      await session.defaultSession.clearStorageData({
+        storages: keep,
+      });
+      await session.defaultSession.clearAuthCache();
+      await session.defaultSession.clearCache();
+      await session.defaultSession.clearCodeCaches([]);
+      console.log("cleared all caches", keepLocal);
+
+      return true;
+    } catch (err) {
+      console.error("failed to clear cache!", err);
+
+      return false;
     }
   });
 
@@ -102,7 +145,7 @@ app.once("ready", () => {
     (window, { url, frameName }) => {
       // set size
       window.setSize(1300, 900);
-      window.setMenu(null);
+      window.removeMenu();
     }
   );
 

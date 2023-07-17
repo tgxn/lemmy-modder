@@ -7,7 +7,7 @@
   "license": "MIT",
   "main": "src/app.js",
   "scripts": {
-    "start": "electron src/app.js",
+    "start": "electron .",
     "build:win": "electron-builder --windows portable:x64 portable:ia32 nsis:x64 nsis:ia32 --publish never",
     "build:win:publish": "electron-builder --windows portable:x64 portable:ia32 nsis:x64 nsis:ia32 --publish always",
     "builder:snap": "electron-builder --linux snap --publish never",
