@@ -66,10 +66,15 @@ export default function LoginForm() {
         setLoginError(auth);
       }
     } catch (e) {
-      setLoginError(e);
+      setLoginError(typeof e == "string" ? e : e.message);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const clearData = (keep = false) => {
+    window.modder.clearStorage(keep);
+    window.location.reload();
   };
 
   return (
@@ -142,7 +147,7 @@ export default function LoginForm() {
             <Button
               fullWidth
               onClick={loginClick}
-              disabled={username.length === 0 || password.length === 0}
+              disabled={instanceBase.length === 0 || username.length === 0 || password.length === 0}
               loading={isLoading}
             >
               Login
@@ -260,7 +265,7 @@ export default function LoginForm() {
                           dispatch(setCurrentUser(user.base, user.jwt, getSite));
                           // }
                         } catch (e) {
-                          setLoginError(e.message);
+                          setLoginError(typeof e == "string" ? e : e.message);
                         } finally {
                           setIsLoading(false);
                         }
@@ -309,6 +314,39 @@ export default function LoginForm() {
             </List>
           </Card>
         )}
+
+        <Card
+          sx={{
+            mt: 4,
+            p: 2,
+            py: 4,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          <Typography>Clear Data</Typography>
+
+          <Box
+            sx={{
+              maxWidth: "300px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 1,
+            }}
+          >
+            <Button size="sm" fullWidth color="warning" onClick={() => clearData(true)} disabled={isLoading}>
+              Clean storage (keep users)
+            </Button>
+
+            <Button size="sm" fullWidth color="danger" onClick={() => clearData(false)} disabled={isLoading}>
+              Purge storage
+            </Button>
+          </Box>
+        </Card>
       </Box>
     </Container>
   );

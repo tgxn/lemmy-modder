@@ -2,42 +2,27 @@ import React from "react";
 
 import Moment from "react-moment";
 
-import Alert from "@mui/joy/Alert";
-import Card from "@mui/joy/Card";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
-import Badge from "@mui/joy/Badge";
 
 import ForumIcon from "@mui/icons-material/Forum";
 import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 import { SquareChip } from "../Display.jsx";
 
-import {
-  ResolveCommentReportButton,
-  RemoveCommentButton,
-  PurgeCommentButton,
-} from "../Actions/CommentButtons.jsx";
+import { ResolveCommentReportButton, RemoveCommentButton } from "../Actions/CommentButtons.jsx";
 import { BanUserCommunityButton, BanUserSiteButton } from "../Actions/GenButtons.jsx";
 
-import { ReportListItem, PersonMetaLine, ReportDetails } from "./Common.jsx";
+import { PersonMetaLine, ReportDetails } from "./Common.jsx";
 
 import { SanitizedLink } from "../Display.jsx";
 
-export default function CommentListItem({ report }) {
+const CommentContentDetail = ({ report }) => {
   return (
-    <Box
-      sx={{
-        flexGrow: 1,
-        flexShrink: 1,
-        flexBasis: "auto",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <PersonMetaLine creator={report.comment_creator} />
-
+    <Box>
       {/* Comment Title */}
       <Typography variant="h4" component="h2">
         Comment:{" "}
@@ -67,18 +52,21 @@ export default function CommentListItem({ report }) {
         </SquareChip>
 
         {report.comment_report.resolved && (
-          <SquareChip color={"success"} tooltip={`Resolved by @${report.resolver.name}`}>
-            Resolved
-          </SquareChip>
+          <SquareChip
+            color={"success"}
+            variant="soft"
+            tooltip={`Resolved by @${report.resolver.name}`}
+            iconOnly={<DoneAllIcon fontSize="small" />}
+          />
         )}
 
         {report.comment.removed && (
-          <SquareChip color={"danger"} tooltip="Removed">
-            Removed
-          </SquareChip>
+          <SquareChip color={"danger"} tooltip="Removed" iconOnly={<DeleteOutlineIcon fontSize="small" />} />
         )}
 
-        {report.comment.deleted && <SquareChip color={"danger"}>deleted</SquareChip>}
+        {report.comment.deleted && (
+          <SquareChip color={"danger"} tooltip="Deleted" iconOnly={<DeleteOutlineIcon fontSize="small" />} />
+        )}
       </Typography>
 
       {/* Comment Content */}
@@ -91,6 +79,24 @@ export default function CommentListItem({ report }) {
       >
         {report.comment.content}
       </Typography>
+    </Box>
+  );
+};
+
+export default function CommentListItem({ report }) {
+  return (
+    <Box
+      sx={{
+        flexGrow: 1,
+        flexShrink: 1,
+        flexBasis: "auto",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <PersonMetaLine creator={report.comment_creator} />
+
+      <CommentContentDetail report={report} />
 
       <ReportDetails report={report.comment_report} creator={report.creator} />
 

@@ -2,35 +2,22 @@ import React from "react";
 
 import Moment from "react-moment";
 
-import Alert from "@mui/joy/Alert";
-import Card from "@mui/joy/Card";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
-import Badge from "@mui/joy/Badge";
 
-import DraftsIcon from "@mui/icons-material/Drafts";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 import { SquareChip } from "../Display.jsx";
 
-import { ResolvePMReportButton, DeletePMButton } from "../Actions/PMButtons.jsx";
+import { ResolvePMReportButton } from "../Actions/PMButtons.jsx";
 import { BanUserSiteButton } from "../Actions/GenButtons.jsx";
 
-import { ReportListItem, PersonMetaLine, ReportDetails } from "./Common.jsx";
-import { SanitizedLink } from "../Display.jsx";
+import { PersonMetaLine, ReportDetails } from "./Common.jsx";
 
-export default function PMListItem({ report }) {
+const PMContentDetail = ({ report }) => {
   return (
-    <Box
-      sx={{
-        flexGrow: 1,
-        flexShrink: 1,
-        flexBasis: "auto",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <PersonMetaLine creator={report.private_message_creator} />
-
+    <Box>
       {/* PM */}
       <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
         {report.private_message.published && (
@@ -40,12 +27,22 @@ export default function PMListItem({ report }) {
         )}
 
         {report.private_message_report.resolved && (
-          <SquareChip color={"success"} tooltip={`Resolved by @${report.resolver.name}`}>
-            Resolved
-          </SquareChip>
+          <SquareChip
+            color={"success"}
+            variant="soft"
+            tooltip={`Resolved by @${report.resolver.name}`}
+            iconOnly={<DoneAllIcon fontSize="small" />}
+          />
         )}
 
-        {report.private_message.deleted && <SquareChip color={"danger"}>Deleted</SquareChip>}
+        {report.private_message.deleted && (
+          <SquareChip
+            color="danger"
+            variant="soft"
+            tooltip="Deleted"
+            iconOnly={<DeleteOutlineIcon fontSize="small" />}
+          />
+        )}
       </Typography>
 
       {/* Post Content */}
@@ -63,6 +60,24 @@ export default function PMListItem({ report }) {
       <Typography variant="body1" component="p">
         {report.report_status}
       </Typography>
+    </Box>
+  );
+};
+
+export default function PMListItem({ report }) {
+  return (
+    <Box
+      sx={{
+        flexGrow: 1,
+        flexShrink: 1,
+        flexBasis: "auto",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <PersonMetaLine creator={report.private_message_creator} />
+
+      <PMContentDetail report={report} />
 
       <ReportDetails report={report.private_message_report} creator={report.creator} />
 

@@ -84,7 +84,7 @@ export function useLemmyReports() {
   const filterType = useSelector((state) => state.configReducer.filterType);
   const filterCommunity = useSelector((state) => state.configReducer.filterCommunity);
   const showResolved = useSelector((state) => state.configReducer.showResolved);
-  const showRemoved = useSelector((state) => state.configReducer.showRemoved);
+  // const showRemoved = useSelector((state) => state.configReducer.showRemoved);
 
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
@@ -224,11 +224,11 @@ export function useLemmyReports() {
     }
 
     // filter out deleted/removed posts
-    if (!showRemoved) {
-      mergedReports = mergedReports.filter((report) => {
-        return !report.removed;
-      });
-    }
+    // if (!showRemoved) {
+    //   mergedReports = mergedReports.filter((report) => {
+    //     return !report.removed;
+    //   });
+    // }
 
     mergedReports.sort((a, b) => {
       // check for values that are null
@@ -247,7 +247,7 @@ export function useLemmyReports() {
     filterType,
     filterCommunity,
     showResolved,
-    showRemoved,
+    // showRemoved,
   ]);
 
   const isLoading = commentReportsLoading || postReportsLoading || (pmReportsLoading && userRole === "admin");

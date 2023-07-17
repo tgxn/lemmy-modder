@@ -13,9 +13,10 @@ import Link from "@mui/joy/Link";
 import Chip from "@mui/joy/Chip";
 import AdjustIcon from "@mui/icons-material/Adjust";
 
-import StickyNote2Icon from "@mui/icons-material/StickyNote2";
-import ForumIcon from "@mui/icons-material/Forum";
-import DraftsIcon from "@mui/icons-material/Drafts";
+import SecurityIcon from "@mui/icons-material/Security";
+import BlockIcon from "@mui/icons-material/Block";
+import SmartToyIcon from "@mui/icons-material/SmartToy";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export const UserTooltip = ({ user, ...props }) => {
   return (
@@ -25,36 +26,42 @@ export const UserTooltip = ({ user, ...props }) => {
         flexDirection: "column",
         maxWidth: 320,
         justifyContent: "center",
-        p: 1,
+        p: 0,
+        m: 0,
       }}
     >
-      <Typography fontSize="lg" gutterBottom>
-        @{user.name} {user.display_name && ` ${user.display_name}`}
-      </Typography>
-      <Typography fontSize="sm" gutterBottom>
-        registered <Moment fromNow>{user.published}</Moment>
-      </Typography>
+      <Box sx={{ display: "flex", flexDirection: "column", maxWidth: 320, justifyContent: "center", p: 1 }}>
+        <Typography fontSize="lg" gutterBottom>
+          @{user.name} {user.display_name && ` ${user.display_name}`}
+        </Typography>
+
+        {user.published && (
+          <Typography fontSize="sm" gutterBottom>
+            registered <Moment fromNow>{user.published}</Moment>
+          </Typography>
+        )}
+      </Box>
 
       {user.admin && (
-        <Alert variant="solid" color="info">
+        <Alert variant="solid" color="info" size="sm" startDecorator={<SecurityIcon />}>
           Admin Account
         </Alert>
       )}
 
       {user.banned && (
-        <Alert variant="solid" color="danger">
+        <Alert variant="solid" color="danger" size="sm" startDecorator={<BlockIcon />}>
           Banned Account
         </Alert>
       )}
 
       {user.bot_account && (
-        <Alert variant="solid" color="warning">
+        <Alert variant="solid" color="warning" size="sm" startDecorator={<SmartToyIcon />}>
           Bot Account
         </Alert>
       )}
 
       {user.deleted && (
-        <Alert variant="solid" color="danger">
+        <Alert variant="solid" color="danger" size="sm" startDecorator={<DeleteIcon />}>
           Deleted Account
         </Alert>
       )}

@@ -2,7 +2,7 @@
 
 A moderation tool for lemmy mods/admins. Basically like the reports page, but an app, and you can quick-switch lemmy accounts.
 
-Features:
+## Features:
 - Quick Actions 
     - Resolve/Unresolve Reports
     - Remove/Restore Posts & Comments
@@ -19,10 +19,10 @@ Coming Soon?
 - View Modlog
 
 
-Image Table
+## Screenshots
 | | | |
 | --- | --- | --- |
-| ![Alt text](image-1.png) | ![Alt text](image.png)   | ![Alt text](image-2.png) |
+| ![Login Screen](./docs/image/032/login.png) | ![Clean Screen](./docs/image/032/clean.png)   | ![Busy Screen](./docs/image/032/busy.png) |
 
 
 You can use the portable version or the installer which can auto-update from GitHub. Check the latest release for the files.

@@ -2,127 +2,161 @@ import React from "react";
 
 import Moment from "react-moment";
 
-import Card from "@mui/joy/Card";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
-import Badge from "@mui/joy/Badge";
 
-import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import ForumIcon from "@mui/icons-material/Forum";
 import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
+import BlockIcon from "@mui/icons-material/Block";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 import { SquareChip } from "../Display.jsx";
 import Image from "../Image.jsx";
 
-import {
-  ResolvePostReportButton,
-  DeletePostButton,
-  RemovePostButton,
-  PurgePostButton,
-  BanPostUserCommunityButton,
-  BanPostUserSiteButton,
-} from "../Actions/PostButtons.jsx";
+import { ResolvePostReportButton, RemovePostButton, PurgePostButton } from "../Actions/PostButtons.jsx";
+
 import { BanUserCommunityButton, BanUserSiteButton } from "../Actions/GenButtons.jsx";
 
-import { ReportListItem, PersonMetaLine, ReportDetails } from "./Common.jsx";
+import { PersonMetaLine, ReportDetails } from "./Common.jsx";
 import { SanitizedLink } from "../Display.jsx";
 
-export default function PostListItem({ report }) {
+const PostContentDetail = ({ report }) => {
   return (
-    <React.Fragment>
-      {/* Show External Link or Image for URLs */}
-      {report.post.url && (
-        <Box
-          sx={{
-            flexGrow: 0,
-            flexShrink: 0,
-            flexBasis: "auto",
-            width: "150px",
-            height: "200px",
-          }}
-        >
-          <Image imageSrc={report.post.url} />
-        </Box>
-      )}
+    <Box>
+      {/* Post Title */}
+      <Typography variant="h4" component="h2">
+        Post:{" "}
+        <SanitizedLink href={report.post.ap_id} target="_blank" rel="noopener noreferrer">
+          {report.post.name}
+        </SanitizedLink>
+      </Typography>
 
-      <Box
-        sx={{
-          flexGrow: 1,
-          flexShrink: 1,
-          flexBasis: "auto",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <PersonMetaLine creator={report.post_creator} />
+      {/* Post Meta */}
+      <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
+        {report.post.nsfw == true && (
+          <SquareChip variant="outlined" color={"warning"}>
+            NSFW
+          </SquareChip>
+        )}
 
-        {/* Post Title */}
-        <Typography variant="h4" component="h2">
-          Post:{" "}
-          <SanitizedLink href={report.post.ap_id} target="_blank" rel="noopener noreferrer">
-            {report.post.name}
-          </SanitizedLink>
-        </Typography>
-
-        {/* Post Meta */}
-        <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
-          {report.post.nsfw == true && (
-            <SquareChip variant="outlined" color={"warning"}>
-              NSFW
-            </SquareChip>
-          )}
-
-          {/* // @TODO make options */}
-          {/* {report.post.nsfw == false && (
+        {/* // @TODO make options */}
+        {/* {report.post.nsfw == false && (
             <SquareChip color="neutral" variant="outlined">
               SFW
             </SquareChip>
           )} */}
 
-          {report.post.published && (
-            <SquareChip color="neutral" variant="outlined" tooltip={report.post.published}>
-              <Moment fromNow>{report.post.published}</Moment>
-            </SquareChip>
-          )}
-
-          <SquareChip color={"primary"} tooltip="Comments" startDecorator={<ForumIcon />}>
-            {report.counts.comments}
+        {report.post.published && (
+          <SquareChip color="neutral" variant="outlined" tooltip={report.post.published}>
+            <Moment fromNow>{report.post.published}</Moment>
           </SquareChip>
+        )}
 
-          <SquareChip color={"info"} tooltip="Score" startDecorator={<ThumbsUpDownIcon />}>
-            {report.counts.score}
-          </SquareChip>
+        <SquareChip color={"primary"} tooltip="Comments" startDecorator={<ForumIcon />}>
+          {report.counts.comments}
+        </SquareChip>
 
-          <SquareChip color={"info"} tooltip="Downvotes" startDecorator={<ThumbDownIcon />}>
-            {report.counts.downvotes}
-          </SquareChip>
+        <SquareChip color={"info"} tooltip="Score" startDecorator={<ThumbsUpDownIcon />}>
+          {report.counts.score}
+        </SquareChip>
 
-          {report.post_report.resolved && (
-            <SquareChip color={"success"} tooltip={`Resolved by @${report.resolver.name}`}>
-              Resolved
-            </SquareChip>
-          )}
+        <SquareChip color={"info"} tooltip="Downvotes" startDecorator={<ThumbDownIcon />}>
+          {report.counts.downvotes}
+        </SquareChip>
 
-          {report.post.removed && (
-            <SquareChip color={"danger"} tooltip="Removed">
-              Removed
-            </SquareChip>
-          )}
+        {report.post_report.resolved && (
+          <SquareChip
+            color={"success"}
+            variant="soft"
+            tooltip={`Resolved by @${report.resolver.name}`}
+            iconOnly={<DoneAllIcon fontSize="small" />}
+          />
+        )}
 
-          {report.post.deleted && <SquareChip color={"danger"}>deleted</SquareChip>}
-        </Typography>
+        {report.post.removed && (
+          <SquareChip
+            color={"danger"}
+            variant="soft"
+            tooltip="Removed"
+            iconOnly={<BlockIcon fontSize="small" />}
+          />
+        )}
 
-        {/* Post Content */}
-        <Typography
-          variant="body1"
-          component="p"
+        {report.post.deleted && (
+          <SquareChip
+            color="danger"
+            variant="soft"
+            tooltip="Deleted"
+            iconOnly={<DeleteOutlineIcon fontSize="small" />}
+          />
+        )}
+      </Typography>
+
+      {/* Post Content */}
+      <Typography
+        variant="body1"
+        component="p"
+        sx={{
+          p: 1,
+        }}
+      >
+        {report.post.body}
+      </Typography>
+    </Box>
+  );
+};
+
+export default function PostListItem({ report }) {
+  return (
+    <React.Fragment>
+      <Box
+        sx={{
+          // bottom right with flex
+          pt: 1,
+          display: "flex",
+          flexDirection: "column",
+          // justifyContent: "space-between",
+          gap: 1,
+          flexGrow: 1,
+        }}
+      >
+        <Box
           sx={{
-            p: 1,
+            display: "flex",
+            flexDirection: "row",
           }}
         >
-          {report.post.body}
-        </Typography>
+          {/* Show External Link or Image for URLs */}
+          {report.post.url && (
+            <Box
+              sx={{
+                flexGrow: 0,
+                flexShrink: 0,
+                flexBasis: "auto",
+                width: "150px",
+                // height: "200px",
+              }}
+            >
+              <Image imageSrc={report.post.url} />
+            </Box>
+          )}
+
+          <Box
+            sx={{
+              flexGrow: 1,
+              flexShrink: 1,
+              flexBasis: "auto",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <PersonMetaLine creator={report.post_creator} />
+
+            <PostContentDetail report={report} />
+          </Box>
+        </Box>
 
         <ReportDetails report={report.post_report} creator={report.creator} />
 

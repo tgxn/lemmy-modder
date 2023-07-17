@@ -1,19 +1,48 @@
 import React from "react";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
-import { Routes, Route, Navigate } from "react-router-dom";
+// import { Routes, Route, Navigate } from "react-router-dom";
+// import { HashRouter } from "react-router-dom";
 
-import { HashRouter } from "react-router-dom";
-
-import Box from "@mui/joy/Box";
 import Container from "@mui/joy/Container";
 
-import Main from "./pages/Main";
+import SiteHeader from "./components/SiteHeader";
+
+import Reports from "./pages/Reports";
+import Login from "./pages/Login";
 
 import AppStore from "./store";
+
+function PageRouter({ children }) {
+  const currentUser = useSelector((state) => state.accountReducer.currentUser);
+
+  // when we get a jwt, set the cookie in electron
+  React.useEffect(() => {
+    if (currentUser) {
+      window.modder.setLemmyCookie(currentUser.base, currentUser.jwt);
+    }
+  }, [currentUser]);
+
+  if (!currentUser) return <Login />;
+
+  return (
+    <React.Fragment>
+      <SiteHeader />
+
+      <Container
+        maxWidth={"md"}
+        sx={{
+          py: 2,
+        }}
+      >
+        <Reports />
+      </Container>
+    </React.Fragment>
+  );
+}
 
 const queryClient = new QueryClient();
 export default function App() {
@@ -36,7 +65,16 @@ export default function App() {
             display: "block",
           }}
         >
-          <HashRouter>
+          <PageRouter />
+          {/* 
+          {!currentUser && <Login />}
+          {currentUser && (
+            <PageWrapper>
+              <Main />
+            </PageWrapper>
+          )} */}
+
+          {/* <HashRouter>
             <Box
               sx={
                 {
@@ -46,9 +84,10 @@ export default function App() {
             >
               <Routes>
                 <Route path="/" element={<Main />} />
+                <Route path="/login" element={<LoginForm />} />
               </Routes>
             </Box>
-          </HashRouter>
+          </HashRouter> */}
         </Container>
       </Provider>
     </QueryClientProvider>

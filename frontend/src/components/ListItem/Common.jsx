@@ -1,7 +1,5 @@
 import React from "react";
 
-import Moment from "react-moment";
-
 import Alert from "@mui/joy/Alert";
 import Card from "@mui/joy/Card";
 import Box from "@mui/joy/Box";
@@ -10,12 +8,15 @@ import Badge from "@mui/joy/Badge";
 import Tooltip from "@mui/joy/Tooltip";
 
 import Link from "@mui/joy/Link";
-import Chip from "@mui/joy/Chip";
-import AdjustIcon from "@mui/icons-material/Adjust";
 
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import ForumIcon from "@mui/icons-material/Forum";
 import DraftsIcon from "@mui/icons-material/Drafts";
+
+import SecurityIcon from "@mui/icons-material/Security";
+import BlockIcon from "@mui/icons-material/Block";
+import SmartToyIcon from "@mui/icons-material/SmartToy";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import { SanitizedLink, SquareChip } from "../Display.jsx";
 import { UserTooltip } from "../Tooltip.jsx";
@@ -121,7 +122,7 @@ export function PersonMetaLine({ creator }) {
           fontSize: "14px",
         }}
       >
-        <Tooltip placement="bottom-end" variant="soft" arrow title={<UserTooltip user={creator} />}>
+        <Tooltip placement="top-start" variant="outlined" arrow title={<UserTooltip user={creator} />}>
           <Link href={creator.actor_id} target="_blank" rel="noopener noreferrer">
             @{creator.name}
           </Link>
@@ -131,34 +132,28 @@ export function PersonMetaLine({ creator }) {
 
       {/* Post Author Meta */}
       <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
-        {creator.published && (
-          <SquareChip color="neutral" variant="soft" tooltip={"User Published"}>
-            registered <Moment fromNow>{creator.published}</Moment>
-          </SquareChip>
-        )}
-
         {creator.admin && (
-          <SquareChip color={"info"} tooltip="User is site admin">
-            ADMIN
-          </SquareChip>
+          <SquareChip
+            color={"info"}
+            tooltip="User is site admin"
+            iconOnly={<SecurityIcon fontSize="small" />}
+          />
         )}
 
         {creator.banned && (
-          <SquareChip color={"danger"} tooltip="User is banned">
-            B&
-          </SquareChip>
+          <SquareChip color={"danger"} tooltip="User is banned" iconOnly={<BlockIcon fontSize="small" />} />
         )}
 
         {creator.bot_account && (
-          <SquareChip color={"warning"} tooltip="User is bot account">
-            BOT
-          </SquareChip>
+          <SquareChip
+            color={"warning"}
+            tooltip="User is bot account"
+            iconOnly={<SmartToyIcon fontSize="small" />}
+          />
         )}
 
         {creator.deleted && (
-          <SquareChip color={"danger"} tooltip="User is deleted">
-            DELETED
-          </SquareChip>
+          <SquareChip color={"danger"} tooltip="User is deleted" iconOnly={<DeleteIcon fontSize="small" />} />
         )}
       </Typography>
     </Box>
