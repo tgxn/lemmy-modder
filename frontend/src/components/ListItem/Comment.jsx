@@ -11,6 +11,8 @@ import Badge from "@mui/joy/Badge";
 import ForumIcon from "@mui/icons-material/Forum";
 import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import DeleteIcon from "@mui/icons-material/Delete";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
 
 import { SquareChip } from "../Display.jsx";
 
@@ -67,18 +69,21 @@ export default function CommentListItem({ report }) {
         </SquareChip>
 
         {report.comment_report.resolved && (
-          <SquareChip color={"success"} tooltip={`Resolved by @${report.resolver.name}`}>
-            Resolved
-          </SquareChip>
+          <SquareChip
+            color={"success"}
+            variant="soft"
+            tooltip={`Resolved by @${report.resolver.name}`}
+            iconOnly={<DoneAllIcon fontSize="small" />}
+          />
         )}
 
         {report.comment.removed && (
-          <SquareChip color={"danger"} tooltip="Removed">
-            Removed
-          </SquareChip>
+          <SquareChip color={"danger"} tooltip="Removed" iconOnly={<DeleteIcon fontSize="small" />} />
         )}
 
-        {report.comment.deleted && <SquareChip color={"danger"}>deleted</SquareChip>}
+        {report.comment.deleted && (
+          <SquareChip color={"danger"} tooltip="Deleted" iconOnly={<DeleteIcon fontSize="small" />} />
+        )}
       </Typography>
 
       {/* Comment Content */}

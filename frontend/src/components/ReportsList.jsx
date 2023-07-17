@@ -161,7 +161,7 @@ export default function ReportsList() {
 
         <FilterResolved />
 
-        <FilterRemoved />
+        {/* <FilterRemoved /> */}
       </Sheet>
 
       <RenderReports reportsList={reportsList} />

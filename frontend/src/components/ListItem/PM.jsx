@@ -9,6 +9,10 @@ import Typography from "@mui/joy/Typography";
 import Badge from "@mui/joy/Badge";
 
 import DraftsIcon from "@mui/icons-material/Drafts";
+import DeleteIcon from "@mui/icons-material/Delete";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
+import BlockIcon from "@mui/icons-material/Block";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 import { SquareChip } from "../Display.jsx";
 
@@ -40,12 +44,22 @@ export default function PMListItem({ report }) {
         )}
 
         {report.private_message_report.resolved && (
-          <SquareChip color={"success"} tooltip={`Resolved by @${report.resolver.name}`}>
-            Resolved
-          </SquareChip>
+          <SquareChip
+            color={"success"}
+            variant="soft"
+            tooltip={`Resolved by @${report.resolver.name}`}
+            iconOnly={<DoneAllIcon fontSize="small" />}
+          />
         )}
 
-        {report.private_message.deleted && <SquareChip color={"danger"}>Deleted</SquareChip>}
+        {report.private_message.deleted && (
+          <SquareChip
+            color="danger"
+            variant="soft"
+            tooltip="Deleted"
+            iconOnly={<DeleteOutlineIcon fontSize="small" />}
+          />
+        )}
       </Typography>
 
       {/* Post Content */}

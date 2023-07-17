@@ -26,21 +26,21 @@ export const HeaderChip = ({ children, tooltip = null, count = 0, ...props }) =>
   </Tooltip>
 );
 
-export const SquareChip = ({ children, tooltip = null, color = "neutral", ...props }) => (
-  <Tooltip title={tooltip} color={color} variant="plain" placement="top">
+export const SquareChip = ({ iconOnly = null, tooltip = null, color = "neutral", ...props }) => (
+  <Tooltip title={tooltip} color={"neutral"} variant="plain" placement="top">
     <Chip
       size="sm"
       color={color}
+      startDecorator={iconOnly}
       sx={{
         cursor: "default",
         fontWeight: "normal",
         userSelect: "none",
         borderRadius: 4,
+        "--Chip-gap": iconOnly ? 0 : "0.25rem",
       }}
       {...props}
-    >
-      {children}
-    </Chip>
+    />
   </Tooltip>
 );
 

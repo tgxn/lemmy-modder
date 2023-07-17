@@ -11,6 +11,10 @@ import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import ForumIcon from "@mui/icons-material/Forum";
 import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import DeleteIcon from "@mui/icons-material/Delete";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
+import BlockIcon from "@mui/icons-material/Block";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 import { SquareChip } from "../Display.jsx";
 import Image from "../Image.jsx";
@@ -99,18 +103,31 @@ export default function PostListItem({ report }) {
           </SquareChip>
 
           {report.post_report.resolved && (
-            <SquareChip color={"success"} tooltip={`Resolved by @${report.resolver.name}`}>
-              Resolved
-            </SquareChip>
+            <SquareChip
+              color={"success"}
+              variant="soft"
+              tooltip={`Resolved by @${report.resolver.name}`}
+              iconOnly={<DoneAllIcon fontSize="small" />}
+            />
           )}
 
           {report.post.removed && (
-            <SquareChip color={"danger"} tooltip="Removed">
-              Removed
-            </SquareChip>
+            <SquareChip
+              color={"danger"}
+              variant="soft"
+              tooltip="Removed"
+              iconOnly={<BlockIcon fontSize="small" />}
+            />
           )}
 
-          {report.post.deleted && <SquareChip color={"danger"}>deleted</SquareChip>}
+          {report.post.deleted && (
+            <SquareChip
+              color="danger"
+              variant="soft"
+              tooltip="Deleted"
+              iconOnly={<DeleteOutlineIcon fontSize="small" />}
+            />
+          )}
         </Typography>
 
         {/* Post Content */}
