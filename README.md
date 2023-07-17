@@ -1,6 +1,6 @@
 # Lemmy Modder
 
-A moderation tool for lemmy mods/admins. Basically like the reports page, but an app, and you can quick-switch lemmy accounts.
+A Lemmy moderation tool for community moderators and site admins. Like the reports page, but on steroids. ⚡
 
 ## Features:
 - Quick Actions 
@@ -11,13 +11,15 @@ A moderation tool for lemmy mods/admins. Basically like the reports page, but an
 
 - Quick Switch Accounts
 - Lemmy Instance Auto-Login in popups
+- Auto-Update from GitHub
 
 Coming Soon?
-- "Canned" Reply/Distinguish Comments
-- Manage Community & Site-Wide Bans
-- Manage Community Mods
+- View/Manage Community & Site-Wide Bans
+- View/Manage Community Mods
 - View Modlog
-
+- Canned Messages
+    - "Canned" Reply/Distinguish Comments
+    - "Canned" Ban/Remove Reasons 
 
 ## Screenshots
 | | | |
@@ -59,7 +61,7 @@ passed on the command line in a windo
 React frontend
 
 
-## Running
+## Dev Running
 
 This is a hacky quick and dirty app, so running it is in beta
 
