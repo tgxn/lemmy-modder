@@ -17,6 +17,11 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v3
 
+      - name: Use Node.js 18.15.0
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.15.0
+     
       - name: set develop version
         run: |
           BRANCH=$(git branch --show-current)
@@ -61,8 +66,10 @@ jobs:
           -v ~/.cache/electron-builder:/root/.cache/electron-builder \
           electronuserland/builder:wine \
           bash -c "npm i && npm run build:win:publish"
+        
+      - name: install frontend dependencies (if not cached)
+        # if: steps.cache-frontend-npm.outputs.cache-hit != 'true'
+        run: npm ci
 
-      - name: build electron app (linux)
-        run: |
-          npm i
-          npm run build:linux:publish
+      - name: publish linux
+        run: npm run build:linux:publish
