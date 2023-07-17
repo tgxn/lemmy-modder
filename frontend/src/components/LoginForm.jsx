@@ -246,7 +246,11 @@ export default function LoginForm() {
                           });
 
                           if (!getSite.my_user) {
-                            throw new Error("User not found");
+                            // set instance base to the current instance
+                            setInstanceBase(user.base);
+                            setUsername(user.site.my_user.local_user_view?.person.name);
+
+                            throw new Error("jwt does not provide auth, re-authenticate");
                           }
 
                           // if (saveSession) {
@@ -256,7 +260,7 @@ export default function LoginForm() {
                           dispatch(setCurrentUser(user.base, user.jwt, getSite));
                           // }
                         } catch (e) {
-                          setLoginError(e);
+                          setLoginError(e.message);
                         } finally {
                           setIsLoading(false);
                         }
