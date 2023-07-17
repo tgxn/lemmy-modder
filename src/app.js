@@ -32,7 +32,7 @@ app.once("ready", () => {
     //name
     title: "Lemmy Modder",
     icon: `${__dirname}/icon/Lemmy_Logo.png`,
-    width: 850,
+    width: 950,
     height: 1000,
     show: false,
     webPreferences: {

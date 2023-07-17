@@ -2,16 +2,10 @@ import React from "react";
 
 import Moment from "react-moment";
 
-import Alert from "@mui/joy/Alert";
-import Card from "@mui/joy/Card";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
-import Badge from "@mui/joy/Badge";
 
-import DraftsIcon from "@mui/icons-material/Drafts";
-import DeleteIcon from "@mui/icons-material/Delete";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
-import BlockIcon from "@mui/icons-material/Block";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 import { SquareChip } from "../Display.jsx";
@@ -19,8 +13,10 @@ import { SquareChip } from "../Display.jsx";
 import { ResolvePMReportButton, DeletePMButton } from "../Actions/PMButtons.jsx";
 import { BanUserSiteButton } from "../Actions/GenButtons.jsx";
 
-import { ReportListItem, PersonMetaLine, ReportDetails } from "./Common.jsx";
+import { PersonMetaLine, ReportDetails } from "./Common.jsx";
 import { SanitizedLink } from "../Display.jsx";
+
+import { PMContentDetail } from "./Content.jsx";
 
 export default function PMListItem({ report }) {
   return (
@@ -35,48 +31,7 @@ export default function PMListItem({ report }) {
     >
       <PersonMetaLine creator={report.private_message_creator} />
 
-      {/* PM */}
-      <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
-        {report.private_message.published && (
-          <SquareChip color="neutral" variant="outlined" tooltip={report.private_message.published}>
-            <Moment fromNow>{report.private_message.published}</Moment>
-          </SquareChip>
-        )}
-
-        {report.private_message_report.resolved && (
-          <SquareChip
-            color={"success"}
-            variant="soft"
-            tooltip={`Resolved by @${report.resolver.name}`}
-            iconOnly={<DoneAllIcon fontSize="small" />}
-          />
-        )}
-
-        {report.private_message.deleted && (
-          <SquareChip
-            color="danger"
-            variant="soft"
-            tooltip="Deleted"
-            iconOnly={<DeleteOutlineIcon fontSize="small" />}
-          />
-        )}
-      </Typography>
-
-      {/* Post Content */}
-      <Typography
-        variant="body1"
-        component="p"
-        sx={{
-          p: 1,
-        }}
-      >
-        {report.private_message.content}
-      </Typography>
-
-      {/* Report Status */}
-      <Typography variant="body1" component="p">
-        {report.report_status}
-      </Typography>
+      <PMContentDetail report={report} />
 
       <ReportDetails report={report.private_message_report} creator={report.creator} />
 
