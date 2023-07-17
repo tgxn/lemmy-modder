@@ -15,6 +15,19 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v3
 
+      - name: set develop version
+        run: |
+          BRANCH=$(git branch --show-current)
+          VERSION=$(jq -r '.version' package.json)
+
+          if [ "$BRANCH" != "main" ]; then
+            VERSION="$VERSION-$BRANCH"
+          fi
+
+          jq ".version = \"$VERSION\"" package.json > tmp.$$.json && mv tmp.$$.json package.json
+
+          echo "version: $VERSION"
+
       - name: cache frontend dependencies
         id: cache-frontend-npm
         uses: actions/cache@v3
@@ -46,6 +59,20 @@ jobs:
           -v ~/.cache/electron-builder:/root/.cache/electron-builder \
           electronuserland/builder:wine \
           bash -c "npm i && npm run build:win"
+
+      - name: build electron app (win 64)
+        run: |
+          docker run --rm -i \
+          --env-file <(env | grep -iE 'DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS_TAG|TRAVIS|TRAVIS_REPO_|TRAVIS_BUILD_|TRAVIS_BRANCH|TRAVIS_PULL_REQUEST_|APPVEYOR_|CSC_|GH_|GITHUB_|BT_|AWS_|STRIP|BUILD_') \
+          --env ELECTRON_CACHE="/root/.cache/electron" \
+          --env ELECTRON_BUILDER_CACHE="/root/.cache/electron-builder" \
+          --env GH_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+          -v ${PWD}:/project \
+          -v ${PWD##*/}-node-modules:/project/node_modules \
+          -v ~/.cache/electron:/root/.cache/electron \
+          -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+          electronuserland/builder:wine \
+          bash -c "npm i && npm run build:linux"
 
       - name: store the app artifacts
         uses: actions/upload-artifact@v3
