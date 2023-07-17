@@ -111,33 +111,52 @@ const PostContentDetail = ({ report }) => {
 export default function PostListItem({ report }) {
   return (
     <React.Fragment>
-      {/* Show External Link or Image for URLs */}
-      {report.post.url && (
-        <Box
-          sx={{
-            flexGrow: 0,
-            flexShrink: 0,
-            flexBasis: "auto",
-            width: "150px",
-            height: "200px",
-          }}
-        >
-          <Image imageSrc={report.post.url} />
-        </Box>
-      )}
-
       <Box
         sx={{
-          flexGrow: 1,
-          flexShrink: 1,
-          flexBasis: "auto",
+          // bottom right with flex
+          pt: 1,
           display: "flex",
           flexDirection: "column",
+          // justifyContent: "space-between",
+          gap: 1,
+          flexGrow: 1,
         }}
       >
-        <PersonMetaLine creator={report.post_creator} />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+          }}
+        >
+          {/* Show External Link or Image for URLs */}
+          {report.post.url && (
+            <Box
+              sx={{
+                flexGrow: 0,
+                flexShrink: 0,
+                flexBasis: "auto",
+                width: "150px",
+                // height: "200px",
+              }}
+            >
+              <Image imageSrc={report.post.url} />
+            </Box>
+          )}
 
-        <PostContentDetail report={report} />
+          <Box
+            sx={{
+              flexGrow: 1,
+              flexShrink: 1,
+              flexBasis: "auto",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <PersonMetaLine creator={report.post_creator} />
+
+            <PostContentDetail report={report} />
+          </Box>
+        </Box>
 
         <ReportDetails report={report.post_report} creator={report.creator} />
 
