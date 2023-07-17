@@ -1,17 +1,17 @@
 {
   "name": "lemmy-modder-app",
   "productName": "Lemmy Modder",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Lemmy Moderation Frontend",
-  "author": "tgxn",
+  "author": "tgxn <tgxn@tgxn.net>",
   "license": "MIT",
   "main": "src/app.js",
   "scripts": {
     "start": "electron .",
     "build:win": "electron-builder --windows portable:x64 portable:ia32 nsis:x64 nsis:ia32 --publish never",
     "build:win:publish": "electron-builder --windows portable:x64 portable:ia32 nsis:x64 nsis:ia32 --publish always",
-    "builder:snap": "electron-builder --linux snap --publish never",
-    "builder:snap:publish": "electron-builder --linux snap --publish always"
+    "build:linux": "electron-builder --linux --publish never",
+    "build:linux:publish": "electron-builder --linux --publish always"
   },
   "devDependencies": {
     "electron": "^25.3.0",
