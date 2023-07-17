@@ -13,7 +13,6 @@ import Menu from "@mui/joy/Menu";
 import MenuItem from "@mui/joy/MenuItem";
 import IconButton from "@mui/joy/IconButton";
 
-import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 import CachedIcon from "@mui/icons-material/Cached";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import ForumIcon from "@mui/icons-material/Forum";

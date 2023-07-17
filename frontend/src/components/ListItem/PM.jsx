@@ -6,12 +6,11 @@ import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 
 import DoneAllIcon from "@mui/icons-material/DoneAll";
-
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 import { SquareChip } from "../Display.jsx";
 
-import { ResolvePMReportButton, DeletePMButton } from "../Actions/PMButtons.jsx";
+import { ResolvePMReportButton } from "../Actions/PMButtons.jsx";
 import { BanUserSiteButton } from "../Actions/GenButtons.jsx";
 
 import { PersonMetaLine, ReportDetails } from "./Common.jsx";

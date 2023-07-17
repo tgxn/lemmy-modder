@@ -2,16 +2,12 @@ import React from "react";
 
 import Moment from "react-moment";
 
-import Card from "@mui/joy/Card";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
-import Badge from "@mui/joy/Badge";
 
-import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import ForumIcon from "@mui/icons-material/Forum";
 import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
-import DeleteIcon from "@mui/icons-material/Delete";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import BlockIcon from "@mui/icons-material/Block";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -19,17 +15,11 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { SquareChip } from "../Display.jsx";
 import Image from "../Image.jsx";
 
-import {
-  ResolvePostReportButton,
-  DeletePostButton,
-  RemovePostButton,
-  PurgePostButton,
-  BanPostUserCommunityButton,
-  BanPostUserSiteButton,
-} from "../Actions/PostButtons.jsx";
+import { ResolvePostReportButton, RemovePostButton, PurgePostButton } from "../Actions/PostButtons.jsx";
+
 import { BanUserCommunityButton, BanUserSiteButton } from "../Actions/GenButtons.jsx";
 
-import { ReportListItem, PersonMetaLine, ReportDetails } from "./Common.jsx";
+import { PersonMetaLine, ReportDetails } from "./Common.jsx";
 import { SanitizedLink } from "../Display.jsx";
 
 const PostContentDetail = ({ report }) => {
