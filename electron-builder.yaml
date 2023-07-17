@@ -52,7 +52,6 @@ dmg:
     - {x: 122, y: 240, type: file}
 
 linux:
-  target: snap
   icon: ./icon/Lemmy_Logo.png
   # category: Office
   # packageCategory: Office
@@ -63,6 +62,11 @@ linux:
   #   StartupWMClass: lemmy-modder
   executableArgs:
     - '--js-flags="--max-old-space-size=12288"'
+  target:
+    - target: AppImage
+    - target: snap
+    - target: deb
+    - target: rpm
 
 snap:
   confinement: strict
@@ -86,7 +90,6 @@ win:
       arch: x64
     - target: portable
       arch: ia32
-
 
 nsis:
   artifactName: LemmyModder-${version}-Windows-Setup-${arch}.${ext}
