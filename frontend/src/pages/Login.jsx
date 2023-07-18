@@ -30,6 +30,7 @@ export default function LoginForm() {
   const dispatch = useDispatch();
 
   const users = useSelector((state) => state.accountReducer.users);
+  const isInElectron = useSelector((state) => state.configReducer.isInElectron);
 
   const [instanceBase, setInstanceBase] = React.useState("");
   const [username, setUsername] = React.useState("");
@@ -315,38 +316,52 @@ export default function LoginForm() {
           </Card>
         )}
 
-        <Card
-          sx={{
-            mt: 4,
-            p: 2,
-            py: 4,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <Typography>Clear Data</Typography>
-
-          <Box
+        {isInElectron && (
+          <Card
             sx={{
-              maxWidth: "300px",
+              mt: 4,
+              p: 2,
+              py: 4,
               display: "flex",
               flexDirection: "column",
-              gap: 1,
+              alignItems: "center",
+              justifyContent: "center",
+              width: "100%",
+              height: "100%",
             }}
           >
-            <Button size="sm" fullWidth color="warning" onClick={() => clearData(true)} disabled={isLoading}>
-              Clean storage (keep users)
-            </Button>
+            <Typography>Clear Data</Typography>
 
-            <Button size="sm" fullWidth color="danger" onClick={() => clearData(false)} disabled={isLoading}>
-              Purge storage
-            </Button>
-          </Box>
-        </Card>
+            <Box
+              sx={{
+                maxWidth: "300px",
+                display: "flex",
+                flexDirection: "column",
+                gap: 1,
+              }}
+            >
+              <Button
+                size="sm"
+                fullWidth
+                color="warning"
+                onClick={() => clearData(true)}
+                disabled={isLoading}
+              >
+                Clean storage (keep users)
+              </Button>
+
+              <Button
+                size="sm"
+                fullWidth
+                color="danger"
+                onClick={() => clearData(false)}
+                disabled={isLoading}
+              >
+                Purge storage
+              </Button>
+            </Box>
+          </Card>
+        )}
       </Box>
     </Container>
   );
