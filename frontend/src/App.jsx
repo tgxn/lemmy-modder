@@ -7,6 +7,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 // import { Routes, Route, Navigate } from "react-router-dom";
 // import { HashRouter } from "react-router-dom";
 
+import Box from "@mui/joy/Box";
 import Container from "@mui/joy/Container";
 
 import SiteHeader from "./components/SiteHeader";
@@ -16,12 +17,13 @@ import Login from "./pages/Login";
 
 import AppStore from "./store";
 
-function PageRouter({ children }) {
+function PageRouter() {
   const currentUser = useSelector((state) => state.accountReducer.currentUser);
+  const isInElectron = useSelector((state) => state.configReducer.isInElectron);
 
   // when we get a jwt, set the cookie in electron
   React.useEffect(() => {
-    if (currentUser) {
+    if (currentUser && isInElectron) {
       window.modder.setLemmyCookie(currentUser.base, currentUser.jwt);
     }
   }, [currentUser]);
@@ -29,18 +31,40 @@ function PageRouter({ children }) {
   if (!currentUser) return <Login />;
 
   return (
-    <React.Fragment>
-      <SiteHeader />
+    <Container
+      maxWidth={false}
+      disableGutters={true}
+      sx={{
+        height: "100%",
+        width: "100%",
+        position: "absolute",
+        bottom: 0,
+        top: 0,
+        left: 0,
+        right: 0,
+        display: "block",
+        overflow: "hidden",
+      }}
+    >
+      <SiteHeader height="50px" />
 
-      <Container
-        maxWidth={"md"}
+      <Box
         sx={{
-          py: 2,
+          overflow: "auto",
+          height: "calc(100% - 50px)",
+          width: "100%",
         }}
       >
-        <Reports />
-      </Container>
-    </React.Fragment>
+        <Container
+          maxWidth={"md"}
+          sx={{
+            py: 2,
+          }}
+        >
+          <Reports />
+        </Container>
+      </Box>
+    </Container>
   );
 }
 
@@ -51,22 +75,8 @@ export default function App() {
       <ReactQueryDevtools initialIsOpen={false} />
 
       <Provider store={AppStore}>
-        <Container
-          maxWidth={false}
-          disableGutters={true}
-          sx={{
-            height: "100%",
-            width: "100%",
-            position: "absolute",
-            bottom: 0,
-            top: 0,
-            left: 0,
-            right: 0,
-            display: "block",
-          }}
-        >
-          <PageRouter />
-          {/* 
+        <PageRouter />
+        {/* 
           {!currentUser && <Login />}
           {currentUser && (
             <PageWrapper>
@@ -74,7 +84,7 @@ export default function App() {
             </PageWrapper>
           )} */}
 
-          {/* <HashRouter>
+        {/* <HashRouter>
             <Box
               sx={
                 {
@@ -88,7 +98,6 @@ export default function App() {
               </Routes>
             </Box>
           </HashRouter> */}
-        </Container>
       </Provider>
     </QueryClientProvider>
   );

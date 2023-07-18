@@ -7,6 +7,8 @@ export function setConfigItem(configKey, configValue) {
 }
 
 const initialState = {
+  isInElectron: window.modder ? true : false,
+
   orderBy: localStorage.getItem("config.orderBy") || "hot",
   filterType: localStorage.getItem("config.filterType") || "all",
   filterCommunity: localStorage.getItem("config.filterCommunity") || "all",

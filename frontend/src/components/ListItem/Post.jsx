@@ -17,7 +17,7 @@ import Image from "../Image.jsx";
 
 import { ResolvePostReportButton, RemovePostButton, PurgePostButton } from "../Actions/PostButtons.jsx";
 
-import { BanUserCommunityButton, BanUserSiteButton } from "../Actions/GenButtons.jsx";
+import { BanUserCommunityButton, BanUserSiteButton, PurgeUserSiteButton } from "../Actions/GenButtons.jsx";
 
 import { PersonMetaLine, ReportDetails } from "./Common.jsx";
 import { SanitizedLink } from "../Display.jsx";
@@ -187,6 +187,7 @@ export default function PostListItem({ report }) {
 
             <BanUserCommunityButton person={report.post_creator} community={report.community} />
             <BanUserSiteButton person={report.post_creator} />
+            <PurgeUserSiteButton person={report.post_creator} />
           </Box>
           <Box
             sx={{

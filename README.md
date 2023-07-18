@@ -1,6 +1,10 @@
+[![publish-pages](https://github.com/tgxn/lemmy-modder/actions/workflows/publish-pages.yaml/badge.svg)](https://github.com/tgxn/lemmy-modder/actions/workflows/publish-pages.yaml)
+
 # Lemmy Modder
 
 A Lemmy moderation tool for community moderators and site admins. Like the reports page, but on steroids. ⚡
+
+Now available at https://modder.lemmyverse.net/ which should work for sites that have `CORS *`
 
 ## Features:
 - Quick Actions 
@@ -89,7 +93,7 @@ The reason for the electron app is CORS on most lemmy instances returning invali
 # purge content
 - ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#purgePost
 - ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#purgeComment
-- https://join-lemmy.org/api/classes/LemmyHttp.html#purgePerson
+- ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#purgePerson
 
 # get / ban users
 - https://join-lemmy.org/api/classes/LemmyHttp.html#getBannedPersons

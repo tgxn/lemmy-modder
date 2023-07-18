@@ -78,6 +78,7 @@ snap:
 win:
   artifactName: LemmyModder-${version}-Windows-Portable-${arch}.${ext}
   publisherName: tgxn
+  verifyUpdateCodeSignature: false
   icon: ./icon/Lemmy_Logo.png
   target:
     - target: nsis
