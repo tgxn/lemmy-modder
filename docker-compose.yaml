@@ -7,5 +7,5 @@ services:
     restart: always
     ports:
       - 8091:80
-    environment:
+    # environment:
       # FRONTEND_URL: http://localhost:8091
