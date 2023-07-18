@@ -19,10 +19,11 @@ import AppStore from "./store";
 
 function PageRouter() {
   const currentUser = useSelector((state) => state.accountReducer.currentUser);
+  const isInElectron = useSelector((state) => state.configReducer.isInElectron);
 
   // when we get a jwt, set the cookie in electron
   React.useEffect(() => {
-    if (currentUser) {
+    if (currentUser && isInElectron) {
       window.modder.setLemmyCookie(currentUser.base, currentUser.jwt);
     }
   }, [currentUser]);
