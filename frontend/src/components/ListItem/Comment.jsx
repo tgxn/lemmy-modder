@@ -14,7 +14,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { SquareChip } from "../Display.jsx";
 
 import { ResolveCommentReportButton, RemoveCommentButton } from "../Actions/CommentButtons.jsx";
-import { BanUserCommunityButton, BanUserSiteButton } from "../Actions/GenButtons.jsx";
+import { BanUserCommunityButton, BanUserSiteButton, PurgeUserSiteButton } from "../Actions/GenButtons.jsx";
 
 import { PersonMetaLine, ReportDetails } from "./Common.jsx";
 
@@ -125,6 +125,7 @@ export default function CommentListItem({ report }) {
 
           <BanUserCommunityButton person={report.comment_creator} community={report.community} />
           <BanUserSiteButton person={report.comment_creator} />
+          <PurgeUserSiteButton person={report.comment_creator} />
         </Box>
         <Box
           sx={{

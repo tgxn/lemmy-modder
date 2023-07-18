@@ -153,7 +153,7 @@ export const BanUserSiteButton = ({ person, ...props }) => {
   }, [data]);
 
   let actionText = "Ban";
-  let actionColor = "danger";
+  let actionColor = "info";
   if (person.banned) {
     actionText = "Unban";
     actionColor = "warning";
@@ -166,7 +166,7 @@ export const BanUserSiteButton = ({ person, ...props }) => {
     <>
       <BaseActionButton
         text={`${actionText} (Site)`}
-        tooltip={`${actionText} User from Site`}
+        tooltip={`${actionText} User from Site (admin)`}
         color={actionColor}
         onClick={() => setConfirmOpen(true)}
         {...props}
@@ -233,6 +233,74 @@ export const BanUserSiteButton = ({ person, ...props }) => {
             expires: expiresEpoch,
             reason: banReason,
             remove_data: removeData,
+          });
+        }}
+        onCancel={() => {
+          setConfirmOpen(false);
+        }}
+      />
+    </>
+  );
+};
+
+// PURGE from site
+export const PurgeUserSiteButton = ({ person, ...props }) => {
+  const [confirmOpen, setConfirmOpen] = React.useState(false);
+  const [purgeReason, setPurgeReason] = React.useState("");
+
+  const queryClient = useQueryClient();
+  const { userRole } = getSiteData();
+
+  const { data, callAction, isSuccess, isLoading, error } = useLemmyHttpAction("purgePerson");
+
+  React.useEffect(() => {
+    if (isSuccess) {
+      setConfirmOpen(false);
+
+      queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
+      // update store state
+    }
+  }, [data]);
+
+  let actionText = "Purge";
+  let actionColor = "info";
+
+  // only show purge for global admins
+  if (userRole != "admin") return null;
+
+  return (
+    <>
+      <BaseActionButton
+        text={`${actionText} (Site)`}
+        tooltip={`${actionText} User from Site (admin)`}
+        color={actionColor}
+        onClick={() => setConfirmOpen(true)}
+        {...props}
+      />
+
+      <ConfirmDialog
+        open={confirmOpen}
+        loading={isLoading}
+        error={error}
+        title={`${actionText} User from Site`}
+        message={`Are you sure you want to ${actionText.toLowerCase()} "@${
+          person.name
+        }" from the SITE (GLOBALLY)?`}
+        extraElements={[
+          <InputElement
+            key="purgeReason"
+            value={purgeReason}
+            setValue={setPurgeReason}
+            placeholder={`${actionText.toLowerCase()} reason`}
+          />,
+        ]}
+        // disabled={purgeReason == ""}
+        buttonMessage={actionText}
+        color={actionColor}
+        onConfirm={() => {
+          callAction({
+            person_id: person.id,
+            reason: purgeReason,
           });
         }}
         onCancel={() => {

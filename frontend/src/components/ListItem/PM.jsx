@@ -11,7 +11,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { SquareChip } from "../Display.jsx";
 
 import { ResolvePMReportButton } from "../Actions/PMButtons.jsx";
-import { BanUserSiteButton } from "../Actions/GenButtons.jsx";
+import { BanUserSiteButton, PurgeUserSiteButton } from "../Actions/GenButtons.jsx";
 
 import { PersonMetaLine, ReportDetails } from "./Common.jsx";
 
@@ -104,6 +104,7 @@ export default function PMListItem({ report }) {
           {/* <DeletePMButton report={report} /> */}
 
           <BanUserSiteButton person={report.private_message_creator} />
+          <PurgeUserSiteButton person={report.private_message_creator} />
         </Box>
         <Box
           sx={{

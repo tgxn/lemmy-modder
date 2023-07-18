@@ -110,7 +110,7 @@ function UserMenu() {
   );
 }
 
-export default function SiteHeader() {
+export default function SiteHeader({ height }) {
   const dispatch = useDispatch();
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
@@ -124,7 +124,11 @@ export default function SiteHeader() {
   } = useLemmyHttp("getReportCount");
 
   return (
-    <Box>
+    <Box
+      sx={{
+        height,
+      }}
+    >
       <Sheet
         sx={{
           p: 1,
