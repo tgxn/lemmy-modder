@@ -89,7 +89,7 @@ The reason for the electron app is CORS on most lemmy instances returning invali
 # purge content
 - ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#purgePost
 - ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#purgeComment
-- https://join-lemmy.org/api/classes/LemmyHttp.html#purgePerson
+- ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#purgePerson
 
 # get / ban users
 - https://join-lemmy.org/api/classes/LemmyHttp.html#getBannedPersons
