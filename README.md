@@ -1,6 +1,10 @@
+[![publish-pages](https://github.com/tgxn/lemmy-modder/actions/workflows/publish-pages.yaml/badge.svg)](https://github.com/tgxn/lemmy-modder/actions/workflows/publish-pages.yaml)
+
 # Lemmy Modder
 
 A Lemmy moderation tool for community moderators and site admins. Like the reports page, but on steroids. ⚡
+
+Now available at https://modder.lemmyverse.net/ which should work for sites that have `CORS *`
 
 ## Features:
 - Quick Actions 
