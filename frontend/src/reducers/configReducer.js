@@ -18,6 +18,9 @@ const initialState = {
   showRemoved: localStorage.getItem("config.showRemoved")
     ? JSON.parse(localStorage.getItem("config.showRemoved"))
     : true,
+  hideReadApprovals: localStorage.getItem("config.hideReadApprovals")
+    ? JSON.parse(localStorage.getItem("config.hideReadApprovals"))
+    : true,
 
   // are comments required on mod actions?
   mandatoryModComment: localStorage.getItem("config.mandatoryModComment")

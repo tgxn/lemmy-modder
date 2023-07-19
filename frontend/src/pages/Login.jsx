@@ -142,7 +142,13 @@ export default function LoginForm() {
               onChange={(e) => setPassword(e.target.value)}
               variant="outlined"
               color="neutral"
-              sx={{ mb: 1 }}
+              sx={{
+                mb: 1,
+                "& .MuiInput-input": {
+                  caretColor: "#000000",
+                  textOverflow: "clip",
+                },
+              }}
             />
 
             <Button

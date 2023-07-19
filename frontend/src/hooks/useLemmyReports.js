@@ -1,17 +1,31 @@
 import { useEffect, useMemo } from "react";
 
 import { useQuery, useMutation, useInfiniteQuery } from "@tanstack/react-query";
+
 import { getSiteData } from "../hooks/getSiteData";
 
 import { useSelector } from "react-redux";
 
 import { LemmyHttp } from "lemmy-js-client";
 
-function useLemmyInfinite(callLemmyMethod, formData, countResultElement, enabled = true) {
+export function useLemmyInfinite({
+  callLemmyMethod,
+  formData,
+  countResultElement,
+  enabled = true,
+  perPage = 25,
+}) {
   const currentUser = useSelector((state) => state.accountReducer.currentUser);
-  const showResolved = useSelector((state) => state.configReducer.showResolved);
+  // const showResolved = useSelector((state) => state.configReducer.showResolved);
 
-  const perPage = 25;
+  const formDataArray = useMemo(() => {
+    const formDataArray = [];
+    for (const [key, value] of Object.entries(formData)) {
+      formDataArray.push(key);
+      formDataArray.push(value);
+    }
+    return formDataArray;
+  }, [formData]);
 
   const { localPerson } = getSiteData();
 
@@ -30,7 +44,7 @@ function useLemmyInfinite(callLemmyMethod, formData, countResultElement, enabled
     fetchPreviousPage,
     hasNextPage,
   } = useInfiniteQuery({
-    queryKey: ["lemmyHttp", localPerson.id, showResolved, callLemmyMethod],
+    queryKey: ["lemmyHttp", localPerson.id, formDataArray, callLemmyMethod],
     queryFn: async ({ pageParam = 1, ...rest }, optional) => {
       console.log("LemmyHttp inner infinite", callLemmyMethod, pageParam, rest, optional);
 
@@ -97,13 +111,13 @@ export function useLemmyReports() {
     refetch: postReportsRefetch,
     error: postReportsError,
     data: postReportsData,
-  } = useLemmyInfinite(
-    "listPostReports",
-    {
+  } = useLemmyInfinite({
+    callLemmyMethod: "listPostReports",
+    formData: {
       unresolved_only: showResolved !== true,
     },
-    "post_reports",
-  );
+    countResultElement: "post_reports",
+  });
 
   const {
     isLoading: commentReportsLoading,
@@ -114,13 +128,13 @@ export function useLemmyReports() {
     refetch: commentReportsRefetch,
     error: commentReportsError,
     data: commentReportsData,
-  } = useLemmyInfinite(
-    "listCommentReports",
-    {
+  } = useLemmyInfinite({
+    callLemmyMethod: "listCommentReports",
+    formData: {
       unresolved_only: showResolved !== true,
     },
-    "comment_reports",
-  );
+    countResultElement: "comment_reports",
+  });
 
   const {
     isLoading: pmReportsLoading,
@@ -131,14 +145,14 @@ export function useLemmyReports() {
     refetch: pmReportsRefetch,
     error: pmReportsError,
     data: pmReportsData,
-  } = useLemmyInfinite(
-    "listPrivateMessageReports",
-    {
+  } = useLemmyInfinite({
+    callLemmyMethod: "listPrivateMessageReports",
+    formData: {
       unresolved_only: showResolved !== true,
     },
-    "private_message_reports",
-    userRole === "admin",
-  );
+    countResultElement: "private_message_reports",
+    enabled: userRole === "admin",
+  });
 
   function mapPagesData(startList, mapFunction) {
     let reportsList = [];
