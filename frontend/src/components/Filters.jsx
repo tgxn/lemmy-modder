@@ -132,6 +132,22 @@ export function FilterResolved() {
   );
 }
 
+export function HideRead() {
+  const dispatch = useDispatch();
+  const hideReadApprovals = useSelector((state) => state.configReducer.hideReadApprovals);
+
+  return (
+    <Checkbox
+      label="Hide Read"
+      variant="outlined"
+      checked={hideReadApprovals}
+      onChange={() => {
+        dispatch(setConfigItem("hideReadApprovals", !hideReadApprovals));
+      }}
+    />
+  );
+}
+
 export function FilterRemoved() {
   const dispatch = useDispatch();
   const showRemoved = useSelector((state) => state.configReducer.showRemoved);
