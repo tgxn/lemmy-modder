@@ -107,6 +107,8 @@ The reason for the electron app is CORS on most lemmy instances returning invali
 
 # manage community mods
 - https://join-lemmy.org/api/classes/LemmyHttp.html#addModToCommunity
+- ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#getUnreadRegistrationApplicationCount
+- https://join-lemmy.org/api/classes/LemmyHttp.html#listRegistrationApplications
 - https://join-lemmy.org/api/classes/LemmyHttp.html#approveRegistrationApplication
 
 - https://join-lemmy.org/api/classes/LemmyHttp.html#getModlog
