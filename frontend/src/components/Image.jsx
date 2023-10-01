@@ -34,11 +34,11 @@ function RenderImage({ imageSrc, imageAlt = "" }) {
   );
 }
 
-export default function LazyImage({ imageSrc, imageAlt = "" }) {
+export default function LazyImage({ width = 175, imageSrc, imageAlt = "" }) {
   const isImage = imageSrc.match(/\.(jpeg|jpg|gif|png)$/) != null;
 
   return (
-    <AspectRatio sx={{ width: 125 }}>
+    <AspectRatio sx={{ width: width }}>
       <SanitizedLink underline={"none"} href={imageSrc} target="_new">
         {isImage ? (
           <RenderImage imageSrc={imageSrc} imageAlt={imageAlt} />

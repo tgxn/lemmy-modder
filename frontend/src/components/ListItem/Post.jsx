@@ -5,12 +5,15 @@ import Moment from "react-moment";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 
-import ForumIcon from "@mui/icons-material/Forum";
 import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import BlockIcon from "@mui/icons-material/Block";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+
+import StickyNote2Icon from "@mui/icons-material/StickyNote2";
+import ForumIcon from "@mui/icons-material/Forum";
+import DraftsIcon from "@mui/icons-material/Drafts";
 
 import { SquareChip } from "../Display.jsx";
 import Image from "../Image.jsx";
@@ -25,16 +28,8 @@ import { SanitizedLink } from "../Display.jsx";
 const PostContentDetail = ({ report }) => {
   return (
     <Box>
-      {/* Post Title */}
-      <Typography variant="h4" component="h2">
-        Post:{" "}
-        <SanitizedLink href={report.post.ap_id} target="_blank" rel="noopener noreferrer">
-          {report.post.name}
-        </SanitizedLink>
-      </Typography>
-
       {/* Post Meta */}
-      <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
+      <Typography variant="h6" component="h2" sx={{ mt: 0, display: "flex", gap: 1 }}>
         {report.post.nsfw == true && (
           <SquareChip variant="outlined" color={"warning"}>
             NSFW
@@ -94,6 +89,30 @@ const PostContentDetail = ({ report }) => {
         )}
       </Typography>
 
+      {/* Post Title */}
+      <Typography
+        variant="h2"
+        component="h2"
+        sx={{
+          fontSize: "17px",
+        }}
+      >
+        <Typography>
+          <StickyNote2Icon fontSize="large" />
+        </Typography>
+        <SanitizedLink href={report.post.ap_id} target="_blank" rel="noopener noreferrer">
+          {report.post.name}
+        </SanitizedLink>
+      </Typography>
+
+      <PersonMetaLine
+        creator={report.post_creator}
+        by
+        sx={{
+          px: 1,
+        }}
+      />
+
       {/* Post Content */}
       <Typography
         variant="body1"
@@ -114,7 +133,7 @@ export default function PostListItem({ report }) {
       <Box
         sx={{
           // bottom right with flex
-          pt: 1,
+          pt: 0,
           display: "flex",
           flexDirection: "column",
           // justifyContent: "space-between",
@@ -135,8 +154,13 @@ export default function PostListItem({ report }) {
                 flexGrow: 0,
                 flexShrink: 0,
                 flexBasis: "auto",
-                width: "150px",
+                // width: "175px",
                 // height: "200px",
+                pr: 2,
+                // flexAlign: "center",
+                justifyContent: "center",
+                display: "flex",
+                // flexDirection: "column",
               }}
             >
               <Image imageSrc={report.post.url} />
@@ -152,8 +176,6 @@ export default function PostListItem({ report }) {
               flexDirection: "column",
             }}
           >
-            <PersonMetaLine creator={report.post_creator} />
-
             <PostContentDetail report={report} />
           </Box>
         </Box>
