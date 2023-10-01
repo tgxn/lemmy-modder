@@ -45,6 +45,8 @@ const PMContentDetail = ({ report }) => {
         )}
       </Typography>
 
+      <PersonMetaLine creator={report.private_message_creator} />
+
       {/* Post Content */}
       <Typography
         variant="body1"
@@ -68,15 +70,15 @@ export default function PMListItem({ report }) {
   return (
     <Box
       sx={{
-        flexGrow: 1,
-        flexShrink: 1,
-        flexBasis: "auto",
+        // bottom right with flex
+        pt: 0,
         display: "flex",
         flexDirection: "column",
+        // justifyContent: "space-between",
+        gap: 1,
+        flexGrow: 1,
       }}
     >
-      <PersonMetaLine creator={report.private_message_creator} />
-
       <PMContentDetail report={report} />
 
       <ReportDetails report={report.private_message_report} creator={report.creator} />

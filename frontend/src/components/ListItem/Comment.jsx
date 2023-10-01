@@ -5,11 +5,12 @@ import Moment from "react-moment";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 
-import ForumIcon from "@mui/icons-material/Forum";
 import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import ForumIcon from "@mui/icons-material/Forum";
+import DraftsIcon from "@mui/icons-material/Drafts";
 
 import { SquareChip } from "../Display.jsx";
 
@@ -23,14 +24,6 @@ import { SanitizedLink } from "../Display.jsx";
 const CommentContentDetail = ({ report }) => {
   return (
     <Box>
-      {/* Comment Title */}
-      <Typography variant="h4" component="h2">
-        Comment:{" "}
-        <SanitizedLink href={report.comment.ap_id} target="_blank" rel="noopener noreferrer">
-          Show
-        </SanitizedLink>
-      </Typography>
-
       {/* Comment Meta */}
       <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
         {report.comment.published && (
@@ -69,6 +62,24 @@ const CommentContentDetail = ({ report }) => {
         )}
       </Typography>
 
+      {/* Comment Title */}
+      <Typography variant="h4" component="h2">
+        <Typography>
+          <ForumIcon fontSize="large" />
+        </Typography>
+        <SanitizedLink href={report.comment.ap_id} target="_blank" rel="noopener noreferrer">
+          Show
+        </SanitizedLink>
+      </Typography>
+
+      <PersonMetaLine
+        creator={report.comment_creator}
+        by
+        sx={{
+          px: 1,
+        }}
+      />
+
       {/* Comment Content */}
       <Typography
         variant="body1"
@@ -87,15 +98,15 @@ export default function CommentListItem({ report }) {
   return (
     <Box
       sx={{
-        flexGrow: 1,
-        flexShrink: 1,
-        flexBasis: "auto",
+        // bottom right with flex
+        pt: 0,
         display: "flex",
         flexDirection: "column",
+        // justifyContent: "space-between",
+        gap: 1,
+        flexGrow: 1,
       }}
     >
-      <PersonMetaLine creator={report.comment_creator} />
-
       <CommentContentDetail report={report} />
 
       <ReportDetails report={report.comment_report} creator={report.creator} />
