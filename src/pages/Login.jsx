@@ -32,6 +32,7 @@ export default function LoginForm() {
   const users = useSelector((state) => state.accountReducer.users);
   const isInElectron = useSelector((state) => state.configReducer.isInElectron);
 
+  // form state
   const [instanceBase, setInstanceBase] = React.useState("");
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -46,6 +47,7 @@ export default function LoginForm() {
   const loginClick = async () => {
     setIsLoading(true);
     try {
+
       const lemmyClient = new LemmyHttp(`https://${instanceBase}`);
 
       const auth = await lemmyClient.login({
@@ -53,7 +55,27 @@ export default function LoginForm() {
         password: password,
       });
 
+/**
+ * 0.19.x :/ hmm
+        // this shows the `jwt` is present 👍
+        console.log("auth", auth);
+
+        // cookie is called `auth` now.
+        lemmyClient.setHeaders({
+          "Cookie":	`auth=${auth.jwt}`
+        });
+
+        // this no longer has any params !
+        const getSite = await lemmyClient.getSite();
+
+        console.log("getSite", getSite);
+
+ * 
+ */
+
+      // as long aws there is a JWT in the response from login, logged in!
       if (auth.jwt) {
+
         const getSite = await lemmyClient.getSite({
           auth: auth.jwt,
         });
@@ -63,6 +85,7 @@ export default function LoginForm() {
         } else {
           dispatch(setCurrentUser(instanceBase, auth.jwt, getSite));
         }
+
       } else {
         setLoginError(auth);
       }
