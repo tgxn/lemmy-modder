@@ -6,6 +6,8 @@ A Lemmy moderation tool for community moderators and site admins. Like the repor
 
 Now available at https://modder.lemmyverse.net/ which should work for sites that have `CORS *`
 
+ > Only compatible with 0.18.x currently, as Lemmy SDK is not backwards-compatible. :'(
+
 ## Features:
 - Quick Actions 
     - Resolve/Unresolve Reports

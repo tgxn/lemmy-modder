@@ -10,7 +10,7 @@ import { useInView } from "react-intersection-observer";
 import { FilterCommunity, FilterTypeSelect, FilterResolved, FilterRemoved } from "../components/Filters";
 
 import { useLemmyHttp } from "../hooks/useLemmyHttp";
-import { useLemmyReports } from "../hooks/useLemmyReports";
+import useLemmyReports from "../hooks/useLemmyReports";
 
 import ReportsList from "../components/ReportsList.jsx";
 
@@ -61,7 +61,7 @@ export default function Reports() {
           // borderColor: "grey.500",
         }}
       >
-        <CircularProgress size="lg" color="info" />
+        <CircularProgress size="lg" color="primary" />
         <Box sx={{ fontWeight: "bold" }}>Loading...</Box>
       </Box>
     );

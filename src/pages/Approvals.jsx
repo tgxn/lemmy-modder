@@ -11,8 +11,8 @@ import { useInView } from "react-intersection-observer";
 
 import { HideRead, FilterTypeSelect, FilterResolved, FilterRemoved } from "../components/Filters";
 
-import { useLemmyHttp } from "../hooks/useLemmyHttp";
-import { useLemmyInfinite } from "../hooks/useLemmyReports";
+// import { useLemmyHttp } from "../hooks/useLemmyHttp";
+import useLemmyInfinite from "../hooks/useLemmyInfinite";
 
 import ApprovalsList from "../components/ApprovalsList.jsx";
 
@@ -84,7 +84,7 @@ export default function Approvals() {
           // borderColor: "grey.500",
         }}
       >
-        <CircularProgress size="lg" color="info" />
+        <CircularProgress size="lg" color="primary" />
         <Box sx={{ fontWeight: "bold" }}>Loading...</Box>
       </Box>
     );

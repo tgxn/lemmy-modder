@@ -21,10 +21,15 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { SanitizedLink, SquareChip } from "../Display.jsx";
 import { UserTooltip } from "../Tooltip.jsx";
 
+import { parseActorId } from "../../utils.js";
+
 export function ReportListItem({ itemType, report, children }) {
   let itemColor;
   let itemIcon;
   let resolved = true;
+
+  // const parsedActor = parseActorId(report.actor_id);
+
   if (itemType == "post") {
     resolved = report.post_report.resolved;
     itemColor = "primary";
@@ -40,13 +45,13 @@ export function ReportListItem({ itemType, report, children }) {
     );
   } else if (itemType == "comment") {
     resolved = report.comment_report.resolved;
-    itemColor = "info";
+    itemColor = "primary";
     itemIcon = (
       <Tooltip
         title={`Comment: ${report.community.actor_id.split("/")[2]}/c/${report.community.name}`}
         variant="outlined"
         placement="right"
-        color="info"
+        color="primary"
       >
         <ForumIcon fontSize="md" />
       </Tooltip>
@@ -147,7 +152,7 @@ export function PersonMetaLine({ creator, by = false, sx }) {
       <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
         {creator.admin && (
           <SquareChip
-            color={"info"}
+            color={"primary"}
             tooltip="User is site admin"
             iconOnly={<SecurityIcon fontSize="small" />}
           />

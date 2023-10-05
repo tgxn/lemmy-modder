@@ -36,11 +36,11 @@ const CommentContentDetail = ({ report }) => {
           {report.counts.child_count}
         </SquareChip>
 
-        <SquareChip color={"info"} tooltip="Score" startDecorator={<ThumbsUpDownIcon />}>
+        <SquareChip color={"primary"} tooltip="Score" startDecorator={<ThumbsUpDownIcon />}>
           {report.counts.score}
         </SquareChip>
 
-        <SquareChip color={"info"} tooltip="Downvotes" startDecorator={<ThumbDownIcon />}>
+        <SquareChip color={"primary"} tooltip="Downvotes" startDecorator={<ThumbDownIcon />}>
           {report.counts.downvotes}
         </SquareChip>
 
