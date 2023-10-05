@@ -1,72 +1,93 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import { useQuery, useMutation, useInfiniteQuery } from "@tanstack/react-query";
+
 import { getSiteData } from "../hooks/getSiteData";
 
 import { useSelector } from "react-redux";
 
 import { LemmyHttp } from "lemmy-js-client";
 
-export function useLemmyHttp(callLemmyMethod, formData) {
+export default function useLemmyInfinite({
+  callLemmyMethod,
+  formData,
+  countResultElement,
+  enabled = true,
+  perPage = 25,
+}) {
   const currentUser = useSelector((state) => state.accountReducer.currentUser);
+  // const showResolved = useSelector((state) => state.configReducer.showResolved);
 
-  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+  const formDataArray = useMemo(() => {
+    const formDataArray = [];
+    for (const [key, value] of Object.entries(formData)) {
+      formDataArray.push(key);
+      formDataArray.push(value);
+    }
+    return formDataArray;
+  }, [formData]);
 
-  const { isSuccess, isLoading, isError, error, data, isFetching, refetch } = useQuery({
-    queryKey: ["lemmyHttp", localPerson.id, callLemmyMethod],
-    queryFn: async () => {
+  const { localPerson } = getSiteData();
+
+  const {
+    isSuccess,
+    isLoading,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+    isError,
+    error,
+    data,
+    isFetching,
+    isRefetching,
+    refetch,
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["lemmyHttp", localPerson.id, formDataArray, callLemmyMethod],
+    queryFn: async ({ pageParam = 1, ...rest }, optional) => {
+      console.log("LemmyHttp inner infinite", callLemmyMethod, pageParam, rest, optional);
+
       const lemmyClient = new LemmyHttp(`https://${currentUser.base}`);
 
       const siteData = await lemmyClient[callLemmyMethod]({
         auth: currentUser.jwt,
+        page: pageParam,
+        limit: perPage,
         ...formData,
       });
 
-      return siteData;
+      const result = countResultElement ? siteData[countResultElement] : siteData;
+
+      return {
+        data: result,
+        nextPage: result.length > 0 && result.length == perPage ? pageParam + 1 : undefined,
+      };
     },
+    getNextPageParam: (lastPage, allPages) => lastPage.nextPage,
+    keepPreviousData: true,
+
     retry: 0,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     staleTime: Infinity,
     cacheTime: Infinity,
-    enabled: !!currentUser,
+    enabled: !!currentUser && enabled,
   });
 
   return {
-    isLoading,
-    isFetching,
     isSuccess,
+    isLoading,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
     isError,
     error,
     data,
-  };
-}
-
-export function useLemmyHttpAction(callLemmyMethod) {
-  const currentUser = useSelector((state) => state.accountReducer.currentUser);
-
-  const mutation = useMutation({
-    mutationFn: async (formData) => {
-      const lemmyClient = new LemmyHttp(`https://${currentUser.base}`);
-
-      const resultData = await lemmyClient[callLemmyMethod]({
-        auth: currentUser.jwt,
-        ...formData,
-      });
-
-      return resultData;
-    },
-  });
-
-  const callAction = (formData) => {
-    mutation.mutate(formData);
-  };
-
-  return {
-    callAction,
-    isLoading: mutation.isLoading,
-    isSuccess: mutation.isSuccess,
-    error: mutation.error,
-    data: mutation.data,
+    isFetching,
+    isRefetching,
+    refetch,
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
   };
 }

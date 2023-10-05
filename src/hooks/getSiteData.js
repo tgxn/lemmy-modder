@@ -33,6 +33,7 @@ export function getSiteData() {
   return {
     baseUrl: currentUser?.base,
 
+    isLoading: currentUser.site ? true : false,
     siteData: currentUser.site.site_view.site,
 
     userRole: userRole,

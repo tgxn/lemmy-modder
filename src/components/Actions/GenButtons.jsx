@@ -153,7 +153,7 @@ export const BanUserSiteButton = ({ person, ...props }) => {
   }, [data]);
 
   let actionText = "Ban";
-  let actionColor = "info";
+  let actionColor = "primary";
   if (person.banned) {
     actionText = "Unban";
     actionColor = "warning";
@@ -263,7 +263,7 @@ export const PurgeUserSiteButton = ({ person, ...props }) => {
   }, [data]);
 
   let actionText = "Purge";
-  let actionColor = "info";
+  let actionColor = "primary";
 
   // only show purge for global admins
   if (userRole != "admin") return null;
