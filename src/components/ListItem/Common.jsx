@@ -1,5 +1,7 @@
 import React from "react";
 
+import Moment from "react-moment";
+
 import Alert from "@mui/joy/Alert";
 import Card from "@mui/joy/Card";
 import Box from "@mui/joy/Box";
@@ -142,8 +144,13 @@ export function PersonMetaLine({ creator, by = false, sx }) {
         {by && "by "}
         {creator.display_name && `${creator.display_name} `}
         <Tooltip placement="top-start" variant="outlined" arrow title={<UserTooltip user={creator} />}>
-          <Link href={creator.actor_id} target="_blank" rel="noopener noreferrer">
-            {creator.name}@{creator.actor_id.split("/")[2]}
+          <Link href={creator.actor_id} target="_blank" rel="noopener noreferrer" sx={{ pb: 0.7, pl: 1 }}>
+            <Typography component="span" sx={{ fontSize: "16px", mr: 0.25 }}>
+              {creator.name}
+            </Typography>
+            <Typography component="span" sx={{ fontSize: "12px" }}>
+              @{creator.actor_id.split("/")[2]}
+            </Typography>
           </Link>
         </Tooltip>
       </Typography>

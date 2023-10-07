@@ -147,6 +147,17 @@ export default function PostListItem({ report }) {
             flexDirection: "row",
           }}
         >
+          <Box
+            sx={{
+              flexGrow: 1,
+              flexShrink: 1,
+              flexBasis: "auto",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <PostContentDetail report={report} />
+          </Box>
           {/* Show External Link or Image for URLs */}
           {report.post.url && (
             <Box
@@ -166,18 +177,6 @@ export default function PostListItem({ report }) {
               <Image imageSrc={report.post.url} />
             </Box>
           )}
-
-          <Box
-            sx={{
-              flexGrow: 1,
-              flexShrink: 1,
-              flexBasis: "auto",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <PostContentDetail report={report} />
-          </Box>
         </Box>
 
         <ReportDetails report={report.post_report} creator={report.creator} />

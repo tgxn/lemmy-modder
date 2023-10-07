@@ -111,11 +111,11 @@ function ApplicationListItem({ registration }) {
             flexDirection: "column",
           }}
         >
-          <PersonMetaLine creator={registration.creator} />
+          <PersonMetaLine creator={registration.creator} local_user={registration.creator_local_user} />
 
           <Typography variant="h6" component="h2" sx={{ mt: 0, display: "flex", gap: 1 }}>
             {registration.creator.published && (
-              <SquareChip color="neutral" variant="outlined" tooltip={registration.creator.published}>
+              <SquareChip color="primary" variant="outlined" tooltip={registration.creator.published}>
                 registered <Moment fromNow>{registration.creator.published}</Moment>
               </SquareChip>
             )}
@@ -190,7 +190,7 @@ function ApplicationListItem({ registration }) {
               mt: 1,
               display: "flex",
               flexDirection: "row",
-              justifyContent: "flex-end",
+              justifyContent: "space-between",
               gap: 1,
             }}
           >

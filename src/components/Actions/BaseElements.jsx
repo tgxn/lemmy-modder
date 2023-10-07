@@ -24,6 +24,7 @@ export const BaseActionButton = ({
   text,
   tooltip,
   color = "neutral",
+  variant = "outlined",
   ...props
 }) => {
   const { isFetching } = useLemmyReports();
@@ -31,7 +32,7 @@ export const BaseActionButton = ({
   return (
     <Tooltip title={tooltip} color={color} variant="plain" placement="top">
       <Button
-        variant="outlined"
+        variant={variant}
         color={color}
         size={size}
         disabled={isFetching}
