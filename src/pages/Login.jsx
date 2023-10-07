@@ -47,7 +47,6 @@ export default function LoginForm() {
   const loginClick = async () => {
     setIsLoading(true);
     try {
-
       const lemmyClient = new LemmyHttp(`https://${instanceBase}`);
 
       const auth = await lemmyClient.login({
@@ -55,7 +54,7 @@ export default function LoginForm() {
         password: password,
       });
 
-/**
+      /**
  * 0.19.x :/ hmm
         // this shows the `jwt` is present 👍
         console.log("auth", auth);
@@ -75,7 +74,6 @@ export default function LoginForm() {
 
       // as long aws there is a JWT in the response from login, logged in!
       if (auth.jwt) {
-
         const getSite = await lemmyClient.getSite({
           auth: auth.jwt,
         });
@@ -85,7 +83,6 @@ export default function LoginForm() {
         } else {
           dispatch(setCurrentUser(instanceBase, auth.jwt, getSite));
         }
-
       } else {
         setLoginError(auth);
       }
@@ -109,13 +106,14 @@ export default function LoginForm() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
+          p: 0,
         }}
       >
         <Card
           sx={{
             mt: 4,
             p: 2,
-            py: 4,
+            // py: ,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -140,6 +138,7 @@ export default function LoginForm() {
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
+              width: "60%",
             }}
           >
             <Input
@@ -148,7 +147,7 @@ export default function LoginForm() {
               onChange={(e) => setInstanceBase(e.target.value)}
               variant="outlined"
               color="neutral"
-              sx={{ mb: 1 }}
+              sx={{ mb: 1, width: "100%" }}
             />
             <Input
               placeholder="Username"
@@ -156,7 +155,7 @@ export default function LoginForm() {
               onChange={(e) => setUsername(e.target.value)}
               variant="outlined"
               color="neutral"
-              sx={{ mb: 1 }}
+              sx={{ mb: 1, width: "100%" }}
             />
             <Input
               placeholder="Password"
@@ -167,28 +166,19 @@ export default function LoginForm() {
               color="neutral"
               sx={{
                 mb: 1,
+                width: "100%",
                 "& .MuiInput-input": {
                   caretColor: "#000000",
                   textOverflow: "clip",
                 },
               }}
             />
-
-            <Button
-              fullWidth
-              onClick={loginClick}
-              disabled={instanceBase.length === 0 || username.length === 0 || password.length === 0}
-              loading={isLoading}
-            >
-              Login
-            </Button>
-
             <Box
               sx={{
-                pt: 1,
+                py: 1,
               }}
             >
-              <Tooltip title="Your session will be saved locally" placement="bottom">
+              <Tooltip title="Will this session will be saved in your browser?" placement="bottom">
                 <Checkbox
                   label="Save Session"
                   variant="outlined"
@@ -197,6 +187,14 @@ export default function LoginForm() {
                 />
               </Tooltip>
             </Box>
+            <Button
+              fullWidth
+              onClick={loginClick}
+              disabled={instanceBase.length === 0 || username.length === 0 || password.length === 0}
+              loading={isLoading}
+            >
+              Login
+            </Button>
           </Box>
 
           {loginError && (
@@ -252,6 +250,10 @@ export default function LoginForm() {
                   <ListItem
                     key={index}
                     disabled={isLoading}
+                    sx={{
+                      mb: 0.5,
+                      overflow: "hidden",
+                    }}
                     endAction={
                       <IconButton
                         aria-label="Delete"
@@ -270,6 +272,11 @@ export default function LoginForm() {
                   >
                     <ListItemButton
                       disabled={isLoading}
+                      sx={{
+                        borderRadius: 4,
+                      }}
+                      variant="outlined"
+                      color="neutral"
                       onClick={async () => {
                         setIsLoading(true);
 
@@ -319,7 +326,7 @@ export default function LoginForm() {
                           }
                         }
                       >
-                        {user.site.my_user?.local_user_view?.person.name}@{user.base}
+                        {user.site.my_user?.local_user_view?.person.display_name}{" "}
                       </ListItemContent>
                       {/* <ListItemContent>
                         {!expired && (
@@ -337,6 +344,11 @@ export default function LoginForm() {
                           </Typography>
                         )}
                       </ListItemContent> */}
+                      <ListItemContent>
+                        <Typography>
+                          {user.site.my_user?.local_user_view?.person.name}@{user.base}
+                        </Typography>
+                      </ListItemContent>
                     </ListItemButton>
                   </ListItem>
                 );

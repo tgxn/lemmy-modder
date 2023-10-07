@@ -10,6 +10,8 @@ import { HashRouter } from "react-router-dom";
 import Box from "@mui/joy/Box";
 import Container from "@mui/joy/Container";
 
+import { Toaster, toast } from "sonner";
+
 import SiteHeader from "./components/SiteHeader";
 
 import Approvals from "./pages/Approvals";
@@ -49,6 +51,7 @@ function PageRouter() {
     >
       <HashRouter>
         <SiteHeader height="50px" />
+        <Toaster />
 
         <Box
           sx={{

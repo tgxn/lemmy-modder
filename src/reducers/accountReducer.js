@@ -29,8 +29,8 @@ const lsUsers = localStorage.getItem("users");
 const cUser = localStorage.getItem("currentUser");
 
 const initialState = {
-  users: lsUsers ? JSON.parse(lsUsers) : [], // { base, jwt, user, active }
-  currentUser: cUser ? JSON.parse(cUser) : null, // { base, jwt, user, active }
+  users: lsUsers ? JSON.parse(lsUsers) : [], // { base, jwt, site }
+  currentUser: cUser ? JSON.parse(cUser) : null, // { base, jwt, site }
 };
 
 const accountReducer = (state = initialState, action = {}) => {

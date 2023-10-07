@@ -9,7 +9,6 @@ import Tooltip from "@mui/joy/Tooltip";
 import Alert from "@mui/joy/Alert";
 import Typography from "@mui/joy/Typography";
 
-import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import SoapIcon from "@mui/icons-material/Soap";
 
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
