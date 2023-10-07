@@ -139,6 +139,7 @@ export function PersonMetaLine({ creator, by = false, sx }) {
         component="p"
         sx={{
           fontSize: "14px",
+          overflow: "hidden",
         }}
       >
         {by && "by "}

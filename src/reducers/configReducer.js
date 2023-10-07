@@ -10,6 +10,10 @@ const initialState = {
   isInElectron: window.modder ? true : false,
 
   orderBy: localStorage.getItem("config.orderBy") || "hot",
+
+  modLogType: localStorage.getItem("config.modLogType") || "All",
+  modLogLocal: localStorage.getItem("config.modLogLocal") || true,
+
   filterType: localStorage.getItem("config.filterType") || "all",
   filterCommunity: localStorage.getItem("config.filterCommunity") || "all",
   showResolved: localStorage.getItem("config.showResolved")
