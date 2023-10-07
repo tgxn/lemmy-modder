@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { useQueryClient } from "@tanstack/react-query";
 
+import { Toaster, toast } from "sonner";
+
 import { BrowserRouter as Router, useNavigate, useLocation } from "react-router-dom";
 
 import Chip from "@mui/joy/Chip";
@@ -26,10 +28,19 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 
+// user role icons
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
+import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+
+import SwitchAccountIcon from "@mui/icons-material/SwitchAccount";
+
 import FlagIcon from "@mui/icons-material/Flag";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 
 import { logoutCurrent } from "../reducers/accountReducer";
+
+import { LemmyHttp } from "lemmy-js-client";
 
 import { useLemmyHttp } from "../hooks/useLemmyHttp";
 import { getSiteData } from "../hooks/getSiteData";
@@ -37,6 +48,8 @@ import { getSiteData } from "../hooks/getSiteData";
 import { HeaderChip } from "./Display.jsx";
 
 import { parseActorId } from "../utils.js";
+
+import { addUser, setAccountIsLoading, setUsers, setCurrentUser } from "../reducers/accountReducer";
 
 function SiteMenu() {
   // const dispatch = useDispatch();
@@ -142,6 +155,10 @@ function UserMenu() {
 
   const queryClient = useQueryClient();
 
+  const users = useSelector((state) => state.accountReducer.users);
+
+  const [isLoading, setIsLoading] = React.useState(false);
+
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -160,8 +177,15 @@ function UserMenu() {
   };
 
   let userTooltip = "You are a regular user";
-  if (userRole == "admin") userTooltip = "You are a site admin";
-  if (userRole == "mod") userTooltip = "You are a community moderator";
+  let userIcon = <AccountBoxIcon />;
+  if (userRole == "admin") {
+    userTooltip = "You are a site admin";
+    userIcon = <VerifiedUserIcon />;
+  }
+  if (userRole == "mod") {
+    userTooltip = "You are a community moderator";
+    userIcon = <SupervisedUserCircleIcon />;
+  }
 
   // console.log("localPerson", localPerson);
 
@@ -195,6 +219,7 @@ function UserMenu() {
           variant="outlined"
           color="neutral"
           onClick={handleClick}
+          startDecorator={userIcon}
           endDecorator={<ArrowDropDown />}
           sx={{
             mx: 1,
@@ -205,6 +230,67 @@ function UserMenu() {
         </Button>
       </Tooltip>
       <Menu id="user-menu" anchorEl={anchorEl} open={menuOpen} onClose={handleClose} placement="bottom-end">
+        {users && users.length > 0 && (
+          <>
+            {users.map((user, index) => {
+              return (
+                <MenuItem
+                  sx={{
+                    color: "text.body",
+                  }}
+                  disabled={user.site.my_user?.local_user_view?.person.actor_id == localPerson.actor_id}
+                  onClick={async () => {
+                    handleClose();
+
+                    queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
+                    dispatch(logoutCurrent());
+
+                    setIsLoading(true);
+
+                    dispatch(setAccountIsLoading(true));
+
+                    try {
+                      const lemmyClient = new LemmyHttp(`https://${user.base}`);
+
+                      const getSite = await lemmyClient.getSite({
+                        auth: user.jwt,
+                      });
+
+                      if (!getSite.my_user) {
+                        // set instance base to the current instance
+                        // setInstanceBase(user.base);
+                        // setUsername(user.site.my_user.local_user_view?.person.name);
+
+                        throw new Error("jwt does not provide auth, re-authenticate");
+                      }
+
+                      // if (saveSession) {
+                      //   dispatch(addUser(user.base, auth.jwt, getSite));
+                      // } else {
+                      // dispatch(setCurrentUser(user.base, auth.jwt, getSite));
+                      dispatch(setCurrentUser(user.base, user.jwt, getSite));
+                      // }
+                    } catch (e) {
+                      toast(typeof e == "string" ? e : e.message);
+                    } finally {
+                      // setIsLoading(false);
+
+                      dispatch(setAccountIsLoading(false));
+                    }
+                  }}
+                >
+                  {user.site.my_user?.local_user_view?.person.actor_id == localPerson.actor_id ? (
+                    <SwitchAccountIcon sx={{ mr: 1 }} />
+                  ) : (
+                    <SwitchAccountIcon sx={{ mr: 1 }} />
+                  )}
+                  {user.site.my_user?.local_user_view?.person.name}@{user.base}
+                </MenuItem>
+              );
+            })}
+          </>
+        )}
+        {/* 
         <MenuItem
           sx={{
             color: "text.body",
@@ -217,7 +303,7 @@ function UserMenu() {
           }}
         >
           End Session
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
 
       <Tooltip title="End Session" placement="bottom" variant="soft">
