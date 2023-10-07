@@ -1,37 +1,36 @@
 [![publish-pages](https://github.com/tgxn/lemmy-modder/actions/workflows/publish-pages.yaml/badge.svg)](https://github.com/tgxn/lemmy-modder/actions/workflows/publish-pages.yaml)
 
+
+
 # Lemmy Modder
+# https://modder.lemmyverse.net/ 
 
-A Lemmy moderation tool for community moderators and site admins. Like the reports page, but on steroids. ⚡
+A Lemmy moderation tool for community moderators and site admins, but on steroids. ⚡
 
-Now available at https://modder.lemmyverse.net/ which should work for sites that have `CORS *`
+ > Currently, only compatible with 0.18.x instances, as Lemmy SDK is not backwards-compatible. :'(
 
- > Currently, only compatible with 0.18.x, as Lemmy SDK is not backwards-compatible. :'(
 
 ## Features:
 - Quick Actions 
     - Resolve/Unresolve Reports
-    - Remove/Restore Posts & Comments
+    - Remove/Restore/Purge Posts & Comments
     - Ban/Unban Users (from Community or Site)
     - Lock/Unlock Posts
-
 - Quick Switch Accounts
-- Lemmy Instance Auto-Login in popups
-- Auto-Update from GitHub
-
+- Approval Managmenent
+    - Approve/Reject Registration Applications
+    - See more user data when making decision, join date, email, etc.
+    
 
 ## Screenshots
-| | | |
-| --- | --- | --- |
-| ![Login Screen](./docs/image/032/login.png) | ![Clean Screen](./docs/image/032/clean.png)   | ![Busy Screen](./docs/image/032/busy.png) |
+| | |
+| --- | --- | 
+| ![Login Screen](./docs/image/050/image-2.png) | ![Clean Screen](./docs/image/050/image.png)   |
 
-
-You can use the portable version or the installer which can auto-update from GitHub. Check the latest release for the files.
 
 ## Dev Running
 
-1. Frontend: `cd frontend && npm i && npm start`
-2. App: `cd app && npm i && npm start`
+Frontend: `npm i && npm start`
 
 
 # todo implement
