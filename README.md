@@ -20,6 +20,9 @@ A Lemmy moderation tool for community moderators and site admins, but on steroid
 - Approval Managmenent
     - Approve/Reject Registration Applications
     - See more user data when making decision, join date, email, etc.
+- View Mod Log
+    - See all actions taken by mods on the instance
+    - Filter by local instance actions
     
 
 ## Screenshots
@@ -68,7 +71,7 @@ Frontend: `npm i && npm start`
 - ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#listRegistrationApplications
 - ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#approveRegistrationApplication
 
-- https://join-lemmy.org/api/classes/LemmyHttp.html#getModlog
+- ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#getModlog
 
 
 # Credits
