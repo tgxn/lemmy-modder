@@ -24,11 +24,12 @@ import Delete from "@mui/icons-material/Delete";
 
 import { LemmyHttp } from "lemmy-js-client";
 
-import { addUser, setUsers, setCurrentUser } from "../reducers/accountReducer";
+import { addUser, setAccountIsLoading, setUsers, setCurrentUser } from "../reducers/accountReducer";
 
 export default function LoginForm() {
   const dispatch = useDispatch();
 
+  const accountIsLoading = useSelector((state) => state.accountReducer.accountIsLoading);
   const users = useSelector((state) => state.accountReducer.users);
   const isInElectron = useSelector((state) => state.configReducer.isInElectron);
 
@@ -37,7 +38,7 @@ export default function LoginForm() {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
 
-  const [isLoading, setIsLoading] = React.useState(false);
+  // const [isLoading, setIsLoading] = React.useState(false);
 
   const [saveSession, setSaveSession] = React.useState(false);
 
@@ -45,7 +46,8 @@ export default function LoginForm() {
 
   // perform login against lemmy instance
   const loginClick = async () => {
-    setIsLoading(true);
+    // setIsLoading(true);
+    dispatch(setAccountIsLoading(true));
     try {
       const lemmyClient = new LemmyHttp(`https://${instanceBase}`);
 
@@ -89,7 +91,8 @@ export default function LoginForm() {
     } catch (e) {
       setLoginError(typeof e == "string" ? e : e.message);
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
+      dispatch(setAccountIsLoading(false));
     }
   };
 
@@ -148,6 +151,7 @@ export default function LoginForm() {
               variant="outlined"
               color="neutral"
               sx={{ mb: 1, width: "100%" }}
+              disabled={accountIsLoading}
             />
             <Input
               placeholder="Username"
@@ -156,6 +160,7 @@ export default function LoginForm() {
               variant="outlined"
               color="neutral"
               sx={{ mb: 1, width: "100%" }}
+              disabled={accountIsLoading}
             />
             <Input
               placeholder="Password"
@@ -172,6 +177,7 @@ export default function LoginForm() {
                   textOverflow: "clip",
                 },
               }}
+              disabled={accountIsLoading}
             />
             <Box
               sx={{
@@ -191,7 +197,7 @@ export default function LoginForm() {
               fullWidth
               onClick={loginClick}
               disabled={instanceBase.length === 0 || username.length === 0 || password.length === 0}
-              loading={isLoading}
+              loading={accountIsLoading}
             >
               Login
             </Button>
@@ -249,7 +255,7 @@ export default function LoginForm() {
                 return (
                   <ListItem
                     key={index}
-                    disabled={isLoading}
+                    disabled={accountIsLoading}
                     sx={{
                       mb: 0.5,
                       overflow: "hidden",
@@ -271,14 +277,16 @@ export default function LoginForm() {
                     }
                   >
                     <ListItemButton
-                      disabled={isLoading}
+                      disabled={accountIsLoading}
                       sx={{
                         borderRadius: 4,
                       }}
                       variant="outlined"
                       color="neutral"
                       onClick={async () => {
-                        setIsLoading(true);
+                        // setIsLoading(true);
+
+                        dispatch(setAccountIsLoading(true));
 
                         try {
                           const lemmyClient = new LemmyHttp(`https://${user.base}`);
@@ -304,7 +312,8 @@ export default function LoginForm() {
                         } catch (e) {
                           setLoginError(typeof e == "string" ? e : e.message);
                         } finally {
-                          setIsLoading(false);
+                          // setIsLoading(false);
+                          dispatch(setAccountIsLoading(false));
                         }
 
                         // if (!expired) {
@@ -386,7 +395,7 @@ export default function LoginForm() {
                 fullWidth
                 color="warning"
                 onClick={() => clearData(true)}
-                disabled={isLoading}
+                disabled={accountIsLoading}
               >
                 Clean storage (keep users)
               </Button>
@@ -396,7 +405,7 @@ export default function LoginForm() {
                 fullWidth
                 color="danger"
                 onClick={() => clearData(false)}
-                disabled={isLoading}
+                disabled={accountIsLoading}
               >
                 Purge storage
               </Button>

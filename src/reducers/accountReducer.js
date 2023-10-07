@@ -18,6 +18,13 @@ export function logoutCurrent() {
   };
 }
 
+export function setAccountIsLoading(isLoading) {
+  return {
+    type: "setAccountIsLoading",
+    payload: { isLoading },
+  };
+}
+
 export function setUsers(users) {
   return {
     type: "setUsers",
@@ -29,12 +36,19 @@ const lsUsers = localStorage.getItem("users");
 const cUser = localStorage.getItem("currentUser");
 
 const initialState = {
+  accountIsLoading: false,
   users: lsUsers ? JSON.parse(lsUsers) : [], // { base, jwt, site }
   currentUser: cUser ? JSON.parse(cUser) : null, // { base, jwt, site }
 };
 
 const accountReducer = (state = initialState, action = {}) => {
   switch (action.type) {
+    case "setAccountIsLoading":
+      return {
+        ...state,
+        accountIsLoading: action.payload.isLoading,
+      };
+
     case "setUsers":
       if (action.payload) {
         localStorage.setItem("users", JSON.stringify(action.payload.users));

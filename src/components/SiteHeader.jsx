@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { useQueryClient } from "@tanstack/react-query";
 
+import { Toaster, toast } from "sonner";
+
 import { BrowserRouter as Router, useNavigate, useLocation } from "react-router-dom";
 
 import Chip from "@mui/joy/Chip";
@@ -46,6 +48,8 @@ import { getSiteData } from "../hooks/getSiteData";
 import { HeaderChip } from "./Display.jsx";
 
 import { parseActorId } from "../utils.js";
+
+import { addUser, setAccountIsLoading, setUsers, setCurrentUser } from "../reducers/accountReducer";
 
 function SiteMenu() {
   // const dispatch = useDispatch();
@@ -234,6 +238,7 @@ function UserMenu() {
                   sx={{
                     color: "text.body",
                   }}
+                  disabled={user.site.my_user?.local_user_view?.person.actor_id == localPerson.actor_id}
                   onClick={async () => {
                     handleClose();
 
@@ -241,6 +246,8 @@ function UserMenu() {
                     dispatch(logoutCurrent());
 
                     setIsLoading(true);
+
+                    dispatch(setAccountIsLoading(true));
 
                     try {
                       const lemmyClient = new LemmyHttp(`https://${user.base}`);
@@ -251,8 +258,8 @@ function UserMenu() {
 
                       if (!getSite.my_user) {
                         // set instance base to the current instance
-                        setInstanceBase(user.base);
-                        setUsername(user.site.my_user.local_user_view?.person.name);
+                        // setInstanceBase(user.base);
+                        // setUsername(user.site.my_user.local_user_view?.person.name);
 
                         throw new Error("jwt does not provide auth, re-authenticate");
                       }
@@ -264,20 +271,26 @@ function UserMenu() {
                       dispatch(setCurrentUser(user.base, user.jwt, getSite));
                       // }
                     } catch (e) {
-                      setLoginError(typeof e == "string" ? e : e.message);
+                      toast(typeof e == "string" ? e : e.message);
                     } finally {
-                      setIsLoading(false);
+                      // setIsLoading(false);
+
+                      dispatch(setAccountIsLoading(false));
                     }
                   }}
                 >
-                  <SwitchAccountIcon sx={{ mr: 1 }} />
+                  {user.site.my_user?.local_user_view?.person.actor_id == localPerson.actor_id ? (
+                    <SwitchAccountIcon sx={{ mr: 1 }} />
+                  ) : (
+                    <SwitchAccountIcon sx={{ mr: 1 }} />
+                  )}
                   {user.site.my_user?.local_user_view?.person.name}@{user.base}
                 </MenuItem>
               );
             })}
           </>
         )}
-
+        {/* 
         <MenuItem
           sx={{
             color: "text.body",
@@ -290,7 +303,7 @@ function UserMenu() {
           }}
         >
           End Session
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
 
       <Tooltip title="End Session" placement="bottom" variant="soft">
