@@ -179,6 +179,14 @@ export default function LoginForm() {
               }}
               disabled={accountIsLoading}
             />
+            <Button
+              fullWidth
+              onClick={loginClick}
+              disabled={instanceBase.length === 0 || username.length === 0 || password.length === 0}
+              loading={accountIsLoading}
+            >
+              Login
+            </Button>
             <Box
               sx={{
                 py: 1,
@@ -193,14 +201,6 @@ export default function LoginForm() {
                 />
               </Tooltip>
             </Box>
-            <Button
-              fullWidth
-              onClick={loginClick}
-              disabled={instanceBase.length === 0 || username.length === 0 || password.length === 0}
-              loading={accountIsLoading}
-            >
-              Login
-            </Button>
           </Box>
 
           {loginError && (
