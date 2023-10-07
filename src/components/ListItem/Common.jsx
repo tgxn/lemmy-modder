@@ -21,23 +21,38 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { SanitizedLink, SquareChip } from "../Display.jsx";
 import { UserTooltip } from "../Tooltip.jsx";
 
+import { parseActorId } from "../../utils.js";
+
 export function ReportListItem({ itemType, report, children }) {
   let itemColor;
   let itemIcon;
   let resolved = true;
+
+  // const parsedActor = parseActorId(report.actor_id);
+
   if (itemType == "post") {
     resolved = report.post_report.resolved;
     itemColor = "primary";
     itemIcon = (
-      <Tooltip title={`Post: /c/${report.community.name}`} variant="plain" placement="right" color="primary">
+      <Tooltip
+        title={`Post: ${report.community.actor_id.split("/")[2]}/c/${report.community.name}`}
+        variant="outlined"
+        placement="right"
+        color="primary"
+      >
         <StickyNote2Icon fontSize="md" />
       </Tooltip>
     );
   } else if (itemType == "comment") {
     resolved = report.comment_report.resolved;
-    itemColor = "info";
+    itemColor = "primary";
     itemIcon = (
-      <Tooltip title={`Comment: /c/${report.community.name}`} variant="plain" placement="right" color="info">
+      <Tooltip
+        title={`Comment: ${report.community.actor_id.split("/")[2]}/c/${report.community.name}`}
+        variant="outlined"
+        placement="right"
+        color="primary"
+      >
         <ForumIcon fontSize="md" />
       </Tooltip>
     );
@@ -47,7 +62,7 @@ export function ReportListItem({ itemType, report, children }) {
     itemIcon = (
       <Tooltip
         title={`PM: @${report.private_message_creator.name}`}
-        variant="plain"
+        variant="outlined"
         placement="right"
         color="warning"
       >
@@ -81,6 +96,7 @@ export function ReportListItem({ itemType, report, children }) {
           flexDirection: "row",
           gap: 0,
           width: "100%",
+          p: 2.5,
         }}
       >
         {/* {isFetching && (
@@ -106,13 +122,14 @@ export function ReportListItem({ itemType, report, children }) {
   );
 }
 
-export function PersonMetaLine({ creator }) {
+export function PersonMetaLine({ creator, by = false, sx }) {
   return (
     <Box
       sx={{
         display: "flex",
         flexDirection: "row",
         gap: 1,
+        ...sx,
       }}
     >
       <Typography
@@ -122,19 +139,20 @@ export function PersonMetaLine({ creator }) {
           fontSize: "14px",
         }}
       >
+        {by && "by "}
+        {creator.display_name && `${creator.display_name} `}
         <Tooltip placement="top-start" variant="outlined" arrow title={<UserTooltip user={creator} />}>
           <Link href={creator.actor_id} target="_blank" rel="noopener noreferrer">
-            @{creator.name}
+            {creator.name}@{creator.actor_id.split("/")[2]}
           </Link>
         </Tooltip>
-        {creator.display_name && ` ${creator.display_name}`}
       </Typography>
 
       {/* Post Author Meta */}
       <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
         {creator.admin && (
           <SquareChip
-            color={"info"}
+            color={"primary"}
             tooltip="User is site admin"
             iconOnly={<SecurityIcon fontSize="small" />}
           />
@@ -166,6 +184,8 @@ export function ReportDetails({ report, creator }) {
       variant={"soft"}
       color="warning"
       sx={{
+        mt: 2,
+        mb: 1,
         p: 2,
       }}
     >

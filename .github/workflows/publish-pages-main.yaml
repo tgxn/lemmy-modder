@@ -44,10 +44,10 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v3
 
-      - name: Use Node.js 18.15.0
+      - name: Use Node.js 18.17.0
         uses: actions/setup-node@v3
         with:
-          node-version: 18.15.0
+          node-version: 18.17.0
      
       # install npm dependencies
       - name: Cache NPM Modules
@@ -56,23 +56,23 @@ jobs:
         env:
           cache-name: cache-frontend-npm
         with:
-          path: ./frontend/node_modules/
-          key: cache-frontend-npm-${{ hashFiles('frontend/package-lock.json') }}
+          path: ./node_modules/
+          key: cache-frontend-npm-${{ hashFiles('package-lock.json') }}
 
       - name: Install Dependencies
         if: steps.cache-frontend-npm.outputs.cache-hit != 'true'
         run: npm ci
-        working-directory: ./frontend
+        # working-directory: ./
 
       - name: Build Frontend
         run: npm run build
-        working-directory: ./frontend
+        # working-directory: ./frontend
 
       # upload pages
       - name: upload github pages artifacts
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./frontend/dist/
+          path: ./dist/
           
       - name: Deploy to GitHub Pages
         id: deployment

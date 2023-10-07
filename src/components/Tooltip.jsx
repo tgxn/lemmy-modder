@@ -43,7 +43,7 @@ export const UserTooltip = ({ user, ...props }) => {
       </Box>
 
       {user.admin && (
-        <Alert variant="solid" color="info" size="sm" startDecorator={<SecurityIcon />}>
+        <Alert variant="solid" color="primary" size="sm" startDecorator={<SecurityIcon />}>
           Admin Account
         </Alert>
       )}

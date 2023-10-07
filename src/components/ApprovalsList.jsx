@@ -1,5 +1,7 @@
 import React from "react";
 
+import Moment from "react-moment";
+
 import Card from "@mui/joy/Card";
 import Box from "@mui/joy/Box";
 import Badge from "@mui/joy/Badge";
@@ -14,6 +16,8 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import HelpIcon from "@mui/icons-material/Help";
 import ReportIcon from "@mui/icons-material/Report";
+
+import { SquareChip } from "./Display.jsx";
 
 import { PersonMetaLine, ReportDetails } from "./ListItem/Common.jsx";
 
@@ -110,9 +114,30 @@ function ApplicationListItem({ registration }) {
         >
           <PersonMetaLine creator={registration.creator} />
 
-          {/* <PMContentDetail report={report} /> */}
+          <Typography variant="h6" component="h2" sx={{ mt: 0, display: "flex", gap: 1 }}>
+            {registration.creator.published && (
+              <SquareChip color="neutral" variant="outlined" tooltip={registration.creator.published}>
+                registered <Moment fromNow>{registration.creator.published}</Moment>
+              </SquareChip>
+            )}
 
-          {/* <ReportDetails report={report.private_message_report} creator={report.creator} /> */}
+            {registration.creator_local_user.show_nsfw && (
+              <>
+                <SquareChip color="neutral" variant="outlined" tooltip={"Enable NSFW?"}>
+                  {registration.creator_local_user.show_nsfw ? "NSFW: Yes" : "NSFW: No"}
+                </SquareChip>
+              </>
+            )}
+
+            {registration.creator_local_user.email && (
+              <>
+                <SquareChip color="success" variant="outlined" tooltip={"User Email Address"}>
+                  {registration.creator_local_user.email}
+                </SquareChip>
+              </>
+            )}
+          </Typography>
+
           <Alert
             variant={"soft"}
             color="primary"
@@ -121,11 +146,23 @@ function ApplicationListItem({ registration }) {
               p: 2,
             }}
           >
-            <Box>
-              <Typography level="body1" fontWeight="lg">
+            <Box
+              sx={{
+                p: 0,
+              }}
+            >
+              <Typography
+                level="body"
+                fontWeight="lg"
+                sx={{
+                  p: 0,
+                  pb: 1,
+                }}
+              >
                 User Reason
               </Typography>
-              <Typography level="body2">{userResponse}</Typography>
+
+              <Typography level="body">{userResponse}</Typography>
             </Box>
           </Alert>
           {isAccepted === false && (

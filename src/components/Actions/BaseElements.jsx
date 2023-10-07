@@ -16,7 +16,7 @@ import Option from "@mui/joy/Option";
 
 import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
 
-import { useLemmyReports } from "../../hooks/useLemmyReports";
+import useLemmyReports from "../../hooks/useLemmyReports";
 
 export const BaseActionButton = ({
   icon = null,
