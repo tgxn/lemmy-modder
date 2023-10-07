@@ -115,7 +115,7 @@ function SiteMenu() {
         </Button>
       </Tooltip>
 
-      <Tooltip title="Reports" placement="bottom" variant="soft">
+      <Tooltip title="Approvals" placement="bottom" variant="soft">
         <Button
           size="sm"
           color={location.pathname == "/approvals" ? "primary" : "neutral"}
@@ -144,6 +144,38 @@ function SiteMenu() {
           }}
         >
           Approvals
+        </Button>
+      </Tooltip>
+
+      <Tooltip title="Mod Actions" placement="bottom" variant="soft">
+        <Button
+          size="sm"
+          color={location.pathname == "/actions" ? "primary" : "neutral"}
+          variant={location.pathname == "/actions" ? "soft" : "outlined"}
+          onClick={() => {
+            navigate("/actions");
+          }}
+          // endDecorator={
+          //   siteData && (
+          //     <Chip
+          //       startDecorator={regAppCountIsLoading ? <CircularProgress size="sm" /> : <HowToRegIcon />}
+          //       color={siteData && regCountAppData?.registration_applications > 0 ? "danger" : "success"}
+          //       sx={{
+          //         borderRadius: 6,
+          //       }}
+          //     >
+          //       {regCountAppData?.registration_applications !== undefined
+          //         ? regCountAppData.registration_applications
+          //         : "0"}
+          //     </Chip>
+          //   )
+          // }
+          sx={{
+            mr: 1,
+            borderRadius: 4,
+          }}
+        >
+          Mod Actions
         </Button>
       </Tooltip>
     </>

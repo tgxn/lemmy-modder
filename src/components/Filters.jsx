@@ -13,6 +13,7 @@ import Chip from "@mui/joy/Chip";
 import { setConfigItem } from "../reducers/configReducer";
 
 import { getSiteData } from "../hooks/getSiteData";
+import { getModLogTypeNames } from "../utils";
 
 export function FilterCommunity() {
   const dispatch = useDispatch();
@@ -112,6 +113,41 @@ export function FilterTypeSelect() {
       <Option key={"pms"} value={"pms"} label={"PMs"} color="neutral">
         <Typography component="span">PMs</Typography>
       </Option>
+    </Select>
+  );
+}
+
+export function FilterModLogType() {
+  const dispatch = useDispatch();
+  const modLogType = useSelector((state) => state.configReducer.modLogType);
+  {
+    /* "All" | "ModRemovePost" | "ModLockPost" | "ModFeaturePost" | "ModRemoveComment" |
+     "ModRemoveCommunity" | "ModBanFromCommunity" | "ModAddCommunity" | "ModTransferCommunity" 
+     | "ModAdd" | "ModBan" | "ModHideCommunity" | "AdminPurgePerson" | "AdminPurgeCommunity" | 
+     "AdminPurgePost" | "AdminPurgeComment" */
+  }
+
+  const modlogTypes = getModLogTypeNames();
+
+  return (
+    <Select
+      defaultValue={modLogType}
+      color="neutral"
+      variant="outlined"
+      onChange={(e, newValue) => {
+        dispatch(setConfigItem("modLogType", newValue));
+      }}
+      sx={{
+        minWidth: 150,
+      }}
+    >
+      {Object.entries(modlogTypes).map(([key, type]) => {
+        return (
+          <Option key={key} value={key} label={type} color="neutral">
+            <Typography component="span">{type}</Typography>
+          </Option>
+        );
+      })}
     </Select>
   );
 }

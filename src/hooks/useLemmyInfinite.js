@@ -12,6 +12,7 @@ export default function useLemmyInfinite({
   callLemmyMethod,
   formData,
   countResultElement,
+  hasNextPageFunction = null,
   enabled = true,
   perPage = 25,
 }) {
@@ -50,18 +51,32 @@ export default function useLemmyInfinite({
 
       const lemmyClient = new LemmyHttp(`https://${currentUser.base}`);
 
-      const siteData = await lemmyClient[callLemmyMethod]({
+      const apiResultData = await lemmyClient[callLemmyMethod]({
         auth: currentUser.jwt,
         page: pageParam,
         limit: perPage,
         ...formData,
       });
 
-      const result = countResultElement ? siteData[countResultElement] : siteData;
+      let result = apiResultData;
+      let nextPage = undefined;
+
+      // function returns true if there's another page
+      if (hasNextPageFunction) {
+        const hasNextPage = hasNextPageFunction(apiResultData, perPage);
+        nextPage = hasNextPage ? pageParam + 1 : undefined;
+      }
+
+      // if `countResultElement` is set; we need to return that as the primary arry instead of the whole object
+      else if (countResultElement) {
+        result = apiResultData[countResultElement];
+        // countResult = result.length;
+        nextPage = result.length > 0 && result.length == perPage ? pageParam + 1 : undefined;
+      }
 
       return {
         data: result,
-        nextPage: result.length > 0 && result.length == perPage ? pageParam + 1 : undefined,
+        nextPage,
       };
     },
     getNextPageParam: (lastPage, allPages) => lastPage.nextPage,
