@@ -1,7 +1,5 @@
 import React from "react";
 
-import Moment from "react-moment";
-
 import Card from "@mui/joy/Card";
 import Box from "@mui/joy/Box";
 import Badge from "@mui/joy/Badge";
@@ -16,7 +14,7 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import HelpIcon from "@mui/icons-material/Help";
 import ReportIcon from "@mui/icons-material/Report";
 
-import { SquareChip } from "./Display.jsx";
+import { MomentAdjustedTimeAgo, SquareChip } from "./Display.jsx";
 
 import { PersonMetaLine, ReportDetails } from "./ListItem/Common.jsx";
 
@@ -116,7 +114,8 @@ function ApplicationListItem({ registration }) {
           <Typography variant="h6" component="h2" sx={{ mt: 0, display: "flex", gap: 1 }}>
             {registration.creator.published && (
               <SquareChip color="primary" variant="outlined" tooltip={registration.creator.published}>
-                registered <Moment fromNow>{registration.creator.published}</Moment>
+                registered{" "}
+                <MomentAdjustedTimeAgo fromNow>{registration.creator.published}</MomentAdjustedTimeAgo>
               </SquareChip>
             )}
 

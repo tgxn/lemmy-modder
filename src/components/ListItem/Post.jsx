@@ -1,7 +1,5 @@
 import React from "react";
 
-import Moment from "react-moment";
-
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 
@@ -23,7 +21,7 @@ import { ResolvePostReportButton, RemovePostButton, PurgePostButton } from "../A
 import { BanUserCommunityButton, BanUserSiteButton, PurgeUserSiteButton } from "../Actions/GenButtons.jsx";
 
 import { PersonMetaLine, ReportDetails } from "./Common.jsx";
-import { SanitizedLink } from "../Display.jsx";
+import { MomentAdjustedTimeAgo, SanitizedLink } from "../Display.jsx";
 
 const PostContentDetail = ({ report }) => {
   return (
@@ -45,7 +43,7 @@ const PostContentDetail = ({ report }) => {
 
         {report.post.published && (
           <SquareChip color="neutral" variant="outlined" tooltip={report.post.published}>
-            <Moment fromNow>{report.post.published}</Moment>
+            <MomentAdjustedTimeAgo fromNow>{report.post.published}</MomentAdjustedTimeAgo>
           </SquareChip>
         )}
 
@@ -97,9 +95,9 @@ const PostContentDetail = ({ report }) => {
           fontSize: "17px",
         }}
       >
-        <Typography>
+        {/* <Typography>
           <StickyNote2Icon fontSize="large" />
-        </Typography>
+        </Typography> */}
         <SanitizedLink href={report.post.ap_id} target="_blank" rel="noopener noreferrer">
           {report.post.name}
         </SanitizedLink>
