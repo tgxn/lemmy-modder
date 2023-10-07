@@ -1,7 +1,5 @@
 import React from "react";
 
-import Moment from "react-moment";
-
 import { useSelector } from "react-redux";
 
 import Box from "@mui/joy/Box";
@@ -23,7 +21,7 @@ import { useInView } from "react-intersection-observer";
 
 import { FilterModLogType } from "../components/Filters";
 
-import { SquareChip } from "../components/Display.jsx";
+import { MomentAdjustedTimeAgo, SquareChip } from "../components/Display.jsx";
 
 import useLemmyInfinite from "../hooks/useLemmyInfinite";
 import { getSiteData } from "../hooks/getSiteData";
@@ -322,7 +320,7 @@ function BaseAccordian({
         >
           {headerIcon}
           <SquareChip color="primary" variant="outlined" tooltip={item.time}>
-            <Moment fromNow>{item.time}</Moment>
+            <MomentAdjustedTimeAgo fromNow>{item.time}</MomentAdjustedTimeAgo>
           </SquareChip>
           {headerContent}
         </Box>
@@ -337,7 +335,7 @@ function ModDisplayName({ moderator }) {
   if (!moderator) return null;
 
   return (
-    <Box>
+    <Box sx={{ overflow: "hidden" }}>
       {moderator.admin && (
         <SquareChip color="danger" variant="solid" tooltip={"Site Admin"}>
           <SecurityIcon />
@@ -361,7 +359,7 @@ function RemovedPostRow({ item }) {
       }
     >
       <Typography variant="h6" component="h2">
-        Mod: {item.moderator.display_name} ({item.moderator.actor_id})
+        Mod: {item.moderator?.display_name} ({item.moderator?.actor_id})
       </Typography>
       <Typography component="span">Reason: "{item.mod_remove_post.reason}"</Typography>
       <Typography component="span">removed: {item.mod_remove_post.removed ? "True" : "false"}</Typography>

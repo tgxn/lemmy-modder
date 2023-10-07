@@ -1,7 +1,5 @@
 import React from "react";
 
-import Moment from "react-moment";
-
 import Alert from "@mui/joy/Alert";
 import Card from "@mui/joy/Card";
 import Box from "@mui/joy/Box";
@@ -17,6 +15,8 @@ import SecurityIcon from "@mui/icons-material/Security";
 import BlockIcon from "@mui/icons-material/Block";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import DeleteIcon from "@mui/icons-material/Delete";
+
+import { MomentAdjustedTimeAgo } from "./Display.jsx";
 
 export const UserTooltip = ({ user, ...props }) => {
   return (
@@ -37,7 +37,7 @@ export const UserTooltip = ({ user, ...props }) => {
 
         {user.published && (
           <Typography fontSize="sm" gutterBottom>
-            registered <Moment fromNow>{user.published}</Moment>
+            registered <MomentAdjustedTimeAgo fromNow>{user.published}</MomentAdjustedTimeAgo>
           </Typography>
         )}
       </Box>

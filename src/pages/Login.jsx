@@ -1,7 +1,5 @@
 import React from "react";
 
-import Moment from "react-moment";
-
 import { useDispatch, useSelector } from "react-redux";
 
 import jwt_decode from "jwt-decode";
@@ -335,7 +333,7 @@ export default function LoginForm() {
                           }
                         }
                       >
-                        {user.site.my_user?.local_user_view?.person.display_name}{" "}
+                        {user.site.my_user?.local_user_view?.person.display_name}
                       </ListItemContent>
                       {/* <ListItemContent>
                         {!expired && (

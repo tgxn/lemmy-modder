@@ -1,14 +1,12 @@
 import React from "react";
 
-import Moment from "react-moment";
-
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
-import { SquareChip } from "../Display.jsx";
+import { MomentAdjustedTimeAgo, SquareChip } from "../Display.jsx";
 
 import { ResolvePMReportButton } from "../Actions/PMButtons.jsx";
 import { BanUserSiteButton, PurgeUserSiteButton } from "../Actions/GenButtons.jsx";
@@ -22,7 +20,7 @@ const PMContentDetail = ({ report }) => {
       <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
         {report.private_message.published && (
           <SquareChip color="neutral" variant="outlined" tooltip={report.private_message.published}>
-            <Moment fromNow>{report.private_message.published}</Moment>
+            <MomentAdjustedTimeAgo fromNow>{report.private_message.published}</MomentAdjustedTimeAgo>
           </SquareChip>
         )}
 

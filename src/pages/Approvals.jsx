@@ -6,6 +6,7 @@ import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
 import Sheet from "@mui/joy/Sheet";
 import CircularProgress from "@mui/joy/CircularProgress";
+import Checkbox from "@mui/joy/Checkbox";
 
 import { useInView } from "react-intersection-observer";
 
@@ -22,6 +23,8 @@ export default function Approvals() {
   const hideReadApprovals = useSelector((state) => state.configReducer.hideReadApprovals);
 
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+
+  const [sortOldestFirst, setSortOldestFirst] = React.useState(false);
 
   const { ref, inView, entry } = useInView({
     threshold: 0,
@@ -46,22 +49,30 @@ export default function Approvals() {
     perPage: 10,
   });
 
-  function mapPagesData(startList, mapFunction) {
-    let reportsList = [];
-    for (let i = 0; i < startList.length; i++) {
-      const pageEntries = startList[i].data.map(mapFunction);
-      reportsList = reportsList.concat(pageEntries);
-    }
-    return reportsList;
-  }
-
   const fullData = React.useMemo(() => {
     if (!registrationsData) return [];
 
-    return mapPagesData(registrationsData.pages, (report) => {
-      return report;
+    let reportsList = [];
+    for (let i = 0; i < registrationsData.pages.length; i++) {
+      const pageEntries = registrationsData.pages[i].data;
+      reportsList = reportsList.concat(pageEntries);
+    }
+
+    // sort by date
+    reportsList = reportsList.sort((a, b) => {
+      const aEpoch = new Date(a.registration_application.published.replace(/(\.\d{6})/, "Z")).getTime();
+      const bEpoch = new Date(b.registration_application.published.replace(/(\.\d{6})/, "Z")).getTime();
+
+      if (sortOldestFirst) {
+        return aEpoch - bEpoch;
+      } else {
+        return bEpoch - aEpoch;
+      }
     });
-  }, [registrationsData]);
+    console.log("sortOldestFirst", sortOldestFirst);
+
+    return reportsList;
+  }, [registrationsData, sortOldestFirst]);
 
   React.useEffect(() => {
     if (inView && registrationsHasNextPage) {
@@ -128,6 +139,15 @@ export default function Approvals() {
         }}
       >
         <HideRead />
+
+        <Checkbox
+          label="Show Oldest First"
+          variant="outlined"
+          checked={sortOldestFirst}
+          onChange={() => {
+            setSortOldestFirst(!sortOldestFirst);
+          }}
+        />
 
         {/* <FilterRemoved /> */}
       </Sheet>
