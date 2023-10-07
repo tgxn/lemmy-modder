@@ -1,7 +1,5 @@
 import React from "react";
 
-import Moment from "react-moment";
-
 import { useDispatch, useSelector } from "react-redux";
 
 import jwt_decode from "jwt-decode";
@@ -24,11 +22,12 @@ import Delete from "@mui/icons-material/Delete";
 
 import { LemmyHttp } from "lemmy-js-client";
 
-import { addUser, setUsers, setCurrentUser } from "../reducers/accountReducer";
+import { addUser, setAccountIsLoading, setUsers, setCurrentUser } from "../reducers/accountReducer";
 
 export default function LoginForm() {
   const dispatch = useDispatch();
 
+  const accountIsLoading = useSelector((state) => state.accountReducer.accountIsLoading);
   const users = useSelector((state) => state.accountReducer.users);
   const isInElectron = useSelector((state) => state.configReducer.isInElectron);
 
@@ -37,7 +36,7 @@ export default function LoginForm() {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
 
-  const [isLoading, setIsLoading] = React.useState(false);
+  // const [isLoading, setIsLoading] = React.useState(false);
 
   const [saveSession, setSaveSession] = React.useState(false);
 
@@ -45,9 +44,9 @@ export default function LoginForm() {
 
   // perform login against lemmy instance
   const loginClick = async () => {
-    setIsLoading(true);
+    // setIsLoading(true);
+    dispatch(setAccountIsLoading(true));
     try {
-
       const lemmyClient = new LemmyHttp(`https://${instanceBase}`);
 
       const auth = await lemmyClient.login({
@@ -55,7 +54,7 @@ export default function LoginForm() {
         password: password,
       });
 
-/**
+      /**
  * 0.19.x :/ hmm
         // this shows the `jwt` is present 👍
         console.log("auth", auth);
@@ -75,7 +74,6 @@ export default function LoginForm() {
 
       // as long aws there is a JWT in the response from login, logged in!
       if (auth.jwt) {
-
         const getSite = await lemmyClient.getSite({
           auth: auth.jwt,
         });
@@ -85,14 +83,14 @@ export default function LoginForm() {
         } else {
           dispatch(setCurrentUser(instanceBase, auth.jwt, getSite));
         }
-
       } else {
         setLoginError(auth);
       }
     } catch (e) {
       setLoginError(typeof e == "string" ? e : e.message);
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
+      dispatch(setAccountIsLoading(false));
     }
   };
 
@@ -109,13 +107,14 @@ export default function LoginForm() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
+          p: 0,
         }}
       >
         <Card
           sx={{
             mt: 4,
             p: 2,
-            py: 4,
+            // py: ,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -140,6 +139,7 @@ export default function LoginForm() {
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
+              width: "60%",
             }}
           >
             <Input
@@ -148,7 +148,8 @@ export default function LoginForm() {
               onChange={(e) => setInstanceBase(e.target.value)}
               variant="outlined"
               color="neutral"
-              sx={{ mb: 1 }}
+              sx={{ mb: 1, width: "100%" }}
+              disabled={accountIsLoading}
             />
             <Input
               placeholder="Username"
@@ -156,7 +157,8 @@ export default function LoginForm() {
               onChange={(e) => setUsername(e.target.value)}
               variant="outlined"
               color="neutral"
-              sx={{ mb: 1 }}
+              sx={{ mb: 1, width: "100%" }}
+              disabled={accountIsLoading}
             />
             <Input
               placeholder="Password"
@@ -167,28 +169,28 @@ export default function LoginForm() {
               color="neutral"
               sx={{
                 mb: 1,
+                width: "100%",
                 "& .MuiInput-input": {
                   caretColor: "#000000",
                   textOverflow: "clip",
                 },
               }}
+              disabled={accountIsLoading}
             />
-
             <Button
               fullWidth
               onClick={loginClick}
               disabled={instanceBase.length === 0 || username.length === 0 || password.length === 0}
-              loading={isLoading}
+              loading={accountIsLoading}
             >
               Login
             </Button>
-
             <Box
               sx={{
-                pt: 1,
+                py: 1,
               }}
             >
-              <Tooltip title="Your session will be saved locally" placement="bottom">
+              <Tooltip title="Will this session will be saved in your browser?" placement="bottom">
                 <Checkbox
                   label="Save Session"
                   variant="outlined"
@@ -251,7 +253,11 @@ export default function LoginForm() {
                 return (
                   <ListItem
                     key={index}
-                    disabled={isLoading}
+                    disabled={accountIsLoading}
+                    sx={{
+                      mb: 0.5,
+                      overflow: "hidden",
+                    }}
                     endAction={
                       <IconButton
                         aria-label="Delete"
@@ -269,9 +275,16 @@ export default function LoginForm() {
                     }
                   >
                     <ListItemButton
-                      disabled={isLoading}
+                      disabled={accountIsLoading}
+                      sx={{
+                        borderRadius: 4,
+                      }}
+                      variant="outlined"
+                      color="neutral"
                       onClick={async () => {
-                        setIsLoading(true);
+                        // setIsLoading(true);
+
+                        dispatch(setAccountIsLoading(true));
 
                         try {
                           const lemmyClient = new LemmyHttp(`https://${user.base}`);
@@ -297,7 +310,8 @@ export default function LoginForm() {
                         } catch (e) {
                           setLoginError(typeof e == "string" ? e : e.message);
                         } finally {
-                          setIsLoading(false);
+                          // setIsLoading(false);
+                          dispatch(setAccountIsLoading(false));
                         }
 
                         // if (!expired) {
@@ -319,7 +333,7 @@ export default function LoginForm() {
                           }
                         }
                       >
-                        {user.site.my_user?.local_user_view?.person.name}@{user.base}
+                        {user.site.my_user?.local_user_view?.person.display_name}
                       </ListItemContent>
                       {/* <ListItemContent>
                         {!expired && (
@@ -337,6 +351,11 @@ export default function LoginForm() {
                           </Typography>
                         )}
                       </ListItemContent> */}
+                      <ListItemContent>
+                        <Typography>
+                          {user.site.my_user?.local_user_view?.person.name}@{user.base}
+                        </Typography>
+                      </ListItemContent>
                     </ListItemButton>
                   </ListItem>
                 );
@@ -374,7 +393,7 @@ export default function LoginForm() {
                 fullWidth
                 color="warning"
                 onClick={() => clearData(true)}
-                disabled={isLoading}
+                disabled={accountIsLoading}
               >
                 Clean storage (keep users)
               </Button>
@@ -384,7 +403,7 @@ export default function LoginForm() {
                 fullWidth
                 color="danger"
                 onClick={() => clearData(false)}
-                disabled={isLoading}
+                disabled={accountIsLoading}
               >
                 Purge storage
               </Button>

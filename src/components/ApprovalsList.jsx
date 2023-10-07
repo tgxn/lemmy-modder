@@ -1,7 +1,5 @@
 import React from "react";
 
-import Moment from "react-moment";
-
 import Card from "@mui/joy/Card";
 import Box from "@mui/joy/Box";
 import Badge from "@mui/joy/Badge";
@@ -9,7 +7,6 @@ import Tooltip from "@mui/joy/Tooltip";
 import Alert from "@mui/joy/Alert";
 import Typography from "@mui/joy/Typography";
 
-import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import SoapIcon from "@mui/icons-material/Soap";
 
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
@@ -17,7 +14,7 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import HelpIcon from "@mui/icons-material/Help";
 import ReportIcon from "@mui/icons-material/Report";
 
-import { SquareChip } from "./Display.jsx";
+import { MomentAdjustedTimeAgo, SquareChip } from "./Display.jsx";
 
 import { PersonMetaLine, ReportDetails } from "./ListItem/Common.jsx";
 
@@ -112,12 +109,13 @@ function ApplicationListItem({ registration }) {
             flexDirection: "column",
           }}
         >
-          <PersonMetaLine creator={registration.creator} />
+          <PersonMetaLine creator={registration.creator} local_user={registration.creator_local_user} />
 
           <Typography variant="h6" component="h2" sx={{ mt: 0, display: "flex", gap: 1 }}>
             {registration.creator.published && (
-              <SquareChip color="neutral" variant="outlined" tooltip={registration.creator.published}>
-                registered <Moment fromNow>{registration.creator.published}</Moment>
+              <SquareChip color="primary" variant="outlined" tooltip={registration.creator.published}>
+                registered{" "}
+                <MomentAdjustedTimeAgo fromNow>{registration.creator.published}</MomentAdjustedTimeAgo>
               </SquareChip>
             )}
 
@@ -191,7 +189,7 @@ function ApplicationListItem({ registration }) {
               mt: 1,
               display: "flex",
               flexDirection: "row",
-              justifyContent: "flex-end",
+              justifyContent: "space-between",
               gap: 1,
             }}
           >

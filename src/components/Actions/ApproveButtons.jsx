@@ -36,10 +36,12 @@ export const ApproveRegistrationButton = ({ registration, deny = false, ...props
   let actionText = "Approve";
   let actionColor = "success";
   let extraElems = [];
+  let actionVariant = "solid";
 
   if (deny) {
     actionText = "Deny";
     actionColor = "warning";
+    actionVariant = "outlined";
     extraElems = [
       <InputElement
         key="denyReason"
@@ -55,6 +57,7 @@ export const ApproveRegistrationButton = ({ registration, deny = false, ...props
       <BaseActionButton
         text={actionText}
         size="md"
+        variant={actionVariant}
         tooltip={`${actionText} User`}
         color={actionColor}
         onClick={() => setConfirmOpen(true)}

@@ -1,7 +1,5 @@
 import React from "react";
 
-import Moment from "react-moment";
-
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 
@@ -19,7 +17,7 @@ import { BanUserCommunityButton, BanUserSiteButton, PurgeUserSiteButton } from "
 
 import { PersonMetaLine, ReportDetails } from "./Common.jsx";
 
-import { SanitizedLink } from "../Display.jsx";
+import { MomentAdjustedTimeAgo, SanitizedLink } from "../Display.jsx";
 
 const CommentContentDetail = ({ report }) => {
   return (
@@ -28,7 +26,7 @@ const CommentContentDetail = ({ report }) => {
       <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
         {report.comment.published && (
           <SquareChip color="neutral" variant="outlined" tooltip={report.comment.published}>
-            <Moment fromNow>{report.comment.published}</Moment>
+            <MomentAdjustedTimeAgo fromNow>{report.comment.published}</MomentAdjustedTimeAgo>
           </SquareChip>
         )}
 
@@ -64,11 +62,11 @@ const CommentContentDetail = ({ report }) => {
 
       {/* Comment Title */}
       <Typography variant="h4" component="h2">
-        <Typography>
+        {/* <Typography>
           <ForumIcon fontSize="large" />
-        </Typography>
+        </Typography> */}
         <SanitizedLink href={report.comment.ap_id} target="_blank" rel="noopener noreferrer">
-          Show
+          Show Comment in Context
         </SanitizedLink>
       </Typography>
 

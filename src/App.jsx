@@ -10,8 +10,11 @@ import { HashRouter } from "react-router-dom";
 import Box from "@mui/joy/Box";
 import Container from "@mui/joy/Container";
 
+import { Toaster, toast } from "sonner";
+
 import SiteHeader from "./components/SiteHeader";
 
+import Actions from "./pages/Actions";
 import Approvals from "./pages/Approvals";
 import Reports from "./pages/Reports";
 import Login from "./pages/Login";
@@ -49,6 +52,7 @@ function PageRouter() {
     >
       <HashRouter>
         <SiteHeader height="50px" />
+        <Toaster />
 
         <Box
           sx={{
@@ -94,6 +98,27 @@ function PageRouter() {
                     }}
                   >
                     <Approvals />
+                  </Container>
+                </Box>
+              }
+            />
+            <Route
+              path="/actions"
+              element={
+                <Box
+                  sx={{
+                    overflow: "auto",
+                    height: "calc(100% - 50px)",
+                    width: "100%",
+                  }}
+                >
+                  <Container
+                    maxWidth={"lg"}
+                    sx={{
+                      py: 2,
+                    }}
+                  >
+                    <Actions />
                   </Container>
                 </Box>
               }
