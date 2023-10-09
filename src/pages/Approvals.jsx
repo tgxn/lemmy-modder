@@ -140,14 +140,15 @@ export default function Approvals() {
       >
         <HideRead />
 
-        <Checkbox
+        {/* TODO this needs support from lemmy to sort the approval results */}
+        {/* <Checkbox
           label="Show Oldest First"
           variant="outlined"
           checked={sortOldestFirst}
           onChange={() => {
             setSortOldestFirst(!sortOldestFirst);
           }}
-        />
+        /> */}
 
         {/* <FilterRemoved /> */}
       </Sheet>

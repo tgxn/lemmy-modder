@@ -19,7 +19,7 @@ import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
 import useLemmyReports from "../../hooks/useLemmyReports";
 
 export const BaseActionButton = ({
-  icon = null,
+  // icon = null,
   size = "small",
   text,
   tooltip,
