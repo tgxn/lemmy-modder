@@ -3,11 +3,11 @@ FROM node:18-alpine as build
 WORKDIR /app
 
 # install npm deps
-COPY frontend/package*.json ./
+COPY package*.json ./
 RUN npm ci
 
 # build frontend
-COPY frontend/ .
+COPY ./ .
 RUN npm run build
 
 # copy files to run container
