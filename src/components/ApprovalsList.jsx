@@ -18,7 +18,7 @@ import { MomentAdjustedTimeAgo, SquareChip } from "./Display.jsx";
 
 import { PersonMetaLine, ReportDetails } from "./ListItem/Common.jsx";
 
-import { ApproveRegistrationButton } from "./Actions/ApproveButtons.jsx";
+import { ApproveButton, DenyButton } from "./Actions/RegistrationButtons.jsx";
 
 function ApplicationListItem({ registration }) {
   // registrations contains
@@ -198,12 +198,8 @@ function ApplicationListItem({ registration }) {
               gap: 1,
             }}
           >
-            {(isAccepted === null || isAccepted === true) && (
-              <ApproveRegistrationButton registration={registration} deny={true} />
-            )}
-            {(isAccepted === null || isAccepted === false) && (
-              <ApproveRegistrationButton registration={registration} deny={false} />
-            )}
+            {(isAccepted === null || isAccepted === true) && <DenyButton registration={registration} />}
+            {(isAccepted === null || isAccepted === false) && <ApproveButton registration={registration} />}
           </Box>
         </Box>
       </Card>

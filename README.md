@@ -12,6 +12,8 @@
 | ![Login Screen](./docs/image/050/image-2.png) | ![Clean Screen](./docs/image/050/image.png)   |
 
 ## Features
+- **Does not save, proxy or store any of your user credentials or data**
+  - Data is stored in your browsers' [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) and is only sent to your Lemmy instance.
 - User Registration Approval
     - Improved user registrations approval panel
     - See more user data when making decision, join date, email, etc.
@@ -39,11 +41,14 @@ To use Lemmy Modder - You can either:
 You will need:
 - docker & docker-compose
 
-1. Add this to your docker-compose alongside the lemmy services, or wherever you like:
+1. Add this (service) to your docker-compose alongside the lemmy services, or wherever you like:
 ```yaml
-...
+## your networks and volumes from lemmy should stay here
+
 services:
-...
+  ## your other lemmy services
+
+  ## this is the lemmy modder container, you can change port 9696 to wehatever you like
   lemmy-modder:
     image: ghcr.io/tgxn/lemmy-modder:latest
     restart: unless-stopped
