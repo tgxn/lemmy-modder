@@ -45,13 +45,13 @@ export function ReportListItem({ itemType, report, children }) {
     );
   } else if (itemType == "comment") {
     resolved = report.comment_report.resolved;
-    itemColor = "primary";
+    itemColor = "success";
     itemIcon = (
       <Tooltip
         title={`Comment: ${report.community.actor_id.split("/")[2]}/c/${report.community.name}`}
         variant="outlined"
         placement="right"
-        color="primary"
+        color="success"
       >
         <ForumIcon fontSize="md" />
       </Tooltip>

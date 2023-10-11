@@ -96,13 +96,25 @@ function SiteMenu() {
           endDecorator={
             siteData && (
               <Chip
-                startDecorator={reportCountsLoading ? <CircularProgress size="sm" /> : <FlagIcon />}
-                color={siteData && totalReports > 0 ? "danger" : "success"}
+                startDecorator={
+                  reportCountsLoading ? (
+                    <CircularProgress
+                      size="sm"
+                      color="neutral"
+                      sx={{
+                        "--CircularProgress-size": "16px",
+                      }}
+                    />
+                  ) : (
+                    <FlagIcon />
+                  )
+                }
+                color={reportCountsLoading ? "warning" : siteData && totalReports > 0 ? "danger" : "success"}
                 sx={{
                   borderRadius: 6,
                 }}
               >
-                {totalReports > 0 ? totalReports : "0"}
+                {!reportCountsLoading && (totalReports > 0 ? totalReports : "0")}
               </Chip>
             )
           }
@@ -126,15 +138,33 @@ function SiteMenu() {
           endDecorator={
             siteData && (
               <Chip
-                startDecorator={regAppCountIsLoading ? <CircularProgress size="sm" /> : <HowToRegIcon />}
-                color={siteData && regCountAppData?.registration_applications > 0 ? "danger" : "success"}
+                startDecorator={
+                  regAppCountIsLoading ? (
+                    <CircularProgress
+                      size="sm"
+                      color="neutral"
+                      sx={{
+                        "--CircularProgress-size": "16px",
+                      }}
+                    />
+                  ) : (
+                    <HowToRegIcon />
+                  )
+                }
+                color={
+                  regAppCountIsLoading
+                    ? "warning"
+                    : siteData && regCountAppData?.registration_applications > 0
+                    ? "danger"
+                    : "success"
+                }
                 sx={{
                   borderRadius: 6,
                 }}
               >
                 {regCountAppData?.registration_applications !== undefined
                   ? regCountAppData.registration_applications
-                  : "0"}
+                  : ""}
               </Chip>
             )
           }

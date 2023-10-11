@@ -10,15 +10,9 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import { useLemmyHttpAction } from "../../hooks/useLemmyHttp.js";
 import { getSiteData } from "../../hooks/getSiteData";
 
-import {
-  BaseActionButton,
-  InputElement,
-  CheckboxElement,
-  ExpiryLengthElement,
-  ConfirmDialog,
-} from "./BaseElements.jsx";
+import { BaseActionButton, InputElement, ConfirmDialog } from "./BaseElements.jsx";
 
-export const ApproveButton = ({ registration, deny = false, ...props }) => {
+export const ApproveButton = ({ registration, ...props }) => {
   const queryClient = useQueryClient();
 
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
@@ -50,30 +44,29 @@ export const ApproveButton = ({ registration, deny = false, ...props }) => {
     if (isSuccess) {
       console.log("useLemmyHttpAction", "onSuccess", data);
 
+      // if we are not hiding read approvals, just invalidate the whole list
       if (!hideReadApprovals) {
         queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
       } else {
         queryClient.setQueryData(
-          ["lemmyHttp", localPerson.id, ["unread_only", true], "listRegistrationApplications"],
+          ["lemmyHttp", localPerson.id, "listRegistrationApplications", ["unread_only", true]],
           (old) => {
             // remove it from the array
-            const newPages = old.pages.map((page) => {
-              const newData = page.data.filter((registrationItem) => {
-                return (
-                  registrationItem.registration_application.id !== registration.registration_application.id
-                );
-              });
+            const newPages = !old
+              ? null
+              : old.pages.map((page) => {
+                  const newData = page.data.filter((registrationItem) => {
+                    return (
+                      registrationItem.registration_application.id !==
+                      registration.registration_application.id
+                    );
+                  });
 
-              return {
-                ...page,
-                data: newData,
-              };
-            });
-
-            // invalidate application count
-            queryClient.invalidateQueries({
-              queryKey: ["lemmyHttp", localPerson.id, "getUnreadRegistrationApplicationCount"],
-            });
+                  return {
+                    ...page,
+                    data: newData,
+                  };
+                });
 
             return {
               ...old,
@@ -82,6 +75,11 @@ export const ApproveButton = ({ registration, deny = false, ...props }) => {
           },
         );
       }
+
+      // invalidate application count
+      queryClient.invalidateQueries({
+        queryKey: ["lemmyHttp", localPerson.id, "getUnreadRegistrationApplicationCount"],
+      });
 
       setIsConfirming(false);
 
@@ -118,33 +116,44 @@ export const ApproveButton = ({ registration, deny = false, ...props }) => {
   }, [data]);
 
   return (
-    <BaseActionButton
-      text={isConfirming ? "Confirm?" : "Approve"}
-      endDecorator={deny ? <ThumbDownIcon sx={{ color: "warning.main" }} /> : <ThumbUpIcon />}
-      // endDecorator={deny ? <ThumbDownIcon /> : <ThumbUpIcon />}
-      size="md"
-      variant={"solid"}
-      tooltip={isConfirming ? `Confirm ${"Approve"}?` : `${"Approve"} User`}
-      color={isConfirming ? "warning" : "success"}
-      onClick={() => {
-        // if they are clicking in the confirming state, do the action
-        if (isConfirming) {
-          callAction({
-            id: registration.registration_application.id,
-            approve: true,
-          });
-        } else {
-          setIsConfirming(true);
-        }
-      }}
-      sx={
-        {
-          // ml: 1,
-        }
-      }
-      loading={isLoading}
-      {...props}
-    />
+    <>
+      <BaseActionButton
+        text={isConfirming ? "Confirm?" : "Approve"}
+        endDecorator={<ThumbUpIcon />}
+        size="md"
+        variant={"solid"}
+        tooltip={isConfirming ? `Really Approve?` : `Approve User`}
+        color={isConfirming ? "warning" : "success"}
+        onClick={() => {
+          // if they are clicking in the confirming state, do the action
+          if (isConfirming) {
+            callAction({
+              id: registration.registration_application.id,
+              approve: true,
+            });
+          } else {
+            setIsConfirming(true);
+          }
+        }}
+        sx={{
+          ml: 1, // this is needed for the thumb icon
+        }}
+        loading={isLoading}
+        {...props}
+      />
+      {error && (
+        <Typography
+          component="div"
+          sx={{
+            textAlign: "right",
+            mt: 1,
+            color: "#ff0000",
+          }}
+        >
+          {typeof error === "string" ? error : error.message}
+        </Typography>
+      )}
+    </>
   );
 };
 
@@ -171,7 +180,7 @@ export const DenyButton = ({ registration, ...props }) => {
         queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
       } else {
         queryClient.setQueryData(
-          ["lemmyHttp", localPerson.id, ["unread_only", true], "listRegistrationApplications"],
+          ["lemmyHttp", localPerson.id, "listRegistrationApplications", ["unread_only", true]],
           (old) => {
             // remove it from the array
             const newPages = old.pages.map((page) => {
@@ -187,29 +196,6 @@ export const DenyButton = ({ registration, ...props }) => {
               };
             });
 
-            // invalidate application count
-            queryClient.invalidateQueries({
-              queryKey: ["lemmyHttp", localPerson.id, "getUnreadRegistrationApplicationCount"],
-            });
-
-            // const newPages = old.pages.map((page) => {
-            //   const newData = page.data.map((registrationItem) => {
-            //     if (
-            //       registrationItem.registration_application.id === registration.registration_application.id
-            //     ) {
-            //       console.log("found", registrationItem);
-            //       registrationItem.creator_local_user.accepted_application = deny ? false : true;
-            //       // registrationItem.registration_application.answer = deny ? "denied" : "approved";
-            //     }
-            //     return registrationItem;
-            //   });
-
-            //   return {
-            //     ...page,
-            //     data: newData,
-            //   };
-            // });
-
             return {
               ...old,
               pages: newPages,
@@ -217,6 +203,11 @@ export const DenyButton = ({ registration, ...props }) => {
           },
         );
       }
+
+      // invalidate application count
+      queryClient.invalidateQueries({
+        queryKey: ["lemmyHttp", localPerson.id, "getUnreadRegistrationApplicationCount"],
+      });
 
       toast.error(`${registration.creator.name}: ${"denied"}!`, {
         duration: 15000,
@@ -253,24 +244,33 @@ export const DenyButton = ({ registration, ...props }) => {
   return (
     <>
       <BaseActionButton
-        text={"Deny"}
+        text={`Deny`}
         endDecorator={<ThumbDownIcon sx={{ color: "warning.main" }} />}
-        // endDecorator={deny ? <ThumbDownIcon /> : <ThumbUpIcon />}
         size="md"
-        variant={"outlined"}
-        tooltip={`${"Deny"} User`}
-        color={"danger"}
+        variant="outlined"
+        tooltip="Deny User"
+        color="danger"
         onClick={() => setConfirmOpen(true)}
-        sx={{
-          ml: 1,
-        }}
         loading={isLoading}
+        sx={{
+          ml: 1, // this is needed for the thumb icon
+        }}
         {...props}
       />
+      {error && (
+        <Typography
+          component="div"
+          sx={{
+            textAlign: "right",
+            mt: 1,
+            color: "#ff0000",
+          }}
+        >
+          {typeof error === "string" ? error : error.message}
+        </Typography>
+      )}
       <ConfirmDialog
         open={confirmOpen}
-        loading={isLoading}
-        error={error}
         title="Deny User"
         message={`Are you sure you want to deny this registration?`}
         buttonMessage={"Deny"}

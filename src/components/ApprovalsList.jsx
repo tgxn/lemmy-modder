@@ -117,8 +117,8 @@ function ApplicationListItem({ registration }) {
                 tooltipPlacement="bottom"
               >
                 {isAccepted
-                  ? `approved by @${registration.admin.name}`
-                  : `denied by @${registration.admin.name}`}
+                  ? `approved by ${registration.admin.name}`
+                  : `denied by ${registration.admin.name}`}
               </SquareChip>
             )}
 

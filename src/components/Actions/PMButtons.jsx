@@ -1,7 +1,8 @@
 import React from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
-import moment from "moment";
+
+import DoneAllIcon from "@mui/icons-material/DoneAll";
 
 import { useLemmyHttpAction } from "../../hooks/useLemmyHttp.js";
 
@@ -16,11 +17,24 @@ import {
 // allow resolving / unresolving a post report
 // resolvePrivateMessageReport
 export const ResolvePMReportButton = ({ report, ...props }) => {
-  const [confirmOpen, setConfirmOpen] = React.useState(false);
-
   const queryClient = useQueryClient();
 
   const { data, callAction, isSuccess, isLoading, error } = useLemmyHttpAction("resolvePrivateMessageReport");
+
+  const [isConfirming, setIsConfirming] = React.useState(false);
+
+  // close confirm after 5 seconds of no activity
+  React.useEffect(() => {
+    if (isConfirming) {
+      const timeout = setTimeout(() => {
+        setIsConfirming(false);
+      }, 5000);
+
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [isConfirming]);
 
   React.useEffect(() => {
     if (isSuccess) {
@@ -28,45 +42,43 @@ export const ResolvePMReportButton = ({ report, ...props }) => {
 
       queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
 
-      setConfirmOpen(false);
+      setIsConfirming(false);
     }
   }, [data]);
 
   let actionText = "Resolve";
   let actionColor = "success";
+  let actionVariant = "solid";
   if (report.private_message_report.resolved) {
     actionText = "Unresolve";
     actionColor = "warning";
+    actionVariant = "outlined";
   }
 
   return (
-    <>
-      <BaseActionButton
-        text={actionText}
-        tooltip={`${actionText} Report`}
-        color={actionColor}
-        onClick={() => setConfirmOpen(true)}
-        {...props}
-      />
-      <ConfirmDialog
-        open={confirmOpen}
-        loading={isLoading}
-        error={error}
-        title={`${actionText} Report`}
-        message={`Are you sure you want to ${actionText.toLowerCase()} this report?`}
-        buttonMessage={actionText}
-        color={actionColor}
-        onConfirm={() => {
+    <BaseActionButton
+      text={isConfirming ? "Confirm?" : actionText}
+      tooltip={isConfirming ? `Really ${actionText}?` : `${actionText} Report`}
+      color={isConfirming ? "warning" : actionColor}
+      endDecorator={<DoneAllIcon />}
+      loading={isLoading}
+      size="md"
+      variant={actionVariant}
+      onClick={() => {
+        if (isConfirming) {
           callAction({
             report_id: report.private_message_report.id,
             resolved: !report.private_message_report.resolved,
           });
-        }}
-        onCancel={() => {
-          setConfirmOpen(false);
-        }}
-      />
-    </>
+        } else {
+          setIsConfirming(true);
+        }
+      }}
+      sx={{
+        ml: 1, // this is needed for the thumb icon
+      }}
+      {...props}
+    />
   );
 };
 
@@ -140,218 +152,3 @@ export const DeletePMButton = ({ report, ...props }) => {
     </>
   );
 };
-
-// // banFromCommunity
-// export const BanPostUserCommunityButton = ({ report, ...props }) => {
-//   const [confirmOpen, setConfirmOpen] = React.useState(false);
-//   const [banReason, setBanReason] = React.useState("");
-//   const [removeData, setRemoveData] = React.useState(false);
-//   const [expires, setExpires] = React.useState("no_expiry");
-
-//   const queryClient = useQueryClient();
-
-//   const { data, callAction, isSuccess, isLoading, error } = useLemmyHttpAction("banFromCommunity");
-
-//   React.useEffect(() => {
-//     if (isSuccess) {
-//       setConfirmOpen(false);
-
-//       queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "listPostReports"] });
-//       // update store state
-//     }
-//   }, [data]);
-
-//   let actionText = "Ban";
-//   let actionColor = "danger";
-//   if (report.creator_banned_from_community) {
-//     actionText = "Unban";
-//     actionColor = "warning";
-//   }
-
-//   return (
-//     <>
-//       <BaseActionButton
-//         text={`${actionText} (Comm.)`}
-//         tooltip={`${actionText} User from Community`}
-//         color={actionColor}
-//         onClick={() => setConfirmOpen(true)}
-//         {...props}
-//       />
-//       <ConfirmDialog
-//         open={confirmOpen}
-//         loading={isLoading}
-//         error={error}
-//         title={`${actionText} User from Community`}
-//         message={`Are you sure you want to ${actionText.toLowerCase()} "@${
-//           report.post_creator.name
-//         }" from "/c/${report.community.name}"?`}
-//         extraElements={[
-//           <InputElement
-//             key="banReason"
-//             value={banReason}
-//             setValue={setBanReason}
-//             placeholder={`${actionText.toLowerCase()} reason`}
-//           />,
-//           !report.creator_banned_from_community ? (
-//             <CheckboxElement
-//               key="removeData"
-//               inputText="Remove Data"
-//               value={removeData}
-//               setValue={setRemoveData}
-//             />
-//           ) : null,
-//           !report.creator_banned_from_community ? (
-//             <ExpiryLengthElement
-//               key="banExpires"
-//               inputText="Ban Expires"
-//               value={expires}
-//               setValue={setExpires}
-//             />
-//           ) : null,
-//         ]}
-//         disabled={banReason == ""}
-//         buttonMessage={actionText}
-//         color={actionColor}
-//         onConfirm={() => {
-//           let expiresEpoch = null;
-//           switch (expires) {
-//             case "one_day":
-//               expiresEpoch = moment().add(1, "days").unix();
-//               break;
-
-//             case "one_week":
-//               expiresEpoch = moment().add(1, "weeks").unix();
-//               break;
-
-//             case "one_month":
-//               expiresEpoch = moment().add(1, "months").unix();
-//               break;
-
-//             case "one_year":
-//               expiresEpoch = moment().add(1, "years").unix();
-//               break;
-//           }
-
-//           callAction({
-//             ban: !report.creator_banned_from_community,
-//             community_id: report.community.id,
-//             person_id: report.post_creator.id,
-//             expires: expiresEpoch,
-//             reason: banReason,
-//             remove_data: removeData,
-//           });
-//         }}
-//         onCancel={() => {
-//           setConfirmOpen(false);
-//         }}
-//       />
-//     </>
-//   );
-// };
-
-// export const BanPostUserSiteButton = ({ report, ...props }) => {
-//   const [confirmOpen, setConfirmOpen] = React.useState(false);
-//   const [banReason, setBanReason] = React.useState("");
-//   const [removeData, setRemoveData] = React.useState(false);
-//   const [expires, setExpires] = React.useState("no_expiry");
-
-//   const queryClient = useQueryClient();
-
-//   const { data, callAction, isSuccess, isLoading, error } = useLemmyHttpAction("banPerson");
-
-//   React.useEffect(() => {
-//     if (isSuccess) {
-//       setConfirmOpen(false);
-
-//       queryClient.invalidateQueries({ queryKey: ["lemmyHttp", "listPostReports"] });
-//       // update store state
-//     }
-//   }, [data]);
-
-//   let actionText = "Ban";
-//   let actionColor = "danger";
-//   if (report.post_creator.banned) {
-//     actionText = "Unban";
-//     actionColor = "warning";
-//   }
-
-//   return (
-//     <>
-//       <BaseActionButton
-//         text={`${actionText} (Site)`}
-//         tooltip={`${actionText} User from Site`}
-//         color={actionColor}
-//         onClick={() => setConfirmOpen(true)}
-//         {...props}
-//       />
-//       <ConfirmDialog
-//         open={confirmOpen}
-//         loading={isLoading}
-//         error={error}
-//         title={`${actionText} User from Site`}
-//         message={`Are you sure you want to ${actionText.toLowerCase()} "@${
-//           report.post_creator.name
-//         }" from the SITE (GLOBALLY)?`}
-//         extraElements={[
-//           <InputElement
-//             key="banReason"
-//             value={banReason}
-//             setValue={setBanReason}
-//             placeholder={`${actionText.toLowerCase()} reason`}
-//           />,
-//           !report.post_creator.banned ? (
-//             <CheckboxElement
-//               key="removeData"
-//               inputText="Remove Data"
-//               value={removeData}
-//               setValue={setRemoveData}
-//             />
-//           ) : null,
-//           !report.post_creator.banned ? (
-//             <ExpiryLengthElement
-//               key="banExpires"
-//               inputText="Ban Expires"
-//               value={expires}
-//               setValue={setExpires}
-//             />
-//           ) : null,
-//         ]}
-//         disabled={banReason == ""}
-//         buttonMessage={actionText}
-//         color={actionColor}
-//         onConfirm={() => {
-//           let expiresEpoch = null;
-//           switch (expires) {
-//             case "one_day":
-//               expiresEpoch = moment().add(1, "days").unix();
-//               break;
-
-//             case "one_week":
-//               expiresEpoch = moment().add(1, "weeks").unix();
-//               break;
-
-//             case "one_month":
-//               expiresEpoch = moment().add(1, "months").unix();
-//               break;
-
-//             case "one_year":
-//               expiresEpoch = moment().add(1, "years").unix();
-//               break;
-//           }
-
-//           callAction({
-//             ban: !report.post_creator.banned,
-//             community_id: report.community.id,
-//             person_id: report.post_creator.id,
-//             expires: expiresEpoch,
-//             reason: banReason,
-//             remove_data: removeData,
-//           });
-//         }}
-//         onCancel={() => {
-//           setConfirmOpen(false);
-//         }}
-//       />
-//     </>
-//   );
-// };
