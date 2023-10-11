@@ -41,8 +41,14 @@ export const HeaderChip = ({ children, tooltip = null, count = 0, ...props }) =>
   </Tooltip>
 );
 
-export const SquareChip = ({ iconOnly = null, tooltip = null, color = "neutral", ...props }) => (
-  <Tooltip title={tooltip} color={"neutral"} variant="plain" placement="top">
+export const SquareChip = ({
+  iconOnly = null,
+  tooltip = null,
+  tooltipPlacement = "top",
+  color = "neutral",
+  ...props
+}) => (
+  <Tooltip title={tooltip} color={"neutral"} variant="plain" placement={tooltipPlacement}>
     <Chip
       size="sm"
       color={color}

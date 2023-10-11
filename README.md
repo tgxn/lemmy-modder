@@ -2,21 +2,21 @@
 
 # Lemmy Modder https://modder.lemmyverse.net/ 
 
-⚡ A moderation tool for Lemmy community moderators and site admins. ⚡
+⚡ A moderation tool for [Lemmy](https://github.com/LemmyNet/lemmy) community moderators and site admins. ⚡
 
  > Currently only compatible with 0.18.x instances _(and not 0.19.x)_, as the [Lemmy SDK is not backwards-compatible.](https://github.com/LemmyNet/lemmy-js-client/issues/194) ☹
 
 ## Screenshots
-| | |
-| --- | --- | 
-| ![Login Screen](./docs/image/050/image-2.png) | ![Clean Screen](./docs/image/050/image.png)   |
+| | | |
+| --- | --- | --- |
+| ![Reports](./docs/image/reports.png) | ![Registrations](./docs/image/registrations.png) | ![Mod Log](./docs/image/modlog.png) |
 
 ## Features
 - **Does not save, proxy or store any of your user credentials or data**
-  - Data is stored in your browsers' [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) and is only sent to your Lemmy instance.
-- User Registration Approval
-    - Improved user registrations approval panel
-    - See more user data when making decision, join date, email, etc.
+  - Data is stored in your browsers [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) and is only sent to your Lemmy instance.
+- User Registration Panel
+    - Improved user registrations experience
+    - More user data when making decision, join date, email, etc.
 - Content Reports
     - Resolve/Unresolve Reports
     - Remove/Restore/Purge Posts & Comments
@@ -30,23 +30,18 @@
 
 ## Hosting Options
 
-To use Lemmy Modder - You can either:
+You can either use the hosted option at https://modder.lemmyverse.net/ or host your own instance.
 
-1. Use the hosted version at https://modder.lemmyverse.net/ _(Production)_
-2. Clone this repo and start your own instance alongside Lemmy  _(Production)_
-3. Download the latest release and run it locally on your computer _(Development/Testing)_
+### Running Own Instance with Docker Compose
 
-### Running with Docker Compose
+You will need docker & docker-compose installed on your server.
 
-You will need:
-- docker & docker-compose
 
 1. Add this (service) to your docker-compose alongside the lemmy services, or wherever you like:
 ```yaml
-## your networks and volumes from lemmy should stay here
-
+## ... your networks and volumes from lemmy should stay here
 services:
-  ## your other lemmy services
+  ## ... your other lemmy services should stay here
 
   ## this is the lemmy modder container, you can change port 9696 to wehatever you like
   lemmy-modder:
@@ -55,33 +50,38 @@ services:
     ports:
       - 9696:80
 ```
-
+2. Bring up the new container `docker-compose up -d lemmy-modder`
 2. Setup your reverse proxy to proxy requests for `modder.example.com` to the new container on port `80`.
 
 _There are no more steps, as there is no users or databases._
 
-### Running Locally
+## Development
 
-You will need:
+### Setup Development Environment
+
+Just make sure you have these tools installed:
 - git
 - nodejs & npm (use nvm to install `v18.17.0`)
 
-1. Clone this repo `git clone https://github.com/tgxn/lemmy-modder.git`
-2. Switch to the repo directory `cd lemmy-modder`
-3. Install dependencies `npm i`
-4. Start the dev server `npm start`
+#### Steps 
 
-## Development
-
-### Dev Running
-
-1. Clone this repo `git clone https://github.com/tgxn/lemmy-modder.git`
-2. Switch to the repo directory `cd lemmy-modder`
-3. Install dependencies `npm i`
-4. Start the dev server `npm start`
-
+1. Clone this Github repo locally, and switch to the cloned directory
+```
+git clone https://github.com/tgxn/lemmy-modder.git && cd lemmy-modder
+```
+3. Install the Node Dependencies 
+```
+npm i
+```
+4. Start the dev server
+```
+npm start
+```
+5. Open http://localhost:9696 in your browser
 
 # Credits
+
+Lemmy  Devs https://github.com/LemmyNet
 
 Logo made by Andy Cuccaro (@andycuccaro) under the CC-BY-SA 4.0 license.
 
