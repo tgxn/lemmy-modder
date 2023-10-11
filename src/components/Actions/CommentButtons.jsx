@@ -1,7 +1,8 @@
 import React from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
-import moment from "moment";
+
+import DoneAllIcon from "@mui/icons-material/DoneAll";
 
 import { useLemmyHttpAction } from "../../hooks/useLemmyHttp.js";
 
@@ -14,7 +15,9 @@ import {
 } from "./BaseElements.jsx";
 
 export const ResolveCommentReportButton = ({ report, ...props }) => {
-  const [confirmOpen, setConfirmOpen] = React.useState(false);
+  const queryClient = useQueryClient();
+
+  const { data, callAction, isSuccess, isLoading, error } = useLemmyHttpAction("resolveCommentReport");
 
   const [isConfirming, setIsConfirming] = React.useState(false);
 
@@ -31,52 +34,46 @@ export const ResolveCommentReportButton = ({ report, ...props }) => {
     }
   }, [isConfirming]);
 
-  const queryClient = useQueryClient();
-
-  const { data, callAction, isSuccess, isLoading, error } = useLemmyHttpAction("resolveCommentReport");
-
   React.useEffect(() => {
     if (isSuccess) {
       console.log("useLemmyHttpAction", "onSuccess", data);
 
       queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
 
-      setConfirmOpen(false);
+      setIsConfirming(false);
     }
   }, [data]);
 
   let actionText = "Resolve";
   let actionColor = "success";
+  let actionVariant = "solid";
   if (report.comment_report.resolved) {
     actionText = "Unresolve";
     actionColor = "warning";
+    actionVariant = "outlined";
   }
 
   return (
-    <>
-      <BaseActionButton
-        text={actionText}
-        tooltip={`${actionText} Report`}
-        color={actionColor}
-        onClick={() => setConfirmOpen(true)}
-        {...props}
-      />
-      <ConfirmDialog
-        open={confirmOpen}
-        loading={isLoading}
-        error={error}
-        title={`${actionText} Report`}
-        message={`Are you sure you want to ${actionText.toLowerCase()} this report?`}
-        buttonMessage={actionText}
-        color={actionColor}
-        onConfirm={() => {
+    <BaseActionButton
+      text={isConfirming ? "Confirm?" : actionText}
+      tooltip={isConfirming ? `Really ${actionText}?` : `${actionText} Report`}
+      color={isConfirming ? "warning" : actionColor}
+      endDecorator={<DoneAllIcon />}
+      loading={isLoading}
+      size="md"
+      variant={actionVariant}
+      onClick={() => {
+        if (isConfirming) {
           callAction({ report_id: report.comment_report.id, resolved: !report.comment_report.resolved });
-        }}
-        onCancel={() => {
-          setConfirmOpen(false);
-        }}
-      />
-    </>
+        } else {
+          setIsConfirming(true);
+        }
+      }}
+      sx={{
+        ml: 1, // this is needed for the thumb icon
+      }}
+      {...props}
+    />
   );
 };
 

@@ -44,28 +44,41 @@ export const ApproveButton = ({ registration, ...props }) => {
     if (isSuccess) {
       console.log("useLemmyHttpAction", "onSuccess", data);
 
-      queryClient.setQueryData(["lemmyHttp", localPerson.id, "listRegistrationApplications"], (old) => {
-        // remove it from the array
-        const newPages = old.pages.map((page) => {
-          const newData = page.data.filter((registrationItem) => {
-            return registrationItem.registration_application.id !== registration.registration_application.id;
-          });
+      // if we are not hiding read approvals, just invalidate the whole list
+      if (!hideReadApprovals) {
+        queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
+      } else {
+        queryClient.setQueryData(
+          ["lemmyHttp", localPerson.id, "listRegistrationApplications", ["unread_only", true]],
+          (old) => {
+            // remove it from the array
+            const newPages = !old
+              ? null
+              : old.pages.map((page) => {
+                  const newData = page.data.filter((registrationItem) => {
+                    return (
+                      registrationItem.registration_application.id !==
+                      registration.registration_application.id
+                    );
+                  });
 
-          return {
-            ...page,
-            data: newData,
-          };
-        });
+                  return {
+                    ...page,
+                    data: newData,
+                  };
+                });
 
-        // invalidate application count
-        queryClient.invalidateQueries({
-          queryKey: ["lemmyHttp", localPerson.id, "getUnreadRegistrationApplicationCount"],
-        });
+            return {
+              ...old,
+              pages: newPages,
+            };
+          },
+        );
+      }
 
-        return {
-          ...old,
-          pages: newPages,
-        };
+      // invalidate application count
+      queryClient.invalidateQueries({
+        queryKey: ["lemmyHttp", localPerson.id, "getUnreadRegistrationApplicationCount"],
       });
 
       setIsConfirming(false);
@@ -167,7 +180,7 @@ export const DenyButton = ({ registration, ...props }) => {
         queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
       } else {
         queryClient.setQueryData(
-          ["lemmyHttp", localPerson.id, ["unread_only", true], "listRegistrationApplications"],
+          ["lemmyHttp", localPerson.id, "listRegistrationApplications", ["unread_only", true]],
           (old) => {
             // remove it from the array
             const newPages = old.pages.map((page) => {
@@ -183,29 +196,6 @@ export const DenyButton = ({ registration, ...props }) => {
               };
             });
 
-            // invalidate application count
-            queryClient.invalidateQueries({
-              queryKey: ["lemmyHttp", localPerson.id, "getUnreadRegistrationApplicationCount"],
-            });
-
-            // const newPages = old.pages.map((page) => {
-            //   const newData = page.data.map((registrationItem) => {
-            //     if (
-            //       registrationItem.registration_application.id === registration.registration_application.id
-            //     ) {
-            //       console.log("found", registrationItem);
-            //       registrationItem.creator_local_user.accepted_application = deny ? false : true;
-            //       // registrationItem.registration_application.answer = deny ? "denied" : "approved";
-            //     }
-            //     return registrationItem;
-            //   });
-
-            //   return {
-            //     ...page,
-            //     data: newData,
-            //   };
-            // });
-
             return {
               ...old,
               pages: newPages,
@@ -213,6 +203,11 @@ export const DenyButton = ({ registration, ...props }) => {
           },
         );
       }
+
+      // invalidate application count
+      queryClient.invalidateQueries({
+        queryKey: ["lemmyHttp", localPerson.id, "getUnreadRegistrationApplicationCount"],
+      });
 
       toast.error(`${registration.creator.name}: ${"denied"}!`, {
         duration: 15000,
