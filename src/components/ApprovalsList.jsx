@@ -50,31 +50,14 @@ function ApplicationListItem({ registration }) {
   if (isAccepted === true) {
     resolved = true;
     itemColor = "success";
-    itemIcon = (
-      <Tooltip title={`Approved by @${registration.admin.name}`} variant="plain" placement="right">
-        <ThumbUpIcon fontSize="md" />
-      </Tooltip>
-    );
+    itemIcon = <ThumbUpIcon fontSize="md" />;
   } else if (isAccepted === false) {
     resolved = true;
     itemColor = "danger";
-    itemIcon = (
-      <Tooltip
-        title={`Rejected by @${registration.admin.name}`}
-        variant="plain"
-        placement="right"
-        color="danger"
-      >
-        <ThumbDownIcon fontSize="md" />
-      </Tooltip>
-    );
+    itemIcon = <ThumbDownIcon fontSize="md" />;
   } else {
     itemColor = "primary";
-    itemIcon = (
-      <Tooltip title={`Undecided`} variant="plain" placement="right" color="primary">
-        <HelpIcon fontSize="md" />
-      </Tooltip>
-    );
+    itemIcon = <HelpIcon fontSize="md" />;
   }
 
   return (
@@ -117,16 +100,50 @@ function ApplicationListItem({ registration }) {
           <PersonMetaLine creator={registration.creator} local_user={registration.creator_local_user} />
 
           <Typography variant="h6" component="h2" sx={{ mt: 0, display: "flex", gap: 1 }}>
+            {isAccepted !== null && (
+              <SquareChip
+                color={isAccepted ? "success" : "danger"}
+                variant="outlined"
+                // TODO upstream needs support for saving time the registration was actioned
+                // show how long ago `registration_application.published`
+                // tooltip={
+                //   <>
+                //     {isAccepted ? "approved" : "denied"}{" "}
+                //     <MomentAdjustedTimeAgo fromNow>
+                //       {registration.registration_application.published}
+                //     </MomentAdjustedTimeAgo>
+                //   </>
+                // }
+                tooltipPlacement="bottom"
+              >
+                {isAccepted
+                  ? `approved by @${registration.admin.name}`
+                  : `denied by @${registration.admin.name}`}
+              </SquareChip>
+            )}
+
             {registration.creator.published && (
-              <SquareChip color="primary" variant="outlined" tooltip={registration.creator.published}>
+              <SquareChip
+                color="primary"
+                variant="outlined"
+                tooltip={registration.creator_local_user.validator_time}
+                tooltipPlacement="bottom"
+              >
                 registered{" "}
-                <MomentAdjustedTimeAgo fromNow>{registration.creator.published}</MomentAdjustedTimeAgo>
+                <MomentAdjustedTimeAgo fromNow>
+                  {registration.creator_local_user.validator_time}
+                </MomentAdjustedTimeAgo>
               </SquareChip>
             )}
 
             {registration.creator_local_user.show_nsfw && (
               <>
-                <SquareChip color="neutral" variant="outlined" tooltip={"Enable NSFW?"}>
+                <SquareChip
+                  color="neutral"
+                  variant="outlined"
+                  tooltip={"Do they enable NSFW?"}
+                  tooltipPlacement="bottom"
+                >
                   {registration.creator_local_user.show_nsfw ? "NSFW: Yes" : "NSFW: No"}
                 </SquareChip>
               </>
@@ -134,7 +151,12 @@ function ApplicationListItem({ registration }) {
 
             {registration.creator_local_user.email && (
               <>
-                <SquareChip color="success" variant="outlined" tooltip={"User Email Address"}>
+                <SquareChip
+                  color="success"
+                  variant="outlined"
+                  tooltip={"User Email Address"}
+                  tooltipPlacement="bottom"
+                >
                   {registration.creator_local_user.email}
                 </SquareChip>
               </>
@@ -180,7 +202,8 @@ function ApplicationListItem({ registration }) {
             >
               <Box>
                 <Typography level="body1" fontWeight="lg">
-                  Admin Denied with reason
+                  {!deny_reason && `${registration.admin.name} denied with no reason`}
+                  {deny_reason && `${registration.admin.name} denied:`}
                 </Typography>
                 <Typography level="body2">{deny_reason}</Typography>
               </Box>
