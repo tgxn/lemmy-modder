@@ -39,10 +39,21 @@ To use Lemmy Modder - You can either:
 You will need:
 - docker & docker-compose
 
-Add this to your docker-compose:
+1. Add this to your docker-compose alongside the lemmy services, or wherever you like:
+```yaml
+...
+services:
+...
+  lemmy-modder:
+    image: ghcr.io/tgxn/lemmy-modder:latest
+    restart: unless-stopped
+    ports:
+      - 9696:80
+```
 
+2. Setup your reverse proxy to proxy requests for `modder.example.com` to the new container on port `80`.
 
-Setup your reverse proxy to proxy requests for `modder.example.com` to the new container on port `80`.
+_There are no more steps, as there is no users or databases._
 
 ### Running Locally
 
@@ -55,13 +66,6 @@ You will need:
 3. Install dependencies `npm i`
 4. Start the dev server `npm start`
 
-
-
-
-
-
-
-
 ## Development
 
 ### Dev Running
@@ -70,53 +74,6 @@ You will need:
 2. Switch to the repo directory `cd lemmy-modder`
 3. Install dependencies `npm i`
 4. Start the dev server `npm start`
-
-
-
-
-
-
-
-
-
-
-
-# todo implement
-
- > ticked when i added the button functionality :)
-
-# "resolve"/"unresolve" reports
-- ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#resolvePostReport
-- ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#resolveCommentReport
-- ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#resolvePrivateMessageReport
-
-# delete content
-- ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#removePost
-- ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#removeComment
-
-
-# purge content
-- ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#purgePost
-- ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#purgeComment
-- ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#purgePerson
-
-# get / ban users
-- https://join-lemmy.org/api/classes/LemmyHttp.html#getBannedPersons
-- ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#banFromCommunity
-- ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#banPerson
-
-# lock / comment / distinguish
-- https://join-lemmy.org/api/classes/LemmyHttp.html#lockPost
-- https://join-lemmy.org/api/classes/LemmyHttp.html#createComment
-- https://join-lemmy.org/api/classes/LemmyHttp.html#distinguishComment
-
-# manage community mods
-- https://join-lemmy.org/api/classes/LemmyHttp.html#addModToCommunity
-- ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#getUnreadRegistrationApplicationCount
-- ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#listRegistrationApplications
-- ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#approveRegistrationApplication
-
-- ✅ https://join-lemmy.org/api/classes/LemmyHttp.html#getModlog
 
 
 # Credits
