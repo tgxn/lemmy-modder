@@ -208,14 +208,14 @@ function UserMenu() {
     setAnchorEl(null);
   };
 
-  let userTooltip = "You are a regular user";
+  let userTooltip = "user";
   let userIcon = <AccountBoxIcon />;
   if (userRole == "admin") {
-    userTooltip = "You are a site admin";
+    userTooltip = "admin";
     userIcon = <VerifiedUserIcon />;
   }
   if (userRole == "mod") {
-    userTooltip = "You are a community moderator";
+    userTooltip = "mod";
     userIcon = <SupervisedUserCircleIcon />;
   }
 
@@ -242,25 +242,25 @@ function UserMenu() {
         </IconButton>
       </Tooltip>
 
-      <Tooltip title={userTooltip} placement="left" variant="soft">
-        <Button
-          aria-controls={menuOpen ? "user-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={menuOpen ? "true" : undefined}
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          onClick={handleClick}
-          startDecorator={userIcon}
-          endDecorator={<ArrowDropDown />}
-          sx={{
-            mx: 1,
-            borderRadius: 4,
-          }}
-        >
-          {parsedActor.actorName}@{parsedActor.actorBaseUrl}
-        </Button>
-      </Tooltip>
+      {/* <Tooltip title={userTooltip} placement="left" variant="soft"> */}
+      <Button
+        aria-controls={menuOpen ? "user-menu" : undefined}
+        aria-haspopup="true"
+        aria-expanded={menuOpen ? "true" : undefined}
+        size="sm"
+        variant="outlined"
+        color="neutral"
+        onClick={handleClick}
+        startDecorator={userIcon}
+        endDecorator={<ArrowDropDown />}
+        sx={{
+          mx: 1,
+          borderRadius: 4,
+        }}
+      >
+        {parsedActor.actorName}@{parsedActor.actorBaseUrl} ({userTooltip})
+      </Button>
+      {/* </Tooltip> */}
       <Menu id="user-menu" anchorEl={anchorEl} open={menuOpen} onClose={handleClose} placement="bottom-end">
         {users && users.length > 0 && (
           <>
