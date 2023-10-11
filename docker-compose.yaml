@@ -1,9 +1,0 @@
-version: "3.8"
-
-services:
-  lemmy-modder:
-    image: lemmy-modder:local
-    build: .
-    restart: always
-    ports:
-      - 9696:80
