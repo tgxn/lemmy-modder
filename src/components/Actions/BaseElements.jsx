@@ -19,7 +19,7 @@ import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
 import useLemmyReports from "../../hooks/useLemmyReports";
 
 export const BaseActionButton = ({
-  icon = null,
+  // icon = null,
   size = "small",
   text,
   tooltip,
@@ -27,7 +27,7 @@ export const BaseActionButton = ({
   variant = "outlined",
   ...props
 }) => {
-  const { isFetching } = useLemmyReports();
+  // const { isFetching } = useLemmyReports();
 
   return (
     <Tooltip title={tooltip} color={color} variant="plain" placement="top">
@@ -35,7 +35,7 @@ export const BaseActionButton = ({
         variant={variant}
         color={color}
         size={size}
-        disabled={isFetching}
+        // disabled={isFetching}
         sx={{
           userSelect: "none",
           // borderRadius: 4,

@@ -7,9 +7,12 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { HashRouter } from "react-router-dom";
 
+import { useTheme } from "@mui/joy";
+
 import Box from "@mui/joy/Box";
 import Container from "@mui/joy/Container";
 
+import { Global, css } from "@emotion/react";
 import { Toaster, toast } from "sonner";
 
 import SiteHeader from "./components/SiteHeader";
@@ -22,6 +25,8 @@ import Login from "./pages/Login";
 import AppStore from "./store";
 
 function PageRouter() {
+  const theme = useTheme();
+
   const currentUser = useSelector((state) => state.accountReducer.currentUser);
   const isInElectron = useSelector((state) => state.configReducer.isInElectron);
 
@@ -52,7 +57,37 @@ function PageRouter() {
     >
       <HashRouter>
         <SiteHeader height="50px" />
-        <Toaster />
+
+        <Global
+          styles={css`
+            .sonner-toast {
+              --normal-bg: ${theme.vars.palette.primary.softBg};
+              --normal-border: ${theme.vars.palette.primary.outlinedBorder};
+              --normal-text: ${theme.vars.palette.text.primary};
+              --success-bg: ${theme.vars.palette.success.solidBg};
+              --success-border: ${theme.vars.palette.success.outlinedBorder};
+              --success-text: ${theme.vars.palette.success.solidColor};
+              --error-bg: ${theme.vars.palette.danger.solidBg};
+              --error-border: ${theme.vars.palette.danger.outlinedBorder};
+              --error-text: ${theme.vars.palette.danger.solidColor};
+              font-family: ${theme.fontFamily};
+              font-size: ${theme.fontSize.md};
+            }
+
+            .sonner-toast-warn {
+              --normal-bg: ${theme.vars.palette.warning.solidBg};
+              --normal-border: ${theme.vars.palette.warning.outlinedBorder};
+              --normal-text: ${theme.vars.palette.warning.solidColor};
+            }
+          `}
+        />
+        <Toaster
+          richColors
+          closeButton
+          toastOptions={{
+            className: "sonner-toast",
+          }}
+        />
 
         <Box
           sx={{

@@ -27,6 +27,10 @@ function ApplicationListItem({ registration }) {
   // - creator_local_user (their local user account)
   // - registration_application (metadata about the registration)
 
+  React.useEffect(() => {
+    console.log("registration", registration);
+  }, [registration]);
+
   const adminUser = registration.admin;
   const adminHandled = adminUser ? true : false;
 
@@ -98,6 +102,7 @@ function ApplicationListItem({ registration }) {
           flexDirection: "row",
           gap: 0,
           width: "100%",
+          transition: "width 0.5s, height 0.5s, opacity 0.5s 0.5s",
         }}
       >
         <Box
