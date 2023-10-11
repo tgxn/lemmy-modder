@@ -131,6 +131,9 @@ export const ApproveButton = ({ registration, ...props }) => {
             setIsConfirming(true);
           }
         }}
+        sx={{
+          ml: 1, // this is needed for the thumb icon
+        }}
         loading={isLoading}
         {...props}
       />
@@ -256,7 +259,7 @@ export const DenyButton = ({ registration, ...props }) => {
     <>
       <BaseActionButton
         text={`Deny`}
-        startDecorator={<ThumbDownIcon sx={{ color: "warning.main" }} />}
+        endDecorator={<ThumbDownIcon sx={{ color: "warning.main" }} />}
         size="md"
         variant="outlined"
         tooltip="Deny User"
