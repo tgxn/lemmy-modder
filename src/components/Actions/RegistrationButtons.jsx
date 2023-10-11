@@ -10,15 +10,9 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import { useLemmyHttpAction } from "../../hooks/useLemmyHttp.js";
 import { getSiteData } from "../../hooks/getSiteData";
 
-import {
-  BaseActionButton,
-  InputElement,
-  CheckboxElement,
-  ExpiryLengthElement,
-  ConfirmDialog,
-} from "./BaseElements.jsx";
+import { BaseActionButton, InputElement, ConfirmDialog } from "./BaseElements.jsx";
 
-export const ApproveButton = ({ registration, deny = false, ...props }) => {
+export const ApproveButton = ({ registration, ...props }) => {
   const queryClient = useQueryClient();
 
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
@@ -118,33 +112,41 @@ export const ApproveButton = ({ registration, deny = false, ...props }) => {
   }, [data]);
 
   return (
-    <BaseActionButton
-      text={isConfirming ? "Confirm?" : "Approve"}
-      endDecorator={deny ? <ThumbDownIcon sx={{ color: "warning.main" }} /> : <ThumbUpIcon />}
-      // endDecorator={deny ? <ThumbDownIcon /> : <ThumbUpIcon />}
-      size="md"
-      variant={"solid"}
-      tooltip={isConfirming ? `Confirm ${"Approve"}?` : `${"Approve"} User`}
-      color={isConfirming ? "warning" : "success"}
-      onClick={() => {
-        // if they are clicking in the confirming state, do the action
-        if (isConfirming) {
-          callAction({
-            id: registration.registration_application.id,
-            approve: true,
-          });
-        } else {
-          setIsConfirming(true);
-        }
-      }}
-      sx={
-        {
-          // ml: 1,
-        }
-      }
-      loading={isLoading}
-      {...props}
-    />
+    <>
+      <BaseActionButton
+        text={isConfirming ? "Confirm?" : "Approve"}
+        endDecorator={<ThumbUpIcon />}
+        size="md"
+        variant={"solid"}
+        tooltip={isConfirming ? `Really Approve?` : `Approve User`}
+        color={isConfirming ? "warning" : "success"}
+        onClick={() => {
+          // if they are clicking in the confirming state, do the action
+          if (isConfirming) {
+            callAction({
+              id: registration.registration_application.id,
+              approve: true,
+            });
+          } else {
+            setIsConfirming(true);
+          }
+        }}
+        loading={isLoading}
+        {...props}
+      />
+      {error && (
+        <Typography
+          component="div"
+          sx={{
+            textAlign: "right",
+            mt: 1,
+            color: "#ff0000",
+          }}
+        >
+          {typeof error === "string" ? error : error.message}
+        </Typography>
+      )}
+    </>
   );
 };
 
@@ -253,24 +255,33 @@ export const DenyButton = ({ registration, ...props }) => {
   return (
     <>
       <BaseActionButton
-        text={"Deny"}
-        endDecorator={<ThumbDownIcon sx={{ color: "warning.main" }} />}
-        // endDecorator={deny ? <ThumbDownIcon /> : <ThumbUpIcon />}
+        text={`Deny`}
+        startDecorator={<ThumbDownIcon sx={{ color: "warning.main" }} />}
         size="md"
-        variant={"outlined"}
-        tooltip={`${"Deny"} User`}
-        color={"danger"}
+        variant="outlined"
+        tooltip="Deny User"
+        color="danger"
         onClick={() => setConfirmOpen(true)}
-        sx={{
-          ml: 1,
-        }}
         loading={isLoading}
+        sx={{
+          ml: 1, // this is needed for the thumb icon
+        }}
         {...props}
       />
+      {error && (
+        <Typography
+          component="div"
+          sx={{
+            textAlign: "right",
+            mt: 1,
+            color: "#ff0000",
+          }}
+        >
+          {typeof error === "string" ? error : error.message}
+        </Typography>
+      )}
       <ConfirmDialog
         open={confirmOpen}
-        loading={isLoading}
-        error={error}
         title="Deny User"
         message={`Are you sure you want to deny this registration?`}
         buttonMessage={"Deny"}
