@@ -16,6 +16,21 @@ import {
 export const ResolveCommentReportButton = ({ report, ...props }) => {
   const [confirmOpen, setConfirmOpen] = React.useState(false);
 
+  const [isConfirming, setIsConfirming] = React.useState(false);
+
+  // close confirm after 5 seconds of no activity
+  React.useEffect(() => {
+    if (isConfirming) {
+      const timeout = setTimeout(() => {
+        setIsConfirming(false);
+      }, 5000);
+
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [isConfirming]);
+
   const queryClient = useQueryClient();
 
   const { data, callAction, isSuccess, isLoading, error } = useLemmyHttpAction("resolveCommentReport");

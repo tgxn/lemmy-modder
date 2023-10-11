@@ -15,12 +15,12 @@ import useLemmyReports from "../hooks/useLemmyReports";
 import ReportsList from "../components/ReportsList.jsx";
 
 export default function Reports() {
-  const {
-    isLoading: reportCountsLoading,
-    isFetching: reportCountsFetching,
-    error: reportCountsError,
-    data: reportCountsData,
-  } = useLemmyHttp("getReportCount");
+  // const {
+  //   isLoading: reportCountsLoading,
+  //   isFetching: reportCountsFetching,
+  //   error: reportCountsError,
+  //   data: reportCountsData,
+  // } = useLemmyHttp("getReportCount");
 
   const { ref, inView, entry } = useInView({
     /* Optional options */
@@ -43,8 +43,8 @@ export default function Reports() {
     }
   }, [inView]);
 
-  const isLoading = reportCountsLoading || loadingReports;
-  const isError = reportCountsError || isReportsError;
+  const isLoading = loadingReports;
+  const isError = isReportsError;
 
   if (isLoading) {
     return (

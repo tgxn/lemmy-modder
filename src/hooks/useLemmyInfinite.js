@@ -45,7 +45,7 @@ export default function useLemmyInfinite({
     fetchPreviousPage,
     hasNextPage,
   } = useInfiniteQuery({
-    queryKey: ["lemmyHttp", localPerson.id, formDataArray, callLemmyMethod],
+    queryKey: ["lemmyHttp", localPerson.id, callLemmyMethod, formDataArray],
     queryFn: async ({ pageParam = 1, ...rest }, optional) => {
       console.log("LemmyHttp inner infinite", callLemmyMethod, pageParam, rest, optional);
 

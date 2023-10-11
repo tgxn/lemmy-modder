@@ -44,38 +44,29 @@ export const ApproveButton = ({ registration, ...props }) => {
     if (isSuccess) {
       console.log("useLemmyHttpAction", "onSuccess", data);
 
-      if (!hideReadApprovals) {
-        queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
-      } else {
-        queryClient.setQueryData(
-          ["lemmyHttp", localPerson.id, ["unread_only", true], "listRegistrationApplications"],
-          (old) => {
-            // remove it from the array
-            const newPages = old.pages.map((page) => {
-              const newData = page.data.filter((registrationItem) => {
-                return (
-                  registrationItem.registration_application.id !== registration.registration_application.id
-                );
-              });
+      queryClient.setQueryData(["lemmyHttp", localPerson.id, "listRegistrationApplications"], (old) => {
+        // remove it from the array
+        const newPages = old.pages.map((page) => {
+          const newData = page.data.filter((registrationItem) => {
+            return registrationItem.registration_application.id !== registration.registration_application.id;
+          });
 
-              return {
-                ...page,
-                data: newData,
-              };
-            });
+          return {
+            ...page,
+            data: newData,
+          };
+        });
 
-            // invalidate application count
-            queryClient.invalidateQueries({
-              queryKey: ["lemmyHttp", localPerson.id, "getUnreadRegistrationApplicationCount"],
-            });
+        // invalidate application count
+        queryClient.invalidateQueries({
+          queryKey: ["lemmyHttp", localPerson.id, "getUnreadRegistrationApplicationCount"],
+        });
 
-            return {
-              ...old,
-              pages: newPages,
-            };
-          },
-        );
-      }
+        return {
+          ...old,
+          pages: newPages,
+        };
+      });
 
       setIsConfirming(false);
 
