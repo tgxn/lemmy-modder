@@ -39,11 +39,14 @@ To use Lemmy Modder - You can either:
 You will need:
 - docker & docker-compose
 
-1. Add this to your docker-compose alongside the lemmy services, or wherever you like:
+1. Add this (service) to your docker-compose alongside the lemmy services, or wherever you like:
 ```yaml
-...
+## your networks and volumes from lemmy should stay here
+
 services:
-...
+  ## your other lemmy services
+
+  ## this is the lemmy modder container, you can change port 9696 to wehatever you like
   lemmy-modder:
     image: ghcr.io/tgxn/lemmy-modder:latest
     restart: unless-stopped
