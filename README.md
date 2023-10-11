@@ -39,9 +39,10 @@ To use Lemmy Modder - You can either:
 You will need:
 - docker & docker-compose
 
-1. Clone this repo `git clone https://github.com/tgxn/lemmy-modder.git`
-2. Switch to the repo directory `cd lemmy-modder`
-3. 
+Add this to your docker-compose:
+
+
+Setup your reverse proxy to proxy requests for `modder.example.com` to the new container on port `80`.
 
 ### Running Locally
 
