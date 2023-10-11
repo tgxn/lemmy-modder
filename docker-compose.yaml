@@ -1,9 +1,9 @@
 version: "3.8"
 
 services:
-  frontend:
-    image: modder-frontend:local
+  lemmy-modder:
+    image: lemmy-modder:local
     build: .
     restart: always
     ports:
-      - 8091:80
+      - 9696:80
