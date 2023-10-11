@@ -102,6 +102,7 @@ function ApplicationListItem({ registration }) {
           flexDirection: "row",
           gap: 0,
           width: "100%",
+          transition: "width 0.5s, height 0.5s, opacity 0.5s 0.5s",
         }}
       >
         <Box
