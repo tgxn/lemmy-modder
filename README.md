@@ -12,6 +12,8 @@
 | ![Login Screen](./docs/image/050/image-2.png) | ![Clean Screen](./docs/image/050/image.png)   |
 
 ## Features
+- **Does not save, proxy or store any of your user credentials or data**
+  - Data is stored in your browsers' [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) and is only sent to your Lemmy instance.
 - User Registration Approval
     - Improved user registrations approval panel
     - See more user data when making decision, join date, email, etc.
