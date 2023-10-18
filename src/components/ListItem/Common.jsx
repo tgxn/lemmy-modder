@@ -18,7 +18,7 @@ import BlockIcon from "@mui/icons-material/Block";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import { SanitizedLink, SquareChip } from "../Display.jsx";
+import { SquareChip, MomentAdjustedTimeAgo, SanitizedLink, FediverseChipLink } from "../Display.jsx";
 import { UserTooltip } from "../Tooltip.jsx";
 
 import { parseActorId } from "../../utils.js";
@@ -196,6 +196,13 @@ export function ReportDetails({ report, creator }) {
       }}
     >
       <div>
+        <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
+          {report.published && (
+            <SquareChip color="neutral" variant="outlined" tooltip={report.published}>
+              Reported <MomentAdjustedTimeAgo fromNow>{report.published}</MomentAdjustedTimeAgo>
+            </SquareChip>
+          )}
+        </Typography>
         <PersonMetaLine display="outline" creator={creator} />
 
         <Typography

@@ -2,9 +2,11 @@ import React from "react";
 
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
+import Alert from "@mui/joy/Alert";
 
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 
 import { MomentAdjustedTimeAgo, SquareChip } from "../Display.jsx";
 
@@ -46,15 +48,24 @@ const PMContentDetail = ({ report }) => {
       <PersonMetaLine creator={report.private_message_creator} />
 
       {/* Post Content */}
-      <Typography
-        variant="body1"
-        component="p"
-        sx={{
-          p: 1,
-        }}
+      <Alert
+        startDecorator={<FormatQuoteIcon />}
+        variant="outlined"
+        color="neutral"
+        sx={{ mt: 1 }}
+        // endDecorator={
+        //   <React.Fragment>
+        //     <Button variant="plain" color="danger" sx={{ mr: 1 }}>
+        //       Undo
+        //     </Button>
+        //     <IconButton variant="soft" size="sm" color="danger">
+        //       <CloseIcon />
+        //     </IconButton>
+        //   </React.Fragment>
+        // }
       >
         {report.private_message.content}
-      </Typography>
+      </Alert>
 
       {/* Report Status */}
       <Typography variant="body1" component="p">
