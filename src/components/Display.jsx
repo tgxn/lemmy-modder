@@ -84,6 +84,7 @@ export const FediverseChipLink = ({ href, size = "md", ...props }) => {
       <Chip
         component={Link}
         href={href}
+        target="_blank"
         size={size}
         variant="outlined"
         onClick={(e) => e.stopPropagation()}
