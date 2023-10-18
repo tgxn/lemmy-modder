@@ -3,17 +3,24 @@ import React from "react";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 
+import { sanitizeUrl } from "@braintree/sanitize-url";
+
 import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import BlockIcon from "@mui/icons-material/Block";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
+import Tooltip from "@mui/joy/Tooltip";
+import Link from "@mui/joy/Link";
+import Chip from "@mui/joy/Chip";
+
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import ForumIcon from "@mui/icons-material/Forum";
 import DraftsIcon from "@mui/icons-material/Drafts";
+import LinkIcon from "@mui/icons-material/Link";
 
-import { SquareChip } from "../Display.jsx";
+import { SquareChip, MomentAdjustedTimeAgo, SanitizedLink, FediverseChipLink } from "../Display.jsx";
 import Image from "../Image.jsx";
 
 import { ResolvePostReportButton, RemovePostButton, PurgePostButton } from "../Actions/PostButtons.jsx";
@@ -21,13 +28,42 @@ import { ResolvePostReportButton, RemovePostButton, PurgePostButton } from "../A
 import { BanUserCommunityButton, BanUserSiteButton, PurgeUserSiteButton } from "../Actions/GenButtons.jsx";
 
 import { PersonMetaLine, ReportDetails } from "./Common.jsx";
-import { MomentAdjustedTimeAgo, SanitizedLink } from "../Display.jsx";
+
+import { getSiteData } from "../../hooks/getSiteData";
 
 const PostContentDetail = ({ report }) => {
+  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+
+  // we need to merge the `post.id` and the current instance's `base_url` to get the link
+  const localPostLink = `https://${baseUrl}/post/${report.post.id}`;
+
+  // link across instances
+  // split ap_id
+  const apId = report.post.ap_id.split("/")[2];
+  const fediversePostLink = report.post.ap_id;
+
   return (
     <Box>
+      {/* Post Title */}
+      <Typography
+        variant="h2"
+        component="h2"
+        sx={{
+          fontSize: "17px",
+        }}
+      >
+        {/* <Typography>
+        <StickyNote2Icon fontSize="large" />
+      </Typography> */}
+        <SanitizedLink href={localPostLink} target="_blank" rel="noopener noreferrer">
+          {report.post.name}
+        </SanitizedLink>
+      </Typography>
+
       {/* Post Meta */}
       <Typography variant="h6" component="h2" sx={{ mt: 0, display: "flex", gap: 1 }}>
+        {baseUrl != apId && <FediverseChipLink href={fediversePostLink} />}
+
         {report.post.nsfw == true && (
           <SquareChip variant="outlined" color={"warning"}>
             NSFW
@@ -43,7 +79,7 @@ const PostContentDetail = ({ report }) => {
 
         {report.post.published && (
           <SquareChip color="neutral" variant="outlined" tooltip={report.post.published}>
-            <MomentAdjustedTimeAgo fromNow>{report.post.published}</MomentAdjustedTimeAgo>
+            Created <MomentAdjustedTimeAgo fromNow>{report.post.published}</MomentAdjustedTimeAgo>
           </SquareChip>
         )}
 
@@ -85,22 +121,6 @@ const PostContentDetail = ({ report }) => {
             iconOnly={<DeleteOutlineIcon fontSize="small" />}
           />
         )}
-      </Typography>
-
-      {/* Post Title */}
-      <Typography
-        variant="h2"
-        component="h2"
-        sx={{
-          fontSize: "17px",
-        }}
-      >
-        {/* <Typography>
-          <StickyNote2Icon fontSize="large" />
-        </Typography> */}
-        <SanitizedLink href={report.post.ap_id} target="_blank" rel="noopener noreferrer">
-          {report.post.name}
-        </SanitizedLink>
       </Typography>
 
       <PersonMetaLine

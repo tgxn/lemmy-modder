@@ -6,8 +6,9 @@ import { sanitizeUrl } from "@braintree/sanitize-url";
 
 import Tooltip from "@mui/joy/Tooltip";
 import Link from "@mui/joy/Link";
-
 import Chip from "@mui/joy/Chip";
+
+import FediVerse from "../../public/icons/fedi.png";
 
 // time in formats `2023-07-14T04:12:07.720101` are in GMT and must be adjusted to unix epoch for moment display// replace .720101 with Z
 export function MomentAdjustedTimeAgo({ children, ...props }) {
@@ -52,8 +53,10 @@ export const SquareChip = ({
     <Chip
       size="sm"
       color={color}
+      variant="outlined"
       startDecorator={iconOnly}
       sx={{
+        // height: "25px",
         cursor: "default",
         fontWeight: "normal",
         userSelect: "none",
@@ -71,5 +74,35 @@ export const SanitizedLink = ({ children, href, ...props }) => {
     <Link href={sanitizedUrl} {...props}>
       {children}
     </Link>
+  );
+};
+
+export const FediverseChipLink = ({ href, ...props }) => {
+  return (
+    <Tooltip title="Open Remote Content" color="neutral" variant="plain" placement="top">
+      <Chip
+        component={Link}
+        href={href}
+        size="sm"
+        variant="outlined"
+        onClick={(e) => e.stopPropagation()}
+        startDecorator={
+          <img
+            src={FediVerse}
+            style={{
+              height: "20px",
+              // width: "1.5rem",
+            }}
+          />
+        }
+        sx={{
+          fontWeight: "normal",
+          userSelect: "none",
+          borderRadius: 4,
+          "--Chip-gap": 0,
+        }}
+        {...props}
+      />
+    </Tooltip>
   );
 };
