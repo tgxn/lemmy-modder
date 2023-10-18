@@ -23,6 +23,8 @@ import { UserTooltip } from "../Tooltip.jsx";
 
 import { parseActorId } from "../../utils.js";
 
+import { getSiteData } from "../../hooks/getSiteData";
+
 export function ReportListItem({ itemType, report, children }) {
   let itemColor;
   let itemIcon;
@@ -123,6 +125,15 @@ export function ReportListItem({ itemType, report, children }) {
 }
 
 export function PersonMetaLine({ creator, by = false, sx }) {
+  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+
+  const actorInstanceBaseUrl = creator.actor_id.split("/")[2];
+  const fediverseUserLink = creator.actor_id;
+
+  console.log("creator", actorInstanceBaseUrl, fediverseUserLink);
+
+  const localUserLink = `https://${baseUrl}/u/${creator.name}`;
+
   return (
     <Box
       sx={{
@@ -156,6 +167,8 @@ export function PersonMetaLine({ creator, by = false, sx }) {
 
       {/* Post Author Meta */}
       <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
+        {baseUrl != actorInstanceBaseUrl && <FediverseChipLink href={fediverseUserLink} size="sm" />}
+
         {creator.admin && (
           <SquareChip
             color={"primary"}
