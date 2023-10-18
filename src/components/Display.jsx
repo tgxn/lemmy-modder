@@ -46,12 +46,13 @@ export const SquareChip = ({
   iconOnly = null,
   tooltip = null,
   tooltipPlacement = "top",
+  size = "md",
   color = "neutral",
   ...props
 }) => (
   <Tooltip title={tooltip} color={"neutral"} variant="plain" placement={tooltipPlacement}>
     <Chip
-      size="sm"
+      size={size}
       color={color}
       variant="outlined"
       startDecorator={iconOnly}
@@ -77,20 +78,20 @@ export const SanitizedLink = ({ children, href, ...props }) => {
   );
 };
 
-export const FediverseChipLink = ({ href, ...props }) => {
+export const FediverseChipLink = ({ href, size = "md", ...props }) => {
   return (
-    <Tooltip title="Open Remote Content" color="neutral" variant="plain" placement="top">
+    <Tooltip title="Open on remote instance" color="neutral" variant="plain" placement="top">
       <Chip
         component={Link}
         href={href}
-        size="sm"
+        size={size}
         variant="outlined"
         onClick={(e) => e.stopPropagation()}
         startDecorator={
           <img
             src={FediVerse}
             style={{
-              height: "20px",
+              height: size == "sm" ? "15px" : "20px",
               // width: "1.5rem",
             }}
           />
