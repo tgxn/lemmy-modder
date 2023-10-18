@@ -31,8 +31,8 @@ const CommentContentDetail = ({ report }) => {
 
   // link across instances
   // split ap_id
-  const apId = report.post.ap_id.split("/")[2];
-  const fediversePostLink = report.post.ap_id;
+  const apId = report.comment.ap_id.split("/")[2];
+  const fediversePostLink = report.comment.ap_id;
 
   return (
     <Box>
