@@ -17,7 +17,7 @@ import { SquareChip } from "../Display.jsx";
 import { ResolveCommentReportButton, RemoveCommentButton } from "../Actions/CommentButtons.jsx";
 import { BanUserCommunityButton, BanUserSiteButton, PurgeUserSiteButton } from "../Actions/GenButtons.jsx";
 
-import { PersonMetaLine, ReportDetails } from "./Common.jsx";
+import { PersonMetaLine, CommunityMetaLine, ReportDetails } from "./Common.jsx";
 
 import { MomentAdjustedTimeAgo, SanitizedLink, FediverseChipLink, UpvoteDownvoteChip } from "../Display.jsx";
 
@@ -99,6 +99,14 @@ const CommentContentDetail = ({ report }) => {
       >
         {report.comment.content}
       </Alert>
+
+      <CommunityMetaLine
+        community={report.community}
+        showIn
+        sx={{
+          px: 1,
+        }}
+      />
 
       <PersonMetaLine
         creator={report.comment_creator}

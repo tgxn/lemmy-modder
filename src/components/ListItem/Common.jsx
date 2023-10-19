@@ -154,7 +154,13 @@ export function PersonMetaLine({ creator, by = false, sx }) {
       >
         {by && "by "}
         {creator.display_name && `${creator.display_name} `}
-        <Tooltip placement="top-start" variant="outlined" arrow title={<UserTooltip user={creator} />}>
+        <Tooltip
+          placement="top-start"
+          variant="outlined"
+          title={<UserTooltip user={creator} />}
+          arrow
+          disableInteractive
+        >
           <Link href={creator.actor_id} target="_blank" rel="noopener noreferrer" sx={{ pb: 0.7, pl: 1 }}>
             <Typography component="span" sx={{ fontSize: "16px", mr: 0.25 }}>
               {creator.name}
@@ -191,6 +197,75 @@ export function PersonMetaLine({ creator, by = false, sx }) {
         )}
 
         {creator.deleted && (
+          <SquareChip color={"danger"} tooltip="User is deleted" iconOnly={<DeleteIcon fontSize="small" />} />
+        )}
+      </Typography>
+    </Box>
+  );
+}
+
+export function CommunityMetaLine({ community, showIn = false, sx }) {
+  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+
+  const actorInstanceBaseUrl = community.actor_id.split("/")[2];
+  const fediverseCommunityLink = community.actor_id;
+
+  console.log("community", actorInstanceBaseUrl, fediverseCommunityLink);
+
+  let localCommunityLink = `https://${baseUrl}/c/${community.name}`;
+  if (baseUrl != actorInstanceBaseUrl) localCommunityLink = `${localCommunityLink}@${actorInstanceBaseUrl}`;
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        gap: 1,
+        ...sx,
+      }}
+    >
+      <Typography
+        variant="body3"
+        component="p"
+        sx={{
+          fontSize: "14px",
+          overflow: "hidden",
+        }}
+      >
+        {showIn && "in "}
+        {community.title && `${community.title} `}
+        <Tooltip
+          placement="top"
+          variant="outlined"
+          title={baseUrl == actorInstanceBaseUrl ? "Local Community" : "Remote Community"}
+          arrow
+          disableInteractive
+        >
+          <Link href={localCommunityLink} target="_blank" rel="noopener noreferrer" sx={{ pb: 0.7, pl: 1 }}>
+            <Typography component="span" sx={{ fontSize: "16px", mr: 0.25 }}>
+              {community.name}
+            </Typography>
+            {baseUrl != actorInstanceBaseUrl && (
+              <Typography component="span" sx={{ fontSize: "12px" }}>
+                @{community.actor_id.split("/")[2]}
+              </Typography>
+            )}
+          </Link>
+        </Tooltip>
+      </Typography>
+
+      <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
+        {baseUrl != actorInstanceBaseUrl && <FediverseChipLink href={fediverseCommunityLink} size="sm" />}
+
+        {community.removed && (
+          <SquareChip
+            color={"danger"}
+            tooltip="Community is removed"
+            iconOnly={<BlockIcon fontSize="small" />}
+          />
+        )}
+
+        {community.deleted && (
           <SquareChip color={"danger"} tooltip="User is deleted" iconOnly={<DeleteIcon fontSize="small" />} />
         )}
       </Typography>

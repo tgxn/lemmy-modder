@@ -31,7 +31,7 @@ import { ResolvePostReportButton, RemovePostButton, PurgePostButton } from "../A
 
 import { BanUserCommunityButton, BanUserSiteButton, PurgeUserSiteButton } from "../Actions/GenButtons.jsx";
 
-import { PersonMetaLine, ReportDetails } from "./Common.jsx";
+import { PersonMetaLine, CommunityMetaLine, ReportDetails } from "./Common.jsx";
 
 import { getSiteData } from "../../hooks/getSiteData";
 
@@ -126,6 +126,13 @@ const PostContentDetail = ({ report }) => {
         )}
       </Typography>
 
+      <CommunityMetaLine
+        community={report.community}
+        showIn
+        sx={{
+          px: 1,
+        }}
+      />
       <PersonMetaLine
         creator={report.post_creator}
         by
