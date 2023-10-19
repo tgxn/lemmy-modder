@@ -5,8 +5,6 @@ import Typography from "@mui/joy/Typography";
 
 import { sanitizeUrl } from "@braintree/sanitize-url";
 
-import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import BlockIcon from "@mui/icons-material/Block";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -20,7 +18,13 @@ import ForumIcon from "@mui/icons-material/Forum";
 import DraftsIcon from "@mui/icons-material/Drafts";
 import LinkIcon from "@mui/icons-material/Link";
 
-import { SquareChip, MomentAdjustedTimeAgo, SanitizedLink, FediverseChipLink } from "../Display.jsx";
+import {
+  SquareChip,
+  MomentAdjustedTimeAgo,
+  SanitizedLink,
+  FediverseChipLink,
+  UpvoteDownvoteChip,
+} from "../Display.jsx";
 import Image from "../Image.jsx";
 
 import { ResolvePostReportButton, RemovePostButton, PurgePostButton } from "../Actions/PostButtons.jsx";
@@ -87,18 +91,17 @@ const PostContentDetail = ({ report }) => {
           {report.counts.comments}
         </SquareChip>
 
-        <SquareChip color={"info"} tooltip="Score" startDecorator={<ThumbsUpDownIcon />}>
-          {report.counts.score}
-        </SquareChip>
+        <UpvoteDownvoteChip counts={report.counts} />
 
-        <SquareChip color={"info"} tooltip="Downvotes" startDecorator={<ThumbDownIcon />}>
+        {/* 
+        <SquareChip color="warning" tooltip="Downvotes" startDecorator={<ThumbDownIcon />}>
           {report.counts.downvotes}
-        </SquareChip>
+        </SquareChip> */}
 
         {report.post_report.resolved && (
           <SquareChip
             color={"success"}
-            variant="soft"
+            variant="solid"
             tooltip={`Resolved by @${report.resolver.name}`}
             iconOnly={<DoneAllIcon fontSize="small" />}
           />
@@ -107,7 +110,7 @@ const PostContentDetail = ({ report }) => {
         {report.post.removed && (
           <SquareChip
             color={"danger"}
-            variant="soft"
+            variant="solid"
             tooltip="Removed"
             iconOnly={<BlockIcon fontSize="small" />}
           />
@@ -116,7 +119,7 @@ const PostContentDetail = ({ report }) => {
         {report.post.deleted && (
           <SquareChip
             color="danger"
-            variant="soft"
+            variant="solid"
             tooltip="Deleted"
             iconOnly={<DeleteOutlineIcon fontSize="small" />}
           />

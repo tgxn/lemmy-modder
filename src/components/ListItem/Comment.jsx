@@ -19,7 +19,7 @@ import { BanUserCommunityButton, BanUserSiteButton, PurgeUserSiteButton } from "
 
 import { PersonMetaLine, ReportDetails } from "./Common.jsx";
 
-import { MomentAdjustedTimeAgo, SanitizedLink, FediverseChipLink } from "../Display.jsx";
+import { MomentAdjustedTimeAgo, SanitizedLink, FediverseChipLink, UpvoteDownvoteChip } from "../Display.jsx";
 
 import { getSiteData } from "../../hooks/getSiteData";
 
@@ -47,7 +47,7 @@ const CommentContentDetail = ({ report }) => {
       </Typography>
 
       {/* Comment Meta */}
-      <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
+      <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1, pt: 1 }}>
         {baseUrl != apId && <FediverseChipLink href={fediversePostLink} />}
 
         {report.comment.published && (
@@ -60,13 +60,7 @@ const CommentContentDetail = ({ report }) => {
           {report.counts.child_count}
         </SquareChip>
 
-        <SquareChip color={"primary"} tooltip="Score" startDecorator={<ThumbsUpDownIcon />}>
-          {report.counts.score}
-        </SquareChip>
-
-        <SquareChip color={"primary"} tooltip="Downvotes" startDecorator={<ThumbDownIcon />}>
-          {report.counts.downvotes}
-        </SquareChip>
+        <UpvoteDownvoteChip counts={report.counts} />
 
         {report.comment_report.resolved && (
           <SquareChip
