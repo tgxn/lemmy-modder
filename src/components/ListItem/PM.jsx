@@ -48,22 +48,7 @@ const PMContentDetail = ({ report }) => {
       <PersonMetaLine creator={report.private_message_creator} />
 
       {/* Post Content */}
-      <Alert
-        startDecorator={<FormatQuoteIcon />}
-        variant="outlined"
-        color="neutral"
-        sx={{ mt: 1 }}
-        // endDecorator={
-        //   <React.Fragment>
-        //     <Button variant="plain" color="danger" sx={{ mr: 1 }}>
-        //       Undo
-        //     </Button>
-        //     <IconButton variant="soft" size="sm" color="danger">
-        //       <CloseIcon />
-        //     </IconButton>
-        //   </React.Fragment>
-        // }
-      >
+      <Alert startDecorator={<FormatQuoteIcon />} variant="outlined" color="neutral" sx={{ mt: 1 }}>
         {report.private_message.content}
       </Alert>
 

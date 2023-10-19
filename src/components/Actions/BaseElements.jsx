@@ -30,7 +30,7 @@ export const BaseActionButton = ({
   // const { isFetching } = useLemmyReports();
 
   return (
-    <Tooltip title={tooltip} color={color} variant="plain" placement="top">
+    <Tooltip title={tooltip} color={color} variant="plain" placement="top" arrow disableInteractive>
       <Button
         variant={variant}
         color={color}

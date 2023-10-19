@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -13,12 +14,14 @@ import {
   ExpiryLengthElement,
   ConfirmDialog,
 } from "./BaseElements.jsx";
+import { getSiteData } from "../../hooks/getSiteData";
 
 // allow resolving / unresolving a post report
 export const ResolvePostReportButton = ({ report, ...props }) => {
-  // const [confirmOpen, setConfirmOpen] = React.useState(false);
-
   const queryClient = useQueryClient();
+
+  const showResolved = useSelector((state) => state.configReducer.showResolved);
+  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
   const { data, callAction, isSuccess, isLoading, error } = useLemmyHttpAction("resolvePostReport");
 
@@ -26,7 +29,7 @@ export const ResolvePostReportButton = ({ report, ...props }) => {
 
   // close confirm after 5 seconds of no activity
   React.useEffect(() => {
-    if (isConfirming) {
+    if (isConfirming && !isLoading) {
       const timeout = setTimeout(() => {
         setIsConfirming(false);
       }, 5000);
@@ -35,14 +38,39 @@ export const ResolvePostReportButton = ({ report, ...props }) => {
         clearTimeout(timeout);
       };
     }
-  }, [isConfirming]);
+  }, [isConfirming, isLoading]);
 
   React.useEffect(() => {
     if (isSuccess) {
       console.log("useLemmyHttpAction", "onSuccess", data);
 
-      queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
+      if (showResolved) {
+        queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
+      } else {
+        queryClient.setQueryData(
+          ["lemmyHttp", localPerson.id, "listPostReports", ["unresolved_only", true]],
+          (old) => {
+            // remove it from the array
+            const newPages = !old
+              ? null
+              : old.pages.map((page) => {
+                  const newData = page.data.filter((oldReport) => {
+                    return oldReport.post_report.id !== report.post_report.id;
+                  });
 
+                  return {
+                    ...page,
+                    data: newData,
+                  };
+                });
+
+            return {
+              ...old,
+              pages: newPages,
+            };
+          },
+        );
+      }
       setIsConfirming(false);
     }
   }, [data]);

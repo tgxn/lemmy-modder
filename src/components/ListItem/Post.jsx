@@ -2,21 +2,14 @@ import React from "react";
 
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
-
-import { sanitizeUrl } from "@braintree/sanitize-url";
+import Alert from "@mui/joy/Alert";
 
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import BlockIcon from "@mui/icons-material/Block";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
-import Tooltip from "@mui/joy/Tooltip";
-import Link from "@mui/joy/Link";
-import Chip from "@mui/joy/Chip";
-
-import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import ForumIcon from "@mui/icons-material/Forum";
-import DraftsIcon from "@mui/icons-material/Drafts";
-import LinkIcon from "@mui/icons-material/Link";
+import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 
 import {
   SquareChip,
@@ -142,15 +135,11 @@ const PostContentDetail = ({ report }) => {
       />
 
       {/* Post Content */}
-      <Typography
-        variant="body1"
-        component="p"
-        sx={{
-          p: 1,
-        }}
-      >
-        {report.post.body}
-      </Typography>
+      {report.post.body && (
+        <Alert startDecorator={<FormatQuoteIcon />} variant="outlined" color="neutral" sx={{ mt: 1 }}>
+          {report.post.body}
+        </Alert>
+      )}
     </Box>
   );
 };
