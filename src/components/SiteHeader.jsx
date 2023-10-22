@@ -275,7 +275,7 @@ function UserMenu() {
         </IconButton>
       </BasicInfoTooltip>
 
-      <BasicInfoTooltip title={userTooltip} placement="bottom" variant="soft">
+      <BasicInfoTooltip title={"Open User Switcher"} placement="bottom" variant="soft">
         <Button
           aria-controls={menuOpen ? "user-menu" : undefined}
           aria-haspopup="true"
