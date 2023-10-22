@@ -24,6 +24,8 @@ import { LemmyHttp } from "lemmy-js-client";
 
 import { addUser, setAccountIsLoading, setUsers, setCurrentUser } from "../reducers/accountReducer";
 
+import { BasicInfoTooltip } from "../components/Tooltip.jsx";
+
 export default function LoginForm() {
   const dispatch = useDispatch();
 
@@ -190,14 +192,14 @@ export default function LoginForm() {
                 py: 1,
               }}
             >
-              <Tooltip title="Will this session will be saved in your browser?" placement="bottom">
+              <BasicInfoTooltip title="Will this session will be saved in your browser?" placement="bottom">
                 <Checkbox
                   label="Save Session"
                   variant="outlined"
                   checked={saveSession}
                   onChange={() => setSaveSession(!saveSession)}
                 />
-              </Tooltip>
+              </BasicInfoTooltip>
             </Box>
           </Box>
 

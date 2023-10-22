@@ -68,3 +68,7 @@ export const UserTooltip = ({ user, ...props }) => {
     </Box>
   );
 };
+
+export const BasicInfoTooltip = ({ ...props }) => {
+  return <Tooltip disableInteractive arrow {...props} />;
+};

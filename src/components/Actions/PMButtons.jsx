@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -13,11 +14,15 @@ import {
   ExpiryLengthElement,
   ConfirmDialog,
 } from "./BaseElements.jsx";
+import { getSiteData } from "../../hooks/getSiteData";
 
 // allow resolving / unresolving a post report
 // resolvePrivateMessageReport
 export const ResolvePMReportButton = ({ report, ...props }) => {
   const queryClient = useQueryClient();
+
+  const showResolved = useSelector((state) => state.configReducer.showResolved);
+  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
   const { data, callAction, isSuccess, isLoading, error } = useLemmyHttpAction("resolvePrivateMessageReport");
 
@@ -27,7 +32,9 @@ export const ResolvePMReportButton = ({ report, ...props }) => {
   React.useEffect(() => {
     if (isConfirming) {
       const timeout = setTimeout(() => {
-        setIsConfirming(false);
+        if (!isLoading) {
+          setIsConfirming(false);
+        }
       }, 5000);
 
       return () => {
@@ -40,8 +47,33 @@ export const ResolvePMReportButton = ({ report, ...props }) => {
     if (isSuccess) {
       console.log("useLemmyHttpAction", "onSuccess", data);
 
-      queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
+      if (showResolved) {
+        queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
+      } else {
+        queryClient.setQueryData(
+          ["lemmyHttp", localPerson.id, "listPrivateMessageReports", ["unresolved_only", true]],
+          (old) => {
+            // remove it from the array
+            const newPages = !old
+              ? null
+              : old.pages.map((page) => {
+                  const newData = page.data.filter((oldReport) => {
+                    return oldReport.pm_report.id !== report.pm_report.id;
+                  });
 
+                  return {
+                    ...page,
+                    data: newData,
+                  };
+                });
+
+            return {
+              ...old,
+              pages: newPages,
+            };
+          },
+        );
+      }
       setIsConfirming(false);
     }
   }, [data]);

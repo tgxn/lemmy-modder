@@ -4,11 +4,18 @@ import Moment from "react-moment";
 
 import { sanitizeUrl } from "@braintree/sanitize-url";
 
+import Typography from "@mui/joy/Typography";
 import Tooltip from "@mui/joy/Tooltip";
 import Link from "@mui/joy/Link";
 import Chip from "@mui/joy/Chip";
 
+import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
+import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+
 import FediVerse from "../../public/icons/fedi.png";
+
+import { BasicInfoTooltip } from "./Tooltip.jsx";
 
 // time in formats `2023-07-14T04:12:07.720101` are in GMT and must be adjusted to unix epoch for moment display// replace .720101 with Z
 export function MomentAdjustedTimeAgo({ children, ...props }) {
@@ -24,7 +31,7 @@ export function MomentAdjustedTimeAgo({ children, ...props }) {
 }
 
 export const HeaderChip = ({ children, tooltip = null, count = 0, ...props }) => (
-  <Tooltip title={tooltip} color={"neutral"} variant="soft" placement="bottom">
+  <BasicInfoTooltip title={tooltip} color={"neutral"} variant="soft" placement="bottom">
     <Chip
       size="md"
       color={count > 0 ? "danger" : "success"}
@@ -39,7 +46,7 @@ export const HeaderChip = ({ children, tooltip = null, count = 0, ...props }) =>
     >
       {children}
     </Chip>
-  </Tooltip>
+  </BasicInfoTooltip>
 );
 
 export const SquareChip = ({
@@ -50,7 +57,7 @@ export const SquareChip = ({
   color = "neutral",
   ...props
 }) => (
-  <Tooltip title={tooltip} color={"neutral"} variant="plain" placement={tooltipPlacement}>
+  <BasicInfoTooltip title={tooltip} color={color} variant="outlined" placement={tooltipPlacement}>
     <Chip
       size={size}
       color={color}
@@ -62,11 +69,11 @@ export const SquareChip = ({
         fontWeight: "normal",
         userSelect: "none",
         borderRadius: 4,
-        "--Chip-gap": iconOnly ? 0 : "0.25rem",
+        gap: iconOnly !== null ? 0 : "0.25rem",
       }}
       {...props}
     />
-  </Tooltip>
+  </BasicInfoTooltip>
 );
 
 export const SanitizedLink = ({ children, href, ...props }) => {
@@ -78,9 +85,30 @@ export const SanitizedLink = ({ children, href, ...props }) => {
   );
 };
 
+export const UpvoteDownvoteChip = ({ counts, ...props }) => {
+  return (
+    <SquareChip
+      color={"neutral"}
+      tooltip={
+        <>
+          <Typography color="success" sx={{ pr: 1 }}>
+            <ThumbUpIcon /> {counts.upvotes}
+          </Typography>
+          <Typography color="warning">
+            <ThumbDownIcon /> {counts.downvotes}
+          </Typography>
+        </>
+      }
+      startDecorator={<ThumbsUpDownIcon />}
+    >
+      {counts.score}
+    </SquareChip>
+  );
+};
+
 export const FediverseChipLink = ({ href, size = "md", ...props }) => {
   return (
-    <Tooltip title="Open on remote instance" color="neutral" variant="plain" placement="top">
+    <BasicInfoTooltip title="Open on remote instance" color="neutral" variant="outlined" placement="top">
       <Chip
         component={Link}
         href={href}
@@ -105,6 +133,6 @@ export const FediverseChipLink = ({ href, size = "md", ...props }) => {
         }}
         {...props}
       />
-    </Tooltip>
+    </BasicInfoTooltip>
   );
 };

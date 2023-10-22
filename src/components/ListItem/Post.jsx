@@ -2,32 +2,29 @@ import React from "react";
 
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
+import Alert from "@mui/joy/Alert";
 
-import { sanitizeUrl } from "@braintree/sanitize-url";
-
-import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import BlockIcon from "@mui/icons-material/Block";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
-import Tooltip from "@mui/joy/Tooltip";
-import Link from "@mui/joy/Link";
-import Chip from "@mui/joy/Chip";
-
-import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import ForumIcon from "@mui/icons-material/Forum";
-import DraftsIcon from "@mui/icons-material/Drafts";
-import LinkIcon from "@mui/icons-material/Link";
+import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 
-import { SquareChip, MomentAdjustedTimeAgo, SanitizedLink, FediverseChipLink } from "../Display.jsx";
+import {
+  SquareChip,
+  MomentAdjustedTimeAgo,
+  SanitizedLink,
+  FediverseChipLink,
+  UpvoteDownvoteChip,
+} from "../Display.jsx";
 import Image from "../Image.jsx";
 
 import { ResolvePostReportButton, RemovePostButton, PurgePostButton } from "../Actions/PostButtons.jsx";
 
 import { BanUserCommunityButton, BanUserSiteButton, PurgeUserSiteButton } from "../Actions/GenButtons.jsx";
 
-import { PersonMetaLine, ReportDetails } from "./Common.jsx";
+import { PersonMetaLine, CommunityMetaLine, ReportDetails } from "./Common.jsx";
 
 import { getSiteData } from "../../hooks/getSiteData";
 
@@ -87,18 +84,17 @@ const PostContentDetail = ({ report }) => {
           {report.counts.comments}
         </SquareChip>
 
-        <SquareChip color={"info"} tooltip="Score" startDecorator={<ThumbsUpDownIcon />}>
-          {report.counts.score}
-        </SquareChip>
+        <UpvoteDownvoteChip counts={report.counts} />
 
-        <SquareChip color={"info"} tooltip="Downvotes" startDecorator={<ThumbDownIcon />}>
+        {/* 
+        <SquareChip color="warning" tooltip="Downvotes" startDecorator={<ThumbDownIcon />}>
           {report.counts.downvotes}
-        </SquareChip>
+        </SquareChip> */}
 
         {report.post_report.resolved && (
           <SquareChip
             color={"success"}
-            variant="soft"
+            variant="solid"
             tooltip={`Resolved by @${report.resolver.name}`}
             iconOnly={<DoneAllIcon fontSize="small" />}
           />
@@ -107,7 +103,7 @@ const PostContentDetail = ({ report }) => {
         {report.post.removed && (
           <SquareChip
             color={"danger"}
-            variant="soft"
+            variant="solid"
             tooltip="Removed"
             iconOnly={<BlockIcon fontSize="small" />}
           />
@@ -116,13 +112,20 @@ const PostContentDetail = ({ report }) => {
         {report.post.deleted && (
           <SquareChip
             color="danger"
-            variant="soft"
+            variant="solid"
             tooltip="Deleted"
             iconOnly={<DeleteOutlineIcon fontSize="small" />}
           />
         )}
       </Typography>
 
+      <CommunityMetaLine
+        community={report.community}
+        showIn
+        sx={{
+          px: 1,
+        }}
+      />
       <PersonMetaLine
         creator={report.post_creator}
         by
@@ -132,15 +135,11 @@ const PostContentDetail = ({ report }) => {
       />
 
       {/* Post Content */}
-      <Typography
-        variant="body1"
-        component="p"
-        sx={{
-          p: 1,
-        }}
-      >
-        {report.post.body}
-      </Typography>
+      {report.post.body && (
+        <Alert startDecorator={<FormatQuoteIcon />} variant="outlined" color="neutral" sx={{ mt: 1 }}>
+          {report.post.body}
+        </Alert>
+      )}
     </Box>
   );
 };
