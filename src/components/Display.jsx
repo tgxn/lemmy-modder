@@ -108,14 +108,7 @@ export const UpvoteDownvoteChip = ({ counts, ...props }) => {
 
 export const FediverseChipLink = ({ href, size = "md", ...props }) => {
   return (
-    <Tooltip
-      title="Open on remote instance"
-      color="neutral"
-      variant="outlined"
-      placement="top"
-      disableInteractive
-      arrow
-    >
+    <BasicInfoTooltip title="Open on remote instance" color="neutral" variant="outlined" placement="top">
       <Chip
         component={Link}
         href={href}
@@ -140,6 +133,6 @@ export const FediverseChipLink = ({ href, size = "md", ...props }) => {
         }}
         {...props}
       />
-    </Tooltip>
+    </BasicInfoTooltip>
   );
 };
