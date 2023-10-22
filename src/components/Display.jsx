@@ -15,6 +15,8 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 
 import FediVerse from "../../public/icons/fedi.png";
 
+import { BasicInfoTooltip } from "./Tooltip.jsx";
+
 // time in formats `2023-07-14T04:12:07.720101` are in GMT and must be adjusted to unix epoch for moment display// replace .720101 with Z
 export function MomentAdjustedTimeAgo({ children, ...props }) {
   if (children.includes("T")) {
@@ -29,7 +31,7 @@ export function MomentAdjustedTimeAgo({ children, ...props }) {
 }
 
 export const HeaderChip = ({ children, tooltip = null, count = 0, ...props }) => (
-  <Tooltip title={tooltip} color={"neutral"} variant="soft" placement="bottom">
+  <BasicInfoTooltip title={tooltip} color={"neutral"} variant="soft" placement="bottom">
     <Chip
       size="md"
       color={count > 0 ? "danger" : "success"}
@@ -44,7 +46,7 @@ export const HeaderChip = ({ children, tooltip = null, count = 0, ...props }) =>
     >
       {children}
     </Chip>
-  </Tooltip>
+  </BasicInfoTooltip>
 );
 
 export const SquareChip = ({
@@ -55,14 +57,7 @@ export const SquareChip = ({
   color = "neutral",
   ...props
 }) => (
-  <Tooltip
-    title={tooltip}
-    color={color}
-    variant="outlined"
-    placement={tooltipPlacement}
-    disableInteractive
-    arrow
-  >
+  <BasicInfoTooltip title={tooltip} color={color} variant="outlined" placement={tooltipPlacement}>
     <Chip
       size={size}
       color={color}
@@ -78,7 +73,7 @@ export const SquareChip = ({
       }}
       {...props}
     />
-  </Tooltip>
+  </BasicInfoTooltip>
 );
 
 export const SanitizedLink = ({ children, href, ...props }) => {

@@ -35,6 +35,8 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 
 import SwitchAccountIcon from "@mui/icons-material/SwitchAccount";
 
+import GitHubIcon from "@mui/icons-material/GitHub";
+
 import FlagIcon from "@mui/icons-material/Flag";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 
@@ -46,6 +48,7 @@ import { useLemmyHttp } from "../hooks/useLemmyHttp";
 import { getSiteData } from "../hooks/getSiteData";
 
 import { HeaderChip } from "./Display.jsx";
+import { BasicInfoTooltip } from "./Tooltip.jsx";
 
 import { parseActorId } from "../utils.js";
 
@@ -85,7 +88,7 @@ function SiteMenu() {
 
   return (
     <>
-      <Tooltip title="Reports" placement="bottom" variant="soft">
+      <BasicInfoTooltip title="Reports" placement="bottom" variant="soft">
         <Button
           size="sm"
           color={location.pathname == "/" ? "primary" : "neutral"}
@@ -125,9 +128,9 @@ function SiteMenu() {
         >
           Reports
         </Button>
-      </Tooltip>
+      </BasicInfoTooltip>
 
-      <Tooltip title="Approvals" placement="bottom" variant="soft">
+      <BasicInfoTooltip title="Approvals" placement="bottom" variant="soft">
         <Button
           size="sm"
           color={location.pathname == "/approvals" ? "primary" : "neutral"}
@@ -175,9 +178,9 @@ function SiteMenu() {
         >
           Approvals
         </Button>
-      </Tooltip>
+      </BasicInfoTooltip>
 
-      <Tooltip title="Mod Actions" placement="bottom" variant="soft">
+      <BasicInfoTooltip title="Mod Actions" placement="bottom" variant="soft">
         <Button
           size="sm"
           color={location.pathname == "/actions" ? "primary" : "neutral"}
@@ -207,7 +210,7 @@ function SiteMenu() {
         >
           Mod Actions
         </Button>
-      </Tooltip>
+      </BasicInfoTooltip>
     </>
   );
 }
@@ -256,7 +259,7 @@ function UserMenu() {
 
   return (
     <>
-      <Tooltip title="Reload all data" placement="bottom" variant="soft">
+      <BasicInfoTooltip title="Reload all data" placement="bottom" variant="soft">
         <IconButton
           size="sm"
           variant="outlined"
@@ -270,27 +273,27 @@ function UserMenu() {
         >
           <CachedIcon />
         </IconButton>
-      </Tooltip>
+      </BasicInfoTooltip>
 
-      {/* <Tooltip title={userTooltip} placement="left" variant="soft"> */}
-      <Button
-        aria-controls={menuOpen ? "user-menu" : undefined}
-        aria-haspopup="true"
-        aria-expanded={menuOpen ? "true" : undefined}
-        size="sm"
-        variant="outlined"
-        color="neutral"
-        onClick={handleClick}
-        startDecorator={userIcon}
-        endDecorator={<ArrowDropDown />}
-        sx={{
-          mx: 1,
-          borderRadius: 4,
-        }}
-      >
-        {parsedActor.actorName}@{parsedActor.actorBaseUrl} ({userTooltip})
-      </Button>
-      {/* </Tooltip> */}
+      <BasicInfoTooltip title={userTooltip} placement="bottom" variant="soft">
+        <Button
+          aria-controls={menuOpen ? "user-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={menuOpen ? "true" : undefined}
+          size="sm"
+          variant="outlined"
+          color="neutral"
+          onClick={handleClick}
+          startDecorator={userIcon}
+          endDecorator={<ArrowDropDown />}
+          sx={{
+            mx: 1,
+            borderRadius: 4,
+          }}
+        >
+          {parsedActor.actorName}@{parsedActor.actorBaseUrl} ({userTooltip})
+        </Button>
+      </BasicInfoTooltip>
       <Menu id="user-menu" anchorEl={anchorEl} open={menuOpen} onClose={handleClose} placement="bottom-end">
         {users && users.length > 0 && (
           <>
@@ -368,7 +371,7 @@ function UserMenu() {
         </MenuItem> */}
       </Menu>
 
-      <Tooltip title="End Session" placement="bottom" variant="soft">
+      <BasicInfoTooltip title="End Session" placement="bottom" variant="soft">
         <IconButton
           size="sm"
           variant="outlined"
@@ -385,7 +388,7 @@ function UserMenu() {
         >
           <LogoutIcon />
         </IconButton>
-      </Tooltip>
+      </BasicInfoTooltip>
     </>
   );
 }
@@ -418,15 +421,15 @@ export default function SiteHeader({ height }) {
           <SiteMenu />
         </Box>
 
-        {siteData && (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Tooltip title={"Open Lemmy Site (New Tab)"} placement="bottom" variant="soft">
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {siteData && (
+            <BasicInfoTooltip title={"Open Lemmy Site (New Tab)"} placement="bottom" variant="soft">
               <Button
                 size="sm"
                 color={"primary"}
@@ -444,9 +447,22 @@ export default function SiteHeader({ height }) {
               >
                 {siteData.name}
               </Button>
-            </Tooltip>
-          </Box>
-        )}
+            </BasicInfoTooltip>
+          )}
+          <BasicInfoTooltip title="View Code on GitHub" variant="soft">
+            <IconButton
+              size="sm"
+              variant="outlined"
+              color="neutral"
+              sx={{ mr: 2 }}
+              href="https://github.com/tgxn/lemmy-modder"
+              target="_lm_github"
+              component="a"
+            >
+              <GitHubIcon />
+            </IconButton>
+          </BasicInfoTooltip>
+        </Box>
 
         {siteData && (
           <Box
