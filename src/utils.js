@@ -38,10 +38,11 @@ export function getModLogTypeNames() {
     added_to_community: "Adding Mod to Community",
     transferred_to_community: "Transferring Communities",
 
-    added: "Adding Mod to Site",
+    added: "Site Admin Changes", // promote site admin
 
-    banned: "Mod Ban",
-    ModHideCommunity: "Mod Hide Community",
+    banned: "Site Bans", // ban user from site
+
+    // ModHideCommunity: "Mod Hide Community", // TODO doesn't seem used?
 
     admin_purged_persons: "Admin Purge Person",
     admin_purged_communities: "Admin Purge Community",

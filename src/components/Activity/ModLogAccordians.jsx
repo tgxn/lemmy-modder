@@ -137,16 +137,18 @@ function ModDisplayName({ moderator }) {
   );
 }
 
+import ForumIcon from "@mui/icons-material/Forum";
 function RemovedPostRow({ item }) {
   return (
     <BaseAccordian
       item={item}
-      tint="#a83a3a21"
-      headerIcon={<RemoveCircleOutlineIcon />}
+      tint={item.mod_remove_post.removed ? "#ff3e3e21" : "#08ba3a21"}
+      headerIcon={<ForumIcon />}
       headerContent={
         <>
-          <ModDisplayName moderator={item.moderator} /> removed post from {item.community.actor_id}{" "}
-          {item.mod_remove_post.reason ? `with reason: "${item.mod_remove_post.reason}"` : ""}
+          <ModDisplayName moderator={item.moderator} /> re{item.mod_remove_post.removed ? "moved" : "stored"}{" "}
+          post in {item.community.actor_id}
+          {item.mod_remove_post.reason ? ` with reason: "${item.mod_remove_post.reason}"` : ""}
         </>
       }
     >
@@ -220,10 +222,12 @@ function LockedPostRow({ item }) {
   return (
     <BaseAccordian
       item={item}
+      tint={item.mod_lock_post.locked ? "#ff3e3e21" : "#08ba3a21"}
       headerIcon={<LockIcon />}
       headerContent={
         <>
-          <ModDisplayName moderator={item.moderator} /> locked post in {item.community.actor_id}
+          <ModDisplayName moderator={item.moderator} /> {item.mod_lock_post.locked ? "locked" : "unlocked"}{" "}
+          post in {item.community.actor_id}
         </>
       }
     >
@@ -260,10 +264,12 @@ function AddedToCommunityRow({ item }) {
   return (
     <BaseAccordian
       item={item}
+      tint={item.mod_add_community.removed ? "#ff3e3e21" : "#08ba3a21"}
       headerIcon={<SwitchAccessShortcutAddIcon />}
       headerContent={
         <>
-          <ModDisplayName moderator={item.moderator} /> added to community {item.community.actor_id}
+          <ModDisplayName moderator={item.moderator} />{" "}
+          {item.mod_add_community.removed ? "removed from" : "added to"} community {item.community.actor_id}
         </>
       }
     >
@@ -278,9 +284,11 @@ function FeaturedPostRow({ item }) {
     <BaseAccordian
       item={item}
       headerIcon={<SwipeUpAltIcon />}
+      tint={!item.mod_feature_post.featured ? "#ff3e3e21" : "#08ba3a21"}
       headerContent={
         <>
-          <ModDisplayName moderator={item.moderator} /> featured post in {item.community.actor_id}
+          <ModDisplayName moderator={item.moderator} />{" "}
+          {item.mod_feature_post.featured ? "featured" : "unfeatured"} post in {item.community.actor_id}
         </>
       }
     >
@@ -314,7 +322,8 @@ function TransferredToCommunityRow({ item }) {
       headerIcon={<TransferWithinAStationIcon />}
       headerContent={
         <>
-          <ModDisplayName moderator={item.moderator} /> transferred community {item.community.actor_id}
+          <ModDisplayName moderator={item.moderator} /> modded person "{item.modded_person.actor_id}" in
+          community "{item.community.actor_id}"
         </>
       }
     >
@@ -328,10 +337,12 @@ function AddedRow({ item }) {
   return (
     <BaseAccordian
       item={item}
+      tint={item.mod_add.removed ? "#ff3e3e21" : "#08ba3a21"}
       headerIcon={<PersonAddAlt1Icon />}
       headerContent={
         <>
-          <ModDisplayName moderator={item.moderator} /> added {item.modded_person.actor_id}
+          <ModDisplayName moderator={item.moderator} />{" "}
+          {item.mod_add.removed ? "removed admin from" : "gave admin to"} "{item.modded_person.actor_id}"
         </>
       }
     >
@@ -348,7 +359,8 @@ function AdminPurgedPersonsRow({ item }) {
       headerIcon={<SecurityIcon />}
       headerContent={
         <>
-          <ModDisplayName moderator={item.moderator} /> admin purged person {item.admin_purge_person.reason}
+          <ModDisplayName moderator={item.moderator} /> admin purged person{" "}
+          {item.admin_purge_person.reason ? ` with reason: "${item.admin_purge_person.reason}"` : ""}
         </>
       }
     >
@@ -363,8 +375,8 @@ function AdminPurgedCommunitiesRow({ item }) {
       headerIcon={<SecurityIcon />}
       headerContent={
         <>
-          <ModDisplayName moderator={item.moderator} /> admin purged community {item.admin_purge_community.id}
-          : "{item.admin_purge_community.reason}"
+          <ModDisplayName moderator={item.moderator} /> admin purged community {item.admin_purge_community.id}{" "}
+          {item.admin_purge_community.reason ? ` with reason: "${item.admin_purge_community.reason}"` : ""}
         </>
       }
     >
@@ -379,8 +391,8 @@ function AdminPurgedPostsRow({ item }) {
       headerIcon={<SecurityIcon />}
       headerContent={
         <>
-          <ModDisplayName moderator={item.moderator} /> admin purged posts {item.actorId} "
-          {item.admin_purge_post.reason}"
+          <ModDisplayName moderator={item.moderator} /> admin purged posts {item.actorId}{" "}
+          {item.admin_purge_post.reason ? ` with reason: "${item.admin_purge_post.reason}"` : ""}
         </>
       }
     >
@@ -395,8 +407,8 @@ function AdminPurgedCommentsRow({ item }) {
       headerIcon={<SecurityIcon />}
       headerContent={
         <>
-          <ModDisplayName moderator={item.moderator} /> admin purged comment "
-          {item.admin_purge_comment.reason}"
+          <ModDisplayName moderator={item.moderator} /> admin purged comment{" "}
+          {item.admin_purge_comment.reason ? ` with reason: "${item.admin_purge_comment.reason}"` : ""}
         </>
       }
     >

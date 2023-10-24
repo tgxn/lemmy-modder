@@ -233,6 +233,8 @@ export const PurgePostButton = ({ report, ...props }) => {
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [purgeReason, setPurgeReason] = React.useState("");
 
+  const { userRole } = getSiteData();
+
   const queryClient = useQueryClient();
 
   const { data, callAction, isSuccess, isLoading, error } = useLemmyHttpAction("purgePost");
@@ -246,6 +248,8 @@ export const PurgePostButton = ({ report, ...props }) => {
       setConfirmOpen(false);
     }
   }, [data]);
+
+  if (userRole != "admin") return null;
 
   return (
     <>
