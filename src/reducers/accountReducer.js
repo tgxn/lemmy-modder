@@ -11,6 +11,12 @@ export function setCurrentUser(base, jwt, site) {
     payload: { base, jwt, site },
   };
 }
+export function updateCurrentUserData(site) {
+  return {
+    type: "updateCurrentUserData",
+    payload: { site },
+  };
+}
 
 export function logoutCurrent() {
   return {
@@ -92,6 +98,18 @@ const accountReducer = (state = initialState, action = {}) => {
       return {
         ...state,
         currentUser: action.payload,
+      };
+
+    // this should update the current user's `site` data
+    case "updateCurrentUserData":
+      const newCurrentUser = {
+        ...state.currentUser,
+        site: action.payload.site,
+      };
+      localStorage.setItem("currentUser", JSON.stringify(newCurrentUser));
+      return {
+        ...state,
+        currentUser: newCurrentUser,
       };
 
     case "logoutCurrent":

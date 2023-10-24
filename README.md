@@ -27,6 +27,13 @@
     - Filter by local instance actions
 - Quick Switch Accounts on different Lemmy instances
 
+## User Types
+
+There are 3 types of users in Lemmy Modder: user, mod and `admin`
+
+This is determined based on the amount of moderated communities you manage.
+
+
 
 ## Hosting Options
 

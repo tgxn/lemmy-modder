@@ -22,6 +22,8 @@ import Delete from "@mui/icons-material/Delete";
 
 import { LemmyHttp } from "lemmy-js-client";
 
+import { useLemmyUserDataAction } from "../hooks/useLemmyHttp";
+
 import { addUser, setAccountIsLoading, setUsers, setCurrentUser } from "../reducers/accountReducer";
 
 import { BasicInfoTooltip } from "../components/Tooltip.jsx";
