@@ -5,6 +5,8 @@ import Button from "@mui/joy/Button";
 import Sheet from "@mui/joy/Sheet";
 import CircularProgress from "@mui/joy/CircularProgress";
 
+import SoapIcon from "@mui/icons-material/Soap";
+
 import { useInView } from "react-intersection-observer";
 
 import { FilterCommunity, FilterTypeSelect, FilterResolved, FilterRemoved } from "../components/Filters";
@@ -14,6 +16,8 @@ import useLemmyReports from "../hooks/useLemmyReports";
 
 import ReportsList from "../components/ReportsList.jsx";
 
+import { getSiteData } from "../hooks/getSiteData";
+
 export default function Reports() {
   // const {
   //   isLoading: reportCountsLoading,
@@ -21,6 +25,8 @@ export default function Reports() {
   //   error: reportCountsError,
   //   data: reportCountsData,
   // } = useLemmyHttp("getReportCount");
+
+  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
   const { ref, inView, entry } = useInView({
     /* Optional options */
@@ -45,6 +51,27 @@ export default function Reports() {
 
   const isLoading = loadingReports;
   const isError = isReportsError;
+
+  if (userRole == "user") {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 4,
+          p: 2,
+          mt: 8,
+          borderRadius: 4,
+          // border: "1px solid",
+          // borderColor: "grey.500",
+        }}
+      >
+        <SoapIcon sx={{ fontSize: 64 }} />
+        <Box sx={{ fontWeight: "bold" }}>You do not moderate any communities!</Box>
+      </Box>
+    );
+  }
 
   if (isLoading) {
     return (

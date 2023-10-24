@@ -54,7 +54,7 @@ export function FilterCommunity() {
             }}
           >
             <Option key="all" value="all">
-              All Communities
+              Show Everything
             </Option>
             {modCommms.map((community) => {
               const { name, title } = community.community;

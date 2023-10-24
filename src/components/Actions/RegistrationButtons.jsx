@@ -4,6 +4,8 @@ import { toast } from "sonner";
 import { useSelector } from "react-redux";
 import { useQueryClient } from "@tanstack/react-query";
 
+import Typography from "@mui/joy/Typography";
+
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 

@@ -80,6 +80,26 @@ export default function Approvals() {
     }
   }, [inView]);
 
+  if (userRole != "admin") {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 4,
+          p: 2,
+          mt: 8,
+          borderRadius: 4,
+          // border: "1px solid",
+          // borderColor: "grey.500",
+        }}
+      >
+        <Box sx={{ fontWeight: "bold" }}>You are not an admin!</Box>
+      </Box>
+    );
+  }
+
   if (registrationsLoading) {
     return (
       <Box

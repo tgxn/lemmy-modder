@@ -22,11 +22,16 @@ import Delete from "@mui/icons-material/Delete";
 
 import { LemmyHttp } from "lemmy-js-client";
 
+import { useLemmyUserDataAction } from "../hooks/useLemmyHttp";
+
 import { addUser, setAccountIsLoading, setUsers, setCurrentUser } from "../reducers/accountReducer";
 
 import { BasicInfoTooltip } from "../components/Tooltip.jsx";
 
 export default function LoginForm() {
+  const domainLock = window?.RuntimeConfig?.DomainLock != "" ? window?.RuntimeConfig?.DomainLock : false;
+  console.log("RuntimeConfig DomainLock", domainLock);
+
   const dispatch = useDispatch();
 
   const accountIsLoading = useSelector((state) => state.accountReducer.accountIsLoading);
@@ -34,7 +39,7 @@ export default function LoginForm() {
   const isInElectron = useSelector((state) => state.configReducer.isInElectron);
 
   // form state
-  const [instanceBase, setInstanceBase] = React.useState("");
+  const [instanceBase, setInstanceBase] = React.useState(domainLock ? domainLock : "");
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
 
@@ -147,11 +152,11 @@ export default function LoginForm() {
             <Input
               placeholder="Instance URL"
               value={instanceBase}
-              onChange={(e) => setInstanceBase(e.target.value)}
+              onChange={(e) => (domainLock ? null : setInstanceBase(e.target.value))}
               variant="outlined"
               color="neutral"
               sx={{ mb: 1, width: "100%" }}
-              disabled={accountIsLoading}
+              disabled={domainLock || accountIsLoading}
             />
             <Input
               placeholder="Username"
@@ -179,14 +184,6 @@ export default function LoginForm() {
               }}
               disabled={accountIsLoading}
             />
-            <Button
-              fullWidth
-              onClick={loginClick}
-              disabled={instanceBase.length === 0 || username.length === 0 || password.length === 0}
-              loading={accountIsLoading}
-            >
-              Login
-            </Button>
             <Box
               sx={{
                 py: 1,
@@ -201,6 +198,14 @@ export default function LoginForm() {
                 />
               </BasicInfoTooltip>
             </Box>
+            <Button
+              fullWidth
+              onClick={loginClick}
+              disabled={instanceBase.length === 0 || username.length === 0 || password.length === 0}
+              loading={accountIsLoading}
+            >
+              Login
+            </Button>
           </Box>
 
           {loginError && (

@@ -27,6 +27,13 @@
     - Filter by local instance actions
 - Quick Switch Accounts on different Lemmy instances
 
+## User Types
+
+There are 3 types of users in Lemmy Modder: user, mod and `admin`
+
+This is determined based on the amount of moderated communities you manage.
+
+
 
 ## Hosting Options
 
@@ -49,9 +56,32 @@ services:
     restart: unless-stopped
     ports:
       - 9696:80
+    environment:
+      LOCK_DOMAIN: modder.example.com # optionally locks the domain that can be used with this instance
 ```
 2. Bring up the new container `docker-compose up -d lemmy-modder`
-2. Setup your reverse proxy to proxy requests for `modder.example.com` to the new container on port `80`.
+3. Setup your reverse proxy to proxy requests for `modder.example.com` to the new container on port `80`.
+
+If you use Traefik, the labels will be something like this:
+```yaml
+    networks:
+      - traefik-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-net"
+      - "traefik.http.services.lemmy_mod.loadbalancer.server.port=80"
+
+      # internet https
+      - "traefik.http.routers.lemmy_mod_https_net.rule=Host(`modder.example.com`)"
+      - "traefik.http.routers.lemmy_mod_https_net.entrypoints=https"
+      - "traefik.http.routers.lemmy_mod_https_net.tls.certResolver=SSL_RESOLVER"
+
+      # internet http redirect
+      - "traefik.http.routers.lemmy_mod_http_redirect_net.rule=Host(`modder.example.com`)"
+      - "traefik.http.routers.lemmy_mod_http_redirect_net.entrypoints=http"
+      - "traefik.http.routers.lemmy_mod_http_redirect_net.middlewares=redirect_https@file"
+```
+
 
 _There are no more steps, as there is no users or databases._
 
@@ -79,9 +109,23 @@ npm start
 ```
 5. Open http://localhost:9696 in your browser
 
+
+### Testing Docker Image
+
+1. Build the docker image
+```
+docker build -t lemmy-modder:local .
+```
+
+2. Run the docker image _(with lock example)_
+```
+docker run --rm --env LOCK_DOMAIN="lemmy.tgxn.net" -p 9696:80 lemmy-modder:local
+```
+
+
 # Credits
 
-Lemmy  Devs https://github.com/LemmyNet
+Lemmy Devs https://github.com/LemmyNet
 
 Logo made by Andy Cuccaro (@andycuccaro) under the CC-BY-SA 4.0 license.
 
