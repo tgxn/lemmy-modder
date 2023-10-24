@@ -51,7 +51,28 @@ services:
       - 9696:80
 ```
 2. Bring up the new container `docker-compose up -d lemmy-modder`
-2. Setup your reverse proxy to proxy requests for `modder.example.com` to the new container on port `80`.
+3. Setup your reverse proxy to proxy requests for `modder.example.com` to the new container on port `80`.
+
+If you use Traefik, the labels will be something like this:
+```yaml
+    networks:
+      - traefik-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-net"
+      - "traefik.http.services.lemmy_mod.loadbalancer.server.port=80"
+
+      # internet https
+      - "traefik.http.routers.lemmy_mod_https_net.rule=Host(`modder.example.com`)"
+      - "traefik.http.routers.lemmy_mod_https_net.entrypoints=https"
+      - "traefik.http.routers.lemmy_mod_https_net.tls.certResolver=SSL_RESOLVER"
+
+      # internet http redirect
+      - "traefik.http.routers.lemmy_mod_http_redirect_net.rule=Host(`modder.example.com`)"
+      - "traefik.http.routers.lemmy_mod_http_redirect_net.entrypoints=http"
+      - "traefik.http.routers.lemmy_mod_http_redirect_net.middlewares=redirect_https@file"
+```
+
 
 _There are no more steps, as there is no users or databases._
 
