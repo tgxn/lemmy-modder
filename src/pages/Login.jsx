@@ -42,6 +42,7 @@ export default function LoginForm() {
   const [instanceBase, setInstanceBase] = React.useState(domainLock ? domainLock : "");
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [TOTPToken, setTOTPToken] = React.useState("");
 
   // const [isLoading, setIsLoading] = React.useState(false);
 
@@ -56,10 +57,16 @@ export default function LoginForm() {
     try {
       const lemmyClient = new LemmyHttp(`https://${instanceBase}`);
 
-      const auth = await lemmyClient.login({
+      const loginPayload = {
         username_or_email: username,
         password: password,
-      });
+      };
+
+      if (TOTPToken) {
+        loginPayload.totp_2fa_token = TOTPToken;
+      }
+
+      const auth = await lemmyClient.login(loginPayload);
 
       /**
  * 0.19.x :/ hmm
@@ -159,7 +166,7 @@ export default function LoginForm() {
               disabled={domainLock || accountIsLoading}
             />
             <Input
-              placeholder="Username"
+              placeholder="Username or Email"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               variant="outlined"
@@ -182,6 +189,15 @@ export default function LoginForm() {
                   textOverflow: "clip",
                 },
               }}
+              disabled={accountIsLoading}
+            />
+            <Input
+              placeholder="2FA Code (optional)"
+              value={TOTPToken}
+              onChange={(e) => setTOTPToken(e.target.value)}
+              variant="outlined"
+              color="neutral"
+              sx={{ mb: 1, width: "100%" }}
               disabled={accountIsLoading}
             />
             <Box
