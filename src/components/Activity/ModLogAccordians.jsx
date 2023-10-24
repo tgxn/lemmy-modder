@@ -22,32 +22,32 @@ export default function ModLogAccordians({ modLogData }) {
         if (modLogItem.type === "removed_posts") {
           return <RemovedPostRow item={modLogItem} />;
         }
-        if (modLogItem.type === "removed_comments") {
-          return <RemovedCommentRow item={modLogItem} />;
-        }
-        if (modLogItem.type === "banned_from_community") {
-          return <BannedFromCommunityRow item={modLogItem} />;
-        }
         if (modLogItem.type === "locked_posts") {
           return <LockedPostRow item={modLogItem} />;
-        }
-        if (modLogItem.type === "banned") {
-          return <BannedRow item={modLogItem} />;
-        }
-        if (modLogItem.type === "added_to_community") {
-          return <AddedToCommunityRow item={modLogItem} />;
         }
         if (modLogItem.type === "featured_posts") {
           return <FeaturedPostRow item={modLogItem} />;
         }
+        if (modLogItem.type === "removed_comments") {
+          return <RemovedCommentRow item={modLogItem} />;
+        }
         if (modLogItem.type === "removed_communities") {
           return <RemovedCommunityRow item={modLogItem} />;
+        }
+        if (modLogItem.type === "banned_from_community") {
+          return <BannedFromCommunityRow item={modLogItem} />;
+        }
+        if (modLogItem.type === "added_to_community") {
+          return <AddedToCommunityRow item={modLogItem} />;
         }
         if (modLogItem.type === "transferred_to_community") {
           return <TransferredToCommunityRow item={modLogItem} />;
         }
         if (modLogItem.type === "added") {
           return <AddedRow item={modLogItem} />;
+        }
+        if (modLogItem.type === "banned") {
+          return <BannedRow item={modLogItem} />;
         }
 
         return (

@@ -73,6 +73,7 @@ export default function Actions() {
           modLogPageData.map((modLogItem) => {
             // extract time from the type of mod action
             let time;
+
             if (modlogType === "removed_posts") time = modLogItem.mod_remove_post.when_;
             if (modlogType === "locked_posts") time = modLogItem.mod_lock_post.when_;
             if (modlogType === "featured_posts") time = modLogItem.mod_feature_post.when_;
@@ -83,6 +84,11 @@ export default function Actions() {
             if (modlogType === "transferred_to_community") time = modLogItem.mod_transfer_community.when_;
             if (modlogType === "added") time = modLogItem.mod_add.when_;
             if (modlogType === "banned") time = modLogItem.mod_ban.when_;
+
+            if (modlogType === "admin_purged_persons") time = modLogItem.admin_purge_person.when_;
+            if (modlogType === "admin_purged_communities") time = modLogItem.admin_purge_community.when_;
+            if (modlogType === "admin_purged_posts") time = modLogItem.admin_purge_post.when_;
+            if (modlogType === "admin_purged_comments") time = modLogItem.admin_purge_comment.when_;
 
             return {
               type: modlogType,
@@ -96,11 +102,30 @@ export default function Actions() {
       allModActions = allModActions.concat(thisItems);
     }
 
+    // this is hard since `moderator is not visible for non-admins
+    // which means we'd have to extract the actor id from the object, which is different for each action
+    // for now they get removed when we attempt to render them
     if (limitLocalInstance) {
       allModActions = allModActions.filter((item) => {
-        // console.log("item", item, siteData);
-        if (!item.moderator) return false;
-        return locaUserParsedActor.actorBaseUrl === parseActorId(item.moderator.actor_id).actorBaseUrl;
+        // this only works for site admins
+        if (item.moderator)
+          locaUserParsedActor.actorBaseUrl === parseActorId(item.moderator.actor_id).actorBaseUrl;
+
+        return !item.localCommunity;
+
+        // let time;
+        //   if (modlogType === "removed_posts") time = modLogItem.mod_remove_post.when_;
+        //   if (modlogType === "locked_posts") time = modLogItem.mod_lock_post.when_;
+        //   if (modlogType === "featured_posts") time = modLogItem.mod_feature_post.when_;
+        //   if (modlogType === "removed_comments") time = modLogItem.mod_remove_comment.when_;
+        //   if (modlogType === "removed_communities") time = modLogItem.mod_remove_community.when_;
+        //   if (modlogType === "banned_from_community") time = modLogItem.mod_ban_from_community.when_;
+        //   if (modlogType === "added_to_community") time = modLogItem.mod_add_community.when_;
+        //   if (modlogType === "transferred_to_community") time = modLogItem.mod_transfer_community.when_;
+        //   if (modlogType === "added") time = modLogItem.mod_add.when_;
+        //   if (modlogType === "banned") time = modLogItem.mod_ban.when_;
+
+        return false;
       });
     }
 
@@ -118,7 +143,7 @@ export default function Actions() {
     });
 
     return allModActions;
-  }, [modlogData, limitLocalInstance]);
+  }, [modlogData, modLogType, limitLocalInstance]);
 
   // fetch next page when in view
   React.useEffect(() => {
@@ -208,7 +233,7 @@ export default function Actions() {
           },
         }}
       >
-        <ModLogAccordians modLogData={mergedModLogData} />
+        <ModLogAccordians modLogData={mergedModLogData} limitLocalInstance={limitLocalInstance} />
       </AccordionGroup>
 
       {modlogHasNextPage && (
