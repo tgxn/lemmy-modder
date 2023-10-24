@@ -137,16 +137,18 @@ function ModDisplayName({ moderator }) {
   );
 }
 
+import ForumIcon from "@mui/icons-material/Forum";
 function RemovedPostRow({ item }) {
   return (
     <BaseAccordian
       item={item}
-      tint="#a83a3a21"
-      headerIcon={<RemoveCircleOutlineIcon />}
+      tint={item.mod_remove_post.removed ? "#ff3e3e21" : "#08ba3a21"}
+      headerIcon={<ForumIcon />}
       headerContent={
         <>
-          <ModDisplayName moderator={item.moderator} /> removed post from {item.community.actor_id}{" "}
-          {item.mod_remove_post.reason ? `with reason: "${item.mod_remove_post.reason}"` : ""}
+          <ModDisplayName moderator={item.moderator} /> re{item.mod_remove_post.removed ? "moved" : "stored"}{" "}
+          post in {item.community.actor_id}
+          {item.mod_remove_post.reason ? ` with reason: "${item.mod_remove_post.reason}"` : ""}
         </>
       }
     >
@@ -220,10 +222,12 @@ function LockedPostRow({ item }) {
   return (
     <BaseAccordian
       item={item}
+      tint={item.mod_lock_post.locked ? "#ff3e3e21" : "#08ba3a21"}
       headerIcon={<LockIcon />}
       headerContent={
         <>
-          <ModDisplayName moderator={item.moderator} /> locked post in {item.community.actor_id}
+          <ModDisplayName moderator={item.moderator} /> {item.mod_lock_post.locked ? "locked" : "unlocked"}{" "}
+          post in {item.community.actor_id}
         </>
       }
     >
@@ -278,9 +282,11 @@ function FeaturedPostRow({ item }) {
     <BaseAccordian
       item={item}
       headerIcon={<SwipeUpAltIcon />}
+      tint={!item.mod_feature_post.featured ? "#ff3e3e21" : "#08ba3a21"}
       headerContent={
         <>
-          <ModDisplayName moderator={item.moderator} /> featured post in {item.community.actor_id}
+          <ModDisplayName moderator={item.moderator} />{" "}
+          {item.mod_feature_post.featured ? "featured" : "unfeatured"} post in {item.community.actor_id}
         </>
       }
     >
