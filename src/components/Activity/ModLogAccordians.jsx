@@ -145,16 +145,21 @@ function RemovedPostRow({ item }) {
       headerIcon={<RemoveCircleOutlineIcon />}
       headerContent={
         <>
-          <ModDisplayName moderator={item.moderator} /> removed post from {item.community.actor_id}
+          <ModDisplayName moderator={item.moderator} /> removed post from {item.community.actor_id}{" "}
+          {item.mod_remove_post.reason ? `with reason: "${item.mod_remove_post.reason}"` : ""}
         </>
       }
     >
-      <Typography variant="h6" component="h2">
-        Mod: {item.moderator?.display_name} ({item.moderator?.actor_id})
-      </Typography>
+      {item.moderator && (
+        <Typography variant="h6" component="h2">
+          Mod: {item.moderator?.display_name} ({item.moderator?.actor_id})
+        </Typography>
+      )}
+
       <Typography component="span">Reason: "{item.mod_remove_post.reason}"</Typography>
       <Typography component="span">removed: {item.mod_remove_post.removed ? "True" : "false"}</Typography>
       <Typography component="span">when_: {item.mod_remove_post.when_}</Typography>
+
       <pre>{JSON.stringify(item, null, 2)}</pre>
     </BaseAccordian>
   );
@@ -173,6 +178,15 @@ function RemovedCommentRow({ item }) {
         </>
       }
     >
+      {item.moderator && (
+        <Typography variant="h6" component="h2">
+          Mod: {item.moderator?.display_name} ({item.moderator?.actor_id})
+        </Typography>
+      )}
+
+      <Typography component="span">Reason: "{item.mod_remove_comment.reason}"</Typography>
+      <Typography component="span">removed: {item.mod_remove_comment.removed ? "True" : "false"}</Typography>
+      <Typography component="span">when_: {item.mod_remove_comment.when_}</Typography>
       <pre>{JSON.stringify(item, null, 2)}</pre>
     </BaseAccordian>
   );
