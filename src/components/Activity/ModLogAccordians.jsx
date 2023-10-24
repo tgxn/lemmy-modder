@@ -50,6 +50,19 @@ export default function ModLogAccordians({ modLogData }) {
           return <BannedRow item={modLogItem} />;
         }
 
+        if (modLogItem.type === "admin_purged_persons") {
+          return <AdminPurgedPersonsRow item={modLogItem} />;
+        }
+        if (modLogItem.type === "admin_purged_communities") {
+          return <AdminPurgedCommunitiesRow item={modLogItem} />;
+        }
+        if (modLogItem.type === "admin_purged_posts") {
+          return <AdminPurgedPostsRow item={modLogItem} />;
+        }
+        if (modLogItem.type === "admin_purged_comments") {
+          return <AdminPurgedCommentsRow item={modLogItem} />;
+        }
+
         return (
           <Accordion>
             <AccordionSummary indicator={<AddIcon />}>Unknown Action: {modLogItem.type}</AccordionSummary>
@@ -117,10 +130,8 @@ function ModDisplayName({ moderator }) {
   return (
     <Box sx={{ overflow: "hidden" }}>
       {moderator.admin && (
-        <SquareChip color="danger" variant="solid" tooltip={"Site Admin"}>
-          <SecurityIcon />
-        </SquareChip>
-      )}{" "}
+        <SquareChip color="danger" variant="solid" tooltip={"Site Admin"} iconOnly={<SecurityIcon />} />
+      )}
       {moderator.display_name ? moderator.display_name : moderator.name}
     </Box>
   );
@@ -134,16 +145,21 @@ function RemovedPostRow({ item }) {
       headerIcon={<RemoveCircleOutlineIcon />}
       headerContent={
         <>
-          <ModDisplayName moderator={item.moderator} /> removed post from {item.community.actor_id}
+          <ModDisplayName moderator={item.moderator} /> removed post from {item.community.actor_id}{" "}
+          {item.mod_remove_post.reason ? `with reason: "${item.mod_remove_post.reason}"` : ""}
         </>
       }
     >
-      <Typography variant="h6" component="h2">
-        Mod: {item.moderator?.display_name} ({item.moderator?.actor_id})
-      </Typography>
+      {item.moderator && (
+        <Typography variant="h6" component="h2">
+          Mod: {item.moderator?.display_name} ({item.moderator?.actor_id})
+        </Typography>
+      )}
+
       <Typography component="span">Reason: "{item.mod_remove_post.reason}"</Typography>
       <Typography component="span">removed: {item.mod_remove_post.removed ? "True" : "false"}</Typography>
       <Typography component="span">when_: {item.mod_remove_post.when_}</Typography>
+
       <pre>{JSON.stringify(item, null, 2)}</pre>
     </BaseAccordian>
   );
@@ -162,6 +178,15 @@ function RemovedCommentRow({ item }) {
         </>
       }
     >
+      {item.moderator && (
+        <Typography variant="h6" component="h2">
+          Mod: {item.moderator?.display_name} ({item.moderator?.actor_id})
+        </Typography>
+      )}
+
+      <Typography component="span">Reason: "{item.mod_remove_comment.reason}"</Typography>
+      <Typography component="span">removed: {item.mod_remove_comment.removed ? "True" : "false"}</Typography>
+      <Typography component="span">when_: {item.mod_remove_comment.when_}</Typography>
       <pre>{JSON.stringify(item, null, 2)}</pre>
     </BaseAccordian>
   );
@@ -307,6 +332,71 @@ function AddedRow({ item }) {
       headerContent={
         <>
           <ModDisplayName moderator={item.moderator} /> added {item.modded_person.actor_id}
+        </>
+      }
+    >
+      <pre>{JSON.stringify(item, null, 2)}</pre>
+    </BaseAccordian>
+  );
+}
+
+// import SecurityIcon from "@mui/icons-material/Security";
+function AdminPurgedPersonsRow({ item }) {
+  return (
+    <BaseAccordian
+      item={item}
+      headerIcon={<SecurityIcon />}
+      headerContent={
+        <>
+          <ModDisplayName moderator={item.moderator} /> admin purged person {item.admin_purge_person.reason}
+        </>
+      }
+    >
+      <pre>{JSON.stringify(item, null, 2)}</pre>
+    </BaseAccordian>
+  );
+}
+function AdminPurgedCommunitiesRow({ item }) {
+  return (
+    <BaseAccordian
+      item={item}
+      headerIcon={<SecurityIcon />}
+      headerContent={
+        <>
+          <ModDisplayName moderator={item.moderator} /> admin purged community {item.admin_purge_community.id}
+          : "{item.admin_purge_community.reason}"
+        </>
+      }
+    >
+      <pre>{JSON.stringify(item, null, 2)}</pre>
+    </BaseAccordian>
+  );
+}
+function AdminPurgedPostsRow({ item }) {
+  return (
+    <BaseAccordian
+      item={item}
+      headerIcon={<SecurityIcon />}
+      headerContent={
+        <>
+          <ModDisplayName moderator={item.moderator} /> admin purged posts {item.actorId} "
+          {item.admin_purge_post.reason}"
+        </>
+      }
+    >
+      <pre>{JSON.stringify(item, null, 2)}</pre>
+    </BaseAccordian>
+  );
+}
+function AdminPurgedCommentsRow({ item }) {
+  return (
+    <BaseAccordian
+      item={item}
+      headerIcon={<SecurityIcon />}
+      headerContent={
+        <>
+          <ModDisplayName moderator={item.moderator} /> admin purged comment "
+          {item.admin_purge_comment.reason}"
         </>
       }
     >

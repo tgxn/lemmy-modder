@@ -65,67 +65,126 @@ export default function Actions() {
     if (!modlogData) return [];
 
     let allModActions = [];
+
+    // for each page of results, extract a flat list with the action type on each
     for (let i = 0; i < modlogData.pages.length; i++) {
-      // for each array, get all objects
+      // look through the results in this page's data
+      // this is because the modlog comes back as a object with an array for each type of mod action
       let thisItems = [];
       for (const [modlogType, modLogPageData] of Object.entries(modlogData.pages[i].data)) {
+        // flatten the array of mod actions into a single array
         thisItems = thisItems.concat(
           modLogPageData.map((modLogItem) => {
-            // extract time from the type of mod action
-            let time;
-
-            if (modlogType === "removed_posts") time = modLogItem.mod_remove_post.when_;
-            if (modlogType === "locked_posts") time = modLogItem.mod_lock_post.when_;
-            if (modlogType === "featured_posts") time = modLogItem.mod_feature_post.when_;
-            if (modlogType === "removed_comments") time = modLogItem.mod_remove_comment.when_;
-            if (modlogType === "removed_communities") time = modLogItem.mod_remove_community.when_;
-            if (modlogType === "banned_from_community") time = modLogItem.mod_ban_from_community.when_;
-            if (modlogType === "added_to_community") time = modLogItem.mod_add_community.when_;
-            if (modlogType === "transferred_to_community") time = modLogItem.mod_transfer_community.when_;
-            if (modlogType === "added") time = modLogItem.mod_add.when_;
-            if (modlogType === "banned") time = modLogItem.mod_ban.when_;
-
-            if (modlogType === "admin_purged_persons") time = modLogItem.admin_purge_person.when_;
-            if (modlogType === "admin_purged_communities") time = modLogItem.admin_purge_community.when_;
-            if (modlogType === "admin_purged_posts") time = modLogItem.admin_purge_post.when_;
-            if (modlogType === "admin_purged_comments") time = modLogItem.admin_purge_comment.when_;
-
             return {
               type: modlogType,
-              time,
               ...modLogItem,
             };
           }),
         );
       }
 
+      // add this page's mod actions to the array of all mod actions
       allModActions = allModActions.concat(thisItems);
+    }
+
+    // add metadata for each activity
+    allModActions = allModActions.map((modLogItem) => {
+      let actionTime = null;
+      let affectedActorId = null;
+
+      switch (modLogItem.type) {
+        case "removed_posts":
+          actionTime = modLogItem.mod_remove_post.when_;
+          affectedActorId = modLogItem.community.actor_id;
+          break;
+        case "locked_posts":
+          actionTime = modLogItem.mod_lock_post.when_;
+          affectedActorId = modLogItem.community.actor_id;
+          break;
+        case "featured_posts":
+          actionTime = modLogItem.mod_feature_post.when_;
+          affectedActorId = modLogItem.community.actor_id;
+          break;
+        case "removed_comments":
+          actionTime = modLogItem.mod_remove_comment.when_;
+          affectedActorId = modLogItem.community.actor_id;
+          break;
+        case "removed_communities":
+          actionTime = modLogItem.mod_remove_community.when_;
+          affectedActorId = modLogItem.community.actor_id;
+          break;
+        case "banned_from_community":
+          actionTime = modLogItem.mod_ban_from_community.when_;
+          affectedActorId = modLogItem.community.actor_id;
+          break;
+        case "added_to_community":
+          actionTime = modLogItem.mod_add_community.when_;
+          affectedActorId = modLogItem.community.actor_id;
+          break;
+        case "transferred_to_community":
+          actionTime = modLogItem.mod_transfer_community.when_;
+          affectedActorId = modLogItem.community.actor_id;
+          break;
+        case "added":
+          actionTime = modLogItem.mod_add.when_;
+          // affectedActorId = modLogItem.mod_add.local_community;
+          break;
+        case "banned":
+          actionTime = modLogItem.mod_ban.when_;
+          affectedActorId = modLogItem.banned_person.actor_id;
+          break;
+
+        case "admin_purged_persons":
+          actionTime = modLogItem.admin_purge_person.when_;
+          // affectedActorId = modLogItem.admin_purge_person.local_community;
+          break;
+        case "admin_purged_communities":
+          actionTime = modLogItem.admin_purge_community.when_;
+          // affectedActorId = modLogItem.admin_purge_community.local_community;
+          break;
+        case "admin_purged_posts":
+          actionTime = modLogItem.admin_purge_post.when_;
+          affectedActorId = modLogItem.community.actor_id;
+          break;
+        case "admin_purged_comments":
+          actionTime = modLogItem.admin_purge_comment.when_;
+          // affectedActorId = modLogItem.admin_purge_comment.local_community;
+          break;
+      }
+
+      let localAction = true;
+      if (affectedActorId) {
+        localAction = parseActorId(affectedActorId).actorBaseUrl == locaUserParsedActor.actorBaseUrl;
+      }
+
+      console.log("affectedActorId", affectedActorId, "localAction", localAction);
+
+      // override with known
+      // if (item.moderator)
+      //   locaUserParsedActor.actorBaseUrl === parseActorId(item.moderator.actor_id).actorBaseUrl;
+
+      return {
+        ...modLogItem,
+        time: actionTime,
+        actorId: affectedActorId,
+        localAction,
+      };
+    });
+
+    if (modLogType !== "all") {
+      console.log("filtering by type", modLogType);
+      allModActions = allModActions.filter((item) => {
+        return item.type === modLogType;
+      });
     }
 
     // this is hard since `moderator is not visible for non-admins
     // which means we'd have to extract the actor id from the object, which is different for each action
     // for now they get removed when we attempt to render them
     if (limitLocalInstance) {
+      console.log("filtering by local instance");
       allModActions = allModActions.filter((item) => {
-        // this only works for site admins
-        if (item.moderator)
-          locaUserParsedActor.actorBaseUrl === parseActorId(item.moderator.actor_id).actorBaseUrl;
-
-        return !item.localCommunity;
-
-        // let time;
-        //   if (modlogType === "removed_posts") time = modLogItem.mod_remove_post.when_;
-        //   if (modlogType === "locked_posts") time = modLogItem.mod_lock_post.when_;
-        //   if (modlogType === "featured_posts") time = modLogItem.mod_feature_post.when_;
-        //   if (modlogType === "removed_comments") time = modLogItem.mod_remove_comment.when_;
-        //   if (modlogType === "removed_communities") time = modLogItem.mod_remove_community.when_;
-        //   if (modlogType === "banned_from_community") time = modLogItem.mod_ban_from_community.when_;
-        //   if (modlogType === "added_to_community") time = modLogItem.mod_add_community.when_;
-        //   if (modlogType === "transferred_to_community") time = modLogItem.mod_transfer_community.when_;
-        //   if (modlogType === "added") time = modLogItem.mod_add.when_;
-        //   if (modlogType === "banned") time = modLogItem.mod_ban.when_;
-
-        return false;
+        return item.localAction;
       });
     }
 
@@ -212,19 +271,16 @@ export default function Actions() {
       >
         <FilterModLogType />
 
-        {/* temp. hidden because non-admins can't see the `moderator` field */}
-        {userRole == "admin" && (
-          <Checkbox
-            label="Show Local Instance Only"
-            variant="outlined"
-            checked={limitLocalInstance}
-            onChange={() => {
-              // dispatch(setConfigItem("hideReadApprovals", !hideReadApprovals));
-              console.log("toggle", !limitLocalInstance);
-              setLimitLocalInstance(!limitLocalInstance);
-            }}
-          />
-        )}
+        <Checkbox
+          label="Show Local Instance Only"
+          variant="outlined"
+          checked={limitLocalInstance}
+          onChange={() => {
+            // dispatch(setConfigItem("hideReadApprovals", !hideReadApprovals));
+            console.log("toggle", !limitLocalInstance);
+            setLimitLocalInstance(!limitLocalInstance);
+          }}
+        />
       </Sheet>
 
       <AccordionGroup
