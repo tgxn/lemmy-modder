@@ -17,24 +17,35 @@ export function parseActorId(actorId) {
 }
 
 export function getModLogTypeNames() {
+  {
+    /* "all" | "removed_posts" | "locked_posts" | "featured_posts" | "removed_comments" |
+     "removed_communities" | "banned_from_community" | "added_to_community" | "transferred_to_community" 
+     | "added" | "banned" | "ModHideCommunity" | "admin_purged_persons" | "admin_purged_communities" | 
+     "admin_purged_posts" | "admin_purged_comments" 
+     
+    TODO ModHideCommunity doesn't seem used?
+     */
+  }
+
   return {
-    All: "All",
-    ModRemovePost: "Removing Posts",
-    ModLockPost: "Locking Posts",
-    ModFeaturePost: "Featuring Posts",
-    ModRemoveComment: "Removing Comments",
-    ModRemoveCommunity: "Removing Communities",
-    ModBanFromCommunity: "Banning From Communities",
-    ModAddCommunity: "Adding Mod to Community",
-    ModTransferCommunity: "Transferring Communities",
+    all: "All",
+    removed_posts: "Removing Posts",
+    locked_posts: "Locking Posts",
+    featured_posts: "Featuring Posts",
+    removed_comments: "Removing Comments",
+    removed_communities: "Removing Communities",
+    banned_from_community: "Banning From Communities",
+    added_to_community: "Adding Mod to Community",
+    transferred_to_community: "Transferring Communities",
 
-    ModAdd: "Adding Mod to Site",
+    added: "Adding Mod to Site",
 
-    ModBan: "Mod Ban",
+    banned: "Mod Ban",
     ModHideCommunity: "Mod Hide Community",
-    AdminPurgePerson: "Admin Purge Person",
-    AdminPurgeCommunity: "Admin Purge Community",
-    AdminPurgePost: "Admin Purge Post",
-    AdminPurgeComment: "Admin Purge Comment",
+
+    admin_purged_persons: "Admin Purge Person",
+    admin_purged_communities: "Admin Purge Community",
+    admin_purged_posts: "Admin Purge Post",
+    admin_purged_comments: "Admin Purge Comment",
   };
 }
