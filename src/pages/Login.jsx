@@ -189,7 +189,7 @@ export default function LoginForm() {
                 py: 1,
               }}
             >
-              <BasicInfoTooltip title="Will this session will be saved in your browser?" placement="bottom">
+              <BasicInfoTooltip title="Will this session will be saved in your browser?" placement="top">
                 <Checkbox
                   label="Save Session"
                   variant="outlined"
