@@ -82,12 +82,19 @@ export default function useLemmyReports() {
   }
 
   const mergedReports = useMemo(() => {
-    if (!postReportsData || !commentReportsData || !pmReportsData) return;
-    if (postReportsLoading || commentReportsLoading || pmReportsLoading) return;
+    console.log("mergedReports", postReportsData, commentReportsData, pmReportsData);
 
-    if (pmReportsError && pmReportsError.response.status === 400) {
+    // must have post and comment report data
+    if (!postReportsData || !commentReportsData || !(pmReportsData || userRole != "admin")) return;
+
+    // return if either of these are still loading
+    if (postReportsLoading || commentReportsLoading || (pmReportsLoading && userRole === "admin")) return;
+
+    console.log("mergedReports", postReportsData, commentReportsData, pmReportsData);
+
+    if (!pmReportsData) {
       console.log("pmReportsError - may not be site admin", pmReportsError);
-      pmReportsData.private_message_reports = [];
+      // pmReportsData.private_message_reports = [];
     }
 
     let normalPostReports = mapPagesData(postReportsData.pages, (report) => {
@@ -176,10 +183,12 @@ export default function useLemmyReports() {
     commentReportsData,
     postReportsData,
     pmReportsData,
+    postReportsLoading,
+    commentReportsLoading,
+    pmReportsLoading,
     filterType,
     filterCommunity,
     showResolved,
-    // showRemoved,
   ]);
 
   const isLoading = commentReportsLoading || postReportsLoading || (pmReportsLoading && userRole === "admin");

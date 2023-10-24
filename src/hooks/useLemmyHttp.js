@@ -1,11 +1,13 @@
 import { useEffect } from "react";
 
-import { useQuery, useMutation, useInfiniteQuery } from "@tanstack/react-query";
+import { useDispatch, useSelector } from "react-redux";
+
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getSiteData } from "../hooks/getSiteData";
 
-import { useSelector } from "react-redux";
-
 import { LemmyHttp } from "lemmy-js-client";
+
+import { updateCurrentUserData } from "../reducers/accountReducer";
 
 export function useLemmyHttp(callLemmyMethod, formData) {
   const currentUser = useSelector((state) => state.accountReducer.currentUser);
@@ -69,4 +71,27 @@ export function useLemmyHttpAction(callLemmyMethod) {
     error: mutation.error,
     data: mutation.data,
   };
+}
+
+export function refreshAllData() {
+  const dispatch = useDispatch();
+  const queryClient = useQueryClient();
+
+  const currentUser = useSelector((state) => state.accountReducer.currentUser);
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const lemmyClient = new LemmyHttp(`https://${currentUser.base}`);
+
+      const getSite = await lemmyClient.getSite({
+        auth: currentUser.jwt,
+      });
+
+      dispatch(updateCurrentUserData(getSite));
+
+      queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
+    },
+  });
+
+  return mutation;
 }
