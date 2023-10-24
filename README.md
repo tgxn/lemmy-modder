@@ -56,6 +56,8 @@ services:
     restart: unless-stopped
     ports:
       - 9696:80
+    environment:
+      LOCK_DOMAIN: modder.example.com # optionally locks the domain that can be used with this instance
 ```
 2. Bring up the new container `docker-compose up -d lemmy-modder`
 3. Setup your reverse proxy to proxy requests for `modder.example.com` to the new container on port `80`.
@@ -107,9 +109,23 @@ npm start
 ```
 5. Open http://localhost:9696 in your browser
 
+
+### Testing Docker Image
+
+1. Build the docker image
+```
+docker build -t lemmy-modder:local .
+```
+
+2. Run the docker image _(with lock example)_
+```
+docker run --rm --env LOCK_DOMAIN="lemmy.tgxn.net" -p 9696:80 lemmy-modder:local
+```
+
+
 # Credits
 
-Lemmy  Devs https://github.com/LemmyNet
+Lemmy Devs https://github.com/LemmyNet
 
 Logo made by Andy Cuccaro (@andycuccaro) under the CC-BY-SA 4.0 license.
 
