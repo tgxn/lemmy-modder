@@ -130,10 +130,8 @@ function ModDisplayName({ moderator }) {
   return (
     <Box sx={{ overflow: "hidden" }}>
       {moderator.admin && (
-        <SquareChip color="danger" variant="solid" tooltip={"Site Admin"}>
-          <SecurityIcon />
-        </SquareChip>
-      )}{" "}
+        <SquareChip color="danger" variant="solid" tooltip={"Site Admin"} iconOnly={<SecurityIcon />} />
+      )}
       {moderator.display_name ? moderator.display_name : moderator.name}
     </Box>
   );
@@ -336,7 +334,7 @@ function AdminPurgedPersonsRow({ item }) {
       headerIcon={<SecurityIcon />}
       headerContent={
         <>
-          <ModDisplayName moderator={item.moderator} /> admin purde person {item.admin_purge_person.reason}
+          <ModDisplayName moderator={item.moderator} /> admin purged person {item.admin_purge_person.reason}
         </>
       }
     >
