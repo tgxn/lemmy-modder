@@ -211,16 +211,20 @@ export default function Actions() {
         }}
       >
         <FilterModLogType />
-        <Checkbox
-          label="Show Local Instance Only"
-          variant="outlined"
-          checked={limitLocalInstance}
-          onChange={() => {
-            // dispatch(setConfigItem("hideReadApprovals", !hideReadApprovals));
-            console.log("toggle", !limitLocalInstance);
-            setLimitLocalInstance(!limitLocalInstance);
-          }}
-        />
+
+        {/* temp. hidden because non-admins can't see the `moderator` field */}
+        {userRole == "admin" && (
+          <Checkbox
+            label="Show Local Instance Only"
+            variant="outlined"
+            checked={limitLocalInstance}
+            onChange={() => {
+              // dispatch(setConfigItem("hideReadApprovals", !hideReadApprovals));
+              console.log("toggle", !limitLocalInstance);
+              setLimitLocalInstance(!limitLocalInstance);
+            }}
+          />
+        )}
       </Sheet>
 
       <AccordionGroup
