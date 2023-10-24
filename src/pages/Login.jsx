@@ -27,7 +27,7 @@ import { addUser, setAccountIsLoading, setUsers, setCurrentUser } from "../reduc
 import { BasicInfoTooltip } from "../components/Tooltip.jsx";
 
 export default function LoginForm() {
-  const domainLock = window?.RuntimeConfig?.DomainLock || false;
+  const domainLock = window?.RuntimeConfig?.DomainLock != "" ? window?.RuntimeConfig?.DomainLock : false;
   console.log("RuntimeConfig DomainLock", domainLock);
 
   const dispatch = useDispatch();

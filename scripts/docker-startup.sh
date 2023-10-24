@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # load runtime configuration
-LOCK_DOMAIN=${LOCK_DOMAIN:-"false"}
+LOCK_DOMAIN=${LOCK_DOMAIN:-""}
 
 # store runtime configuration
 RUNTIME_CONFIG_FILE=/usr/share/nginx/html/runtime-config.js
