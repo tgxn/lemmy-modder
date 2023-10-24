@@ -120,12 +120,6 @@ export function FilterTypeSelect() {
 export function FilterModLogType() {
   const dispatch = useDispatch();
   const modLogType = useSelector((state) => state.configReducer.modLogType);
-  {
-    /* "All" | "ModRemovePost" | "ModLockPost" | "ModFeaturePost" | "ModRemoveComment" |
-     "ModRemoveCommunity" | "ModBanFromCommunity" | "ModAddCommunity" | "ModTransferCommunity" 
-     | "ModAdd" | "ModBan" | "ModHideCommunity" | "AdminPurgePerson" | "AdminPurgeCommunity" | 
-     "AdminPurgePost" | "AdminPurgeComment" */
-  }
 
   const modlogTypes = getModLogTypeNames();
 

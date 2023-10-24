@@ -50,6 +50,19 @@ export default function ModLogAccordians({ modLogData }) {
           return <BannedRow item={modLogItem} />;
         }
 
+        if (modLogItem.type === "admin_purged_persons") {
+          return <AdminPurgedPersonsRow item={modLogItem} />;
+        }
+        if (modLogItem.type === "admin_purged_communities") {
+          return <AdminPurgedCommunitiesRow item={modLogItem} />;
+        }
+        if (modLogItem.type === "admin_purged_posts") {
+          return <AdminPurgedPostsRow item={modLogItem} />;
+        }
+        if (modLogItem.type === "admin_purged_comments") {
+          return <AdminPurgedCommentsRow item={modLogItem} />;
+        }
+
         return (
           <Accordion>
             <AccordionSummary indicator={<AddIcon />}>Unknown Action: {modLogItem.type}</AccordionSummary>
@@ -307,6 +320,71 @@ function AddedRow({ item }) {
       headerContent={
         <>
           <ModDisplayName moderator={item.moderator} /> added {item.modded_person.actor_id}
+        </>
+      }
+    >
+      <pre>{JSON.stringify(item, null, 2)}</pre>
+    </BaseAccordian>
+  );
+}
+
+// import SecurityIcon from "@mui/icons-material/Security";
+function AdminPurgedPersonsRow({ item }) {
+  return (
+    <BaseAccordian
+      item={item}
+      headerIcon={<SecurityIcon />}
+      headerContent={
+        <>
+          <ModDisplayName moderator={item.moderator} /> admin purde person {item.admin_purge_person.reason}
+        </>
+      }
+    >
+      <pre>{JSON.stringify(item, null, 2)}</pre>
+    </BaseAccordian>
+  );
+}
+function AdminPurgedCommunitiesRow({ item }) {
+  return (
+    <BaseAccordian
+      item={item}
+      headerIcon={<SecurityIcon />}
+      headerContent={
+        <>
+          <ModDisplayName moderator={item.moderator} /> admin purged community {item.admin_purge_community.id}
+          : "{item.admin_purge_community.reason}"
+        </>
+      }
+    >
+      <pre>{JSON.stringify(item, null, 2)}</pre>
+    </BaseAccordian>
+  );
+}
+function AdminPurgedPostsRow({ item }) {
+  return (
+    <BaseAccordian
+      item={item}
+      headerIcon={<SecurityIcon />}
+      headerContent={
+        <>
+          <ModDisplayName moderator={item.moderator} /> admin purged posts {item.actorId} "
+          {item.admin_purge_post.reason}"
+        </>
+      }
+    >
+      <pre>{JSON.stringify(item, null, 2)}</pre>
+    </BaseAccordian>
+  );
+}
+function AdminPurgedCommentsRow({ item }) {
+  return (
+    <BaseAccordian
+      item={item}
+      headerIcon={<SecurityIcon />}
+      headerContent={
+        <>
+          <ModDisplayName moderator={item.moderator} /> admin purged comment "
+          {item.admin_purge_comment.reason}"
         </>
       }
     >
