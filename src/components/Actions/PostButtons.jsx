@@ -17,12 +17,13 @@ import {
   ConfirmDialog,
 } from "./BaseElements.jsx";
 import { getSiteData } from "../../hooks/getSiteData";
+import { selectShowResolved } from "../../reducers/configReducer.js";
 
 // allow resolving / unresolving a post report
 export const ResolvePostReportButton = ({ report, ...props }) => {
   const queryClient = useQueryClient();
 
-  const showResolved = useSelector((state) => state.configReducer.showResolved);
+  const showResolved = useSelector(selectShowResolved);
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
   const { data, callAction, isSuccess, isLoading, error } = useLemmyHttpAction("resolvePostReport");

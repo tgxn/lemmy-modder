@@ -10,11 +10,12 @@ import { LemmyHttp } from "lemmy-js-client";
 
 import useLemmyInfinite from "./useLemmyInfinite";
 import { getModLogTypeNames } from "../utils";
+import { selectModLogCommunityId, selectModLogType } from "../reducers/configReducer";
 
 // gets paginated / infinite list of reports from lemmy
 export default function useLemmyModLog() {
-  const modLogType = useSelector((state) => state.configReducer.modLogType);
-  const modLogCommunityId = useSelector((state) => state.configReducer.modLogCommunityId);
+  const modLogType = useSelector(selectModLogType);
+  const modLogCommunityId = useSelector(selectModLogCommunityId);
 
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 

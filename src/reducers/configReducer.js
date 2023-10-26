@@ -51,3 +51,14 @@ const configReducer = (state = initialState, action = {}) => {
 };
 
 export default configReducer;
+
+
+export const selectIsInElectron = (state) => state.configReducer.isInElectron;
+export const selectFilterCommunity = (state) => state.configReducer.filterCommunity;
+export const selectFilterType = (state) => state.configReducer.filterType;
+export const selectModLogType = (state) => state.configReducer.modLogType;
+export const selectShowResolved = (state) => state.configReducer.showResolved;
+export const selectHideReadApprovals = (state) => state.configReducer.hideReadApprovals;
+export const selectShowRemoved = (state) => state.configReducer.showRemoved;
+export const selectModLogCommunityId = (state) => state.configReducer.modLogCommunityId;
+export const selectOrderBy = (state) => state.configReducer.orderBy;

@@ -10,14 +10,14 @@ import Checkbox from "@mui/joy/Checkbox";
 
 import Chip from "@mui/joy/Chip";
 
-import { setConfigItem } from "../reducers/configReducer";
+import { selectFilterType, selectHideReadApprovals, selectModLogType, selectShowRemoved, selectShowResolved, setConfigItem } from "../reducers/configReducer";
 
 import { getSiteData } from "../hooks/getSiteData";
 import { getModLogTypeNames } from "../utils";
 
 export function FilterCommunity() {
   const dispatch = useDispatch();
-  const filterCommunity = useSelector((state) => state.configReducer.filterCommunity);
+  const filterCommunity = useSelector(selectFilterCommunity);
 
   const { modCommms } = getSiteData();
 
@@ -84,7 +84,7 @@ export function FilterCommunity() {
 
 export function FilterTypeSelect() {
   const dispatch = useDispatch();
-  const filterType = useSelector((state) => state.configReducer.filterType);
+  const filterType = useSelector(selectFilterType);
 
   return (
     <Select
@@ -119,7 +119,7 @@ export function FilterTypeSelect() {
 
 export function FilterModLogType() {
   const dispatch = useDispatch();
-  const modLogType = useSelector((state) => state.configReducer.modLogType);
+  const modLogType = useSelector(selectModLogType);
 
   const modlogTypes = getModLogTypeNames();
 
@@ -148,7 +148,7 @@ export function FilterModLogType() {
 
 export function FilterResolved() {
   const dispatch = useDispatch();
-  const showResolved = useSelector((state) => state.configReducer.showResolved);
+  const showResolved = useSelector(selectShowResolved);
 
   return (
     <Checkbox
@@ -164,7 +164,7 @@ export function FilterResolved() {
 
 export function HideRead() {
   const dispatch = useDispatch();
-  const hideReadApprovals = useSelector((state) => state.configReducer.hideReadApprovals);
+  const hideReadApprovals = useSelector(selectHideReadApprovals);
 
   return (
     <Checkbox
@@ -180,7 +180,7 @@ export function HideRead() {
 
 export function FilterRemoved() {
   const dispatch = useDispatch();
-  const showRemoved = useSelector((state) => state.configReducer.showRemoved);
+  const showRemoved = useSelector(selectShowRemoved);
 
   return (
     <Checkbox

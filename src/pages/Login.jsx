@@ -24,9 +24,10 @@ import { LemmyHttp } from "lemmy-js-client";
 
 import { useLemmyUserDataAction } from "../hooks/useLemmyHttp";
 
-import { addUser, setAccountIsLoading, setUsers, setCurrentUser } from "../reducers/accountReducer";
+import { addUser, setAccountIsLoading, setUsers, setCurrentUser, selectAccountIsLoading, selectUsers } from "../reducers/accountReducer";
 
 import { BasicInfoTooltip } from "../components/Tooltip.jsx";
+import { selectIsInElectron } from "../reducers/configReducer";
 
 export default function LoginForm() {
   const domainLock = window?.RuntimeConfig?.DomainLock != "" ? window?.RuntimeConfig?.DomainLock : false;
@@ -34,9 +35,9 @@ export default function LoginForm() {
 
   const dispatch = useDispatch();
 
-  const accountIsLoading = useSelector((state) => state.accountReducer.accountIsLoading);
-  const users = useSelector((state) => state.accountReducer.users);
-  const isInElectron = useSelector((state) => state.configReducer.isInElectron);
+  const accountIsLoading = useSelector(selectAccountIsLoading);
+  const users = useSelector(selectUsers);
+  const isInElectron = useSelector(selectIsInElectron);
 
   // form state
   const [instanceBase, setInstanceBase] = React.useState(domainLock ? domainLock : "");

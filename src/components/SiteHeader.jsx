@@ -40,7 +40,7 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import FlagIcon from "@mui/icons-material/Flag";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 
-import { logoutCurrent } from "../reducers/accountReducer";
+import { logoutCurrent, selectUsers } from "../reducers/accountReducer";
 
 import { LemmyHttp } from "lemmy-js-client";
 
@@ -226,7 +226,7 @@ function UserMenu() {
 
   const queryClient = useQueryClient();
 
-  const users = useSelector((state) => state.accountReducer.users);
+  const users = useSelector(selectUsers);
 
   const { mutate: refreshMutate } = refreshAllData();
 
