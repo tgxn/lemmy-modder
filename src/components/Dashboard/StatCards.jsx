@@ -1,5 +1,6 @@
 import React from "react";
 
+import moment from "moment";
 import { NumericFormat } from "react-number-format";
 
 import Chip from "@mui/joy/Chip";
@@ -14,6 +15,8 @@ import DraftsIcon from "@mui/icons-material/Drafts";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 
 import HowToRegIcon from "@mui/icons-material/HowToReg";
+
+import useLVQueryCache from "../../hooks/useLVQueryCache";
 
 import { getSiteData } from "../../hooks/getSiteData";
 import { useLemmyHttp } from "../../hooks/useLemmyHttp";
@@ -89,6 +92,45 @@ export function LoadingStatCard({ title }) {
         <Typography textColor="primary.100">{title}</Typography>
         <Typography fontSize="xl5" fontWeight="xl" textColor="#fff">
           <CircularProgress size="md" color="primary" />
+        </Typography>
+      </CardContent>
+    </Card>
+  );
+}
+export function ErrorStatCard({ title }) {
+  return (
+    <Card
+      size="lg"
+      variant="outlined"
+      color={"danger"}
+      orientation="horizontal"
+      sx={{
+        borderRadius: "8px",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        maxWidth: "100%",
+        width: "100%",
+        overflow: "hidden",
+      }}
+    >
+      <CardContent
+        // variant="solid"
+        sx={{
+          borderRadius: "8px",
+          display: "flex",
+          flexGrow: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          justifyContent: "center",
+          px: 1,
+        }}
+      >
+        <Typography textColor="primary.100">{title}</Typography>
+        <Typography fontSize="xl5" fontWeight="xl" textColor="#fff">
+          😭
         </Typography>
       </CardContent>
     </Card>
@@ -522,6 +564,123 @@ export function SiteStat() {
               {siteResponse?.site_view?.local_site?.updated}
             </MomentAdjustedTimeAgo>
           }
+        />
+      </CardContent>
+    </Card>
+  );
+}
+
+// Lemmyverse Growst Stat Card (Lemmyverse Data Result)
+export function GrowthCard() {
+  const { baseUrl, siteResponse, siteData, localPerson, userRole } = getSiteData();
+
+  const {
+    isLoading,
+    isSuccess,
+    isError,
+    data: metaData,
+  } = useLVQueryCache("metaData", `metrics/${baseUrl}.meta`);
+
+  // for a given attribute stats array, get the change over time
+  function getChangeOverTime(attributeArray, oldestTimeTs) {
+    // sort oldest first
+    const sortedArray = attributeArray.sort((a, b) => a.time - b.time);
+
+    // get newest item
+    const latestValue = sortedArray[sortedArray.length - 1].value;
+
+    // filter results before cutoff
+    let filteredResults = sortedArray.filter((u) => u.time >= oldestTimeTs);
+
+    // get oldest item within cutoff
+    const maxOneWeekValue = filteredResults[0];
+
+    // return difference
+    return latestValue - maxOneWeekValue.value;
+  }
+
+  // get "+", "-", or "" depending on value
+  function plusMinusIndicator(value) {
+    return value > 0 ? "+" + value : value < 0 ? "-" + value : "" + value;
+  }
+
+  const usersWeekChange = React.useMemo(() => {
+    if (isSuccess) {
+      return getChangeOverTime(metaData.users, moment().subtract(1, "week").unix());
+    }
+  }, [metaData]);
+  const commentsWeekChange = React.useMemo(() => {
+    if (isSuccess) {
+      return getChangeOverTime(metaData.comments, moment().subtract(1, "week").unix());
+    }
+  }, [metaData]);
+  const postsWeekChange = React.useMemo(() => {
+    if (isSuccess) {
+      return getChangeOverTime(metaData.posts, moment().subtract(1, "week").unix());
+    }
+  }, [metaData]);
+
+  if (isLoading) {
+    return <LoadingStatCard title="Stats Loading..." />;
+  }
+
+  if (isError) {
+    return <ErrorStatCard title="Loading Error" />;
+  }
+
+  return (
+    <Card
+      size="lg"
+      variant="solid"
+      orientation="horizontal"
+      sx={{
+        borderRadius: "8px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+
+        maxWidth: "100%",
+        width: "100%",
+        overflow: "hidden",
+      }}
+    >
+      <CardContent
+        variant="solid"
+        color={"secondary"}
+        sx={{
+          display: "flex",
+          m: 0,
+          p: 0,
+          pl: 2,
+          flexGrow: 0,
+          flexDirection: "row",
+          height: "100%",
+        }}
+      >
+        Growth Stats
+      </CardContent>
+
+      <CardContent
+        sx={{
+          alignItems: "left",
+          flexDirection: "column",
+          px: 1,
+        }}
+      >
+        <StatDataItem
+          icon={<HowToRegIcon />}
+          title="Week User Growth"
+          value={plusMinusIndicator(usersWeekChange)}
+        />
+        <StatDataItem
+          icon={<ForumIcon />}
+          title="Week Comment Growth"
+          value={plusMinusIndicator(commentsWeekChange)}
+        />
+        <StatDataItem
+          icon={<StickyNote2Icon />}
+          title="Week Post Growth"
+          value={plusMinusIndicator(postsWeekChange)}
         />
       </CardContent>
     </Card>

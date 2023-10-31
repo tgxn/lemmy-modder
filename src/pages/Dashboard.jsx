@@ -26,18 +26,12 @@ import {
   UserStat,
   ActivityStat,
   SiteStat,
+  GrowthCard,
 } from "../components/Dashboard/StatCards";
 
 import { useLemmyHttp } from "../hooks/useLemmyHttp";
 export default function Dashboard() {
   const { baseUrl, siteResponse, siteData, localPerson, userRole } = getSiteData();
-
-  const {
-    isLoading,
-    isSuccess,
-    isError,
-    data: metaData,
-  } = useLVQueryCache("metaData", `metrics/${baseUrl}.meta`);
 
   return (
     <Box
@@ -78,6 +72,9 @@ export default function Dashboard() {
           <Grid xs={12} md={6}>
             <SiteStat />
           </Grid>
+          <Grid xs={12} md={6}>
+            <GrowthCard />
+          </Grid>
         </Grid>
       </Sheet>
       {/* code display json raw */}
@@ -87,7 +84,8 @@ export default function Dashboard() {
           p: 1,
         }}
       >
-        <pre>{JSON.stringify(siteResponse, null, 2)}</pre>
+        {/* <pre>{JSON.stringify(siteResponse, null, 2)}</pre>
+        <pre>{JSON.stringify(metaData, null, 2)}</pre>
       </Sheet> */}
     </Box>
   );

@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 // metrics/sh.itjust.works.meta
 export default function useLVQueryCache(queryKey, dataFile) {
   const { isSuccess, isLoading, isError, error, data, isFetching } = useQuery({
-    queryKey: ["lemmyVerseCache", queryKey], // single string key
+    queryKey: ["lemmyVerseCache", dataFile], // single string key
     queryFn: () =>
       axios
         .get(`https://data.lemmyverse.net/data/${dataFile}.json`, {
