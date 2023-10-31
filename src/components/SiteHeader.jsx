@@ -8,6 +8,7 @@ import { Toaster, toast } from "sonner";
 
 import { BrowserRouter as Router, useNavigate, useLocation } from "react-router-dom";
 
+import Typography from "@mui/joy/Typography";
 import Chip from "@mui/joy/Chip";
 import Sheet from "@mui/joy/Sheet";
 import Box from "@mui/joy/Box";
@@ -260,10 +261,7 @@ function UserMenu() {
     userIcon = <SupervisedUserCircleIcon />;
   }
 
-  // console.log("localPerson", localPerson);
-
   const parsedActor = parseActorId(localPerson.actor_id);
-  // console.log("parseActorId", parsedActor);
 
   return (
     <>
@@ -308,6 +306,7 @@ function UserMenu() {
             {users.map((user, index) => {
               return (
                 <MenuItem
+                  key={index}
                   sx={{
                     color: "text.body",
                   }}
@@ -315,7 +314,7 @@ function UserMenu() {
                   onClick={async () => {
                     handleClose();
 
-                    queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
+                    queryClient.invalidateQueries({ queryKey: ["lemmyHttp", localPerson.id] });
                     dispatch(logoutCurrent());
 
                     setIsLoading(true);
@@ -457,7 +456,15 @@ export default function SiteHeader({ height }) {
               </Button>
             </BasicInfoTooltip>
           )}
-          <BasicInfoTooltip title="View Code & Report Issues on GitHub" variant="outlined">
+          <BasicInfoTooltip
+            title={
+              <Typography sx={{ textAlign: "center" }}>
+                Code & Issues on GitHub <br />
+                Version: {process.env.PACKAGE_VERSION}
+              </Typography>
+            }
+            variant="outlined"
+          >
             <IconButton
               size="sm"
               variant="outlined"

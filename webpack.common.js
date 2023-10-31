@@ -1,7 +1,11 @@
+const webpack = require("webpack");
 const path = require("path");
 
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+
+const package = require("./package.json");
+const packageVersion = package.version;
 
 module.exports = {
   entry: "./src/index.jsx",
@@ -21,6 +25,9 @@ module.exports = {
     }),
     new CopyWebpackPlugin({
       patterns: [{ from: "public", to: "" }],
+    }),
+    new webpack.EnvironmentPlugin({
+      PACKAGE_VERSION: packageVersion,
     }),
   ],
   module: {

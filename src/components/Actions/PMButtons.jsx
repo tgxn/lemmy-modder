@@ -7,13 +7,7 @@ import DoneAllIcon from "@mui/icons-material/DoneAll";
 
 import { useLemmyHttpAction } from "../../hooks/useLemmyHttp.js";
 
-import {
-  BaseActionButton,
-  InputElement,
-  CheckboxElement,
-  ExpiryLengthElement,
-  ConfirmDialog,
-} from "./BaseElements.jsx";
+import { BaseActionButton, ActionConfirmButton, InputElement, ConfirmDialog } from "./BaseElements.jsx";
 import { getSiteData } from "../../hooks/getSiteData";
 import { selectShowResolved } from "../../reducers/configReducer.js";
 
@@ -25,32 +19,13 @@ export const ResolvePMReportButton = ({ report, ...props }) => {
   const showResolved = useSelector(selectShowResolved);
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
-  const { data, callAction, isSuccess, isLoading, error } = useLemmyHttpAction("resolvePrivateMessageReport");
-
-  const [isConfirming, setIsConfirming] = React.useState(false);
-
-  // close confirm after 5 seconds of no activity
-  React.useEffect(() => {
-    if (isConfirming) {
-      const timeout = setTimeout(() => {
-        if (!isLoading) {
-          setIsConfirming(false);
-        }
-      }, 5000);
-
-      return () => {
-        clearTimeout(timeout);
-      };
-    }
-  }, [isConfirming]);
+  const { data, callAction, isSuccess, isLoading } = useLemmyHttpAction("resolvePrivateMessageReport");
 
   React.useEffect(() => {
     if (isSuccess) {
       console.log("useLemmyHttpAction", "onSuccess", data);
 
-      if (showResolved) {
-        queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
-      } else {
+      if (!showResolved) {
         queryClient.setQueryData(
           ["lemmyHttp", localPerson.id, "listPrivateMessageReports", ["unresolved_only", true]],
           (old) => {
@@ -75,8 +50,14 @@ export const ResolvePMReportButton = ({ report, ...props }) => {
           },
         );
       }
-      setIsConfirming(false);
     }
+
+    // invalidate report count
+    queryClient.invalidateQueries({
+      queryKey: ["lemmyHttp", localPerson.id, "getReportCount"],
+    });
+
+    queryClient.invalidateQueries({ queryKey: ["lemmyHttp", localPerson.id, "listPrivateMessageReports"] });
   }, [data]);
 
   let actionText = "Resolve";
@@ -89,28 +70,22 @@ export const ResolvePMReportButton = ({ report, ...props }) => {
   }
 
   return (
-    <BaseActionButton
-      text={isConfirming ? "Confirm?" : actionText}
-      tooltip={isConfirming ? `Really ${actionText}?` : `${actionText} Report`}
-      color={isConfirming ? "warning" : actionColor}
-      endDecorator={<DoneAllIcon />}
-      loading={isLoading}
-      size="md"
+    <ActionConfirmButton
       variant={actionVariant}
-      onClick={() => {
-        if (isConfirming) {
-          callAction({
-            report_id: report.private_message_report.id,
-            resolved: !report.private_message_report.resolved,
-          });
-        } else {
-          setIsConfirming(true);
-        }
+      baseText={actionText}
+      confirmText="Confirm?"
+      baseTooltip={`${actionText} Report`}
+      confirmTooltip={`Really ${actionText}?`}
+      baseColor={actionColor}
+      confirmColor="warning"
+      endDecorator={<DoneAllIcon />}
+      onConfirm={() => {
+        callAction({
+          report_id: report.private_message_report.id,
+          resolved: !report.private_message_report.resolved,
+        });
       }}
-      sx={{
-        ml: 1, // this is needed for the thumb icon
-      }}
-      {...props}
+      loading={isLoading}
     />
   );
 };

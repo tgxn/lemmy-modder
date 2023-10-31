@@ -27,9 +27,9 @@ function ApplicationListItem({ registration }) {
   // - creator_local_user (their local user account)
   // - registration_application (metadata about the registration)
 
-  React.useEffect(() => {
-    console.log("registration", registration);
-  }, [registration]);
+  // React.useEffect(() => {
+  //   console.log("registration", registration);
+  // }, [registration]);
 
   const adminUser = registration.admin;
   const adminHandled = adminUser ? true : false;
@@ -253,6 +253,6 @@ export default function ApprovalsList({ approvalsList }) {
   }
 
   return approvalsList.map((registration, index) => {
-    return <ApplicationListItem registration={registration} />;
+    return <ApplicationListItem key={index} registration={registration} />;
   });
 }
