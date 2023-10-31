@@ -59,18 +59,18 @@ export default function Approvals() {
       reportsList = reportsList.concat(pageEntries);
     }
 
-    // sort by date
-    reportsList = reportsList.sort((a, b) => {
-      const aEpoch = new Date(a.registration_application.published.replace(/(\.\d{6})/, "Z")).getTime();
-      const bEpoch = new Date(b.registration_application.published.replace(/(\.\d{6})/, "Z")).getTime();
+    // TODO sort by date - needs upstream support to work really...
+    // reportsList = reportsList.sort((a, b) => {
+    //   const aEpoch = new Date(a.registration_application.published.replace(/(\.\d{6})/, "Z")).getTime();
+    //   const bEpoch = new Date(b.registration_application.published.replace(/(\.\d{6})/, "Z")).getTime();
 
-      if (sortOldestFirst) {
-        return aEpoch - bEpoch;
-      } else {
-        return bEpoch - aEpoch;
-      }
-    });
-    console.log("sortOldestFirst", sortOldestFirst);
+    //   if (sortOldestFirst) {
+    //     return aEpoch - bEpoch;
+    //   } else {
+    //     return bEpoch - aEpoch;
+    //   }
+    // });
+    // console.log("sortOldestFirst", sortOldestFirst);
 
     return reportsList;
   }, [registrationsData, sortOldestFirst]);
@@ -193,6 +193,19 @@ export default function Approvals() {
           >
             Load More
           </Button>
+        </Box>
+      )}
+
+      {!registrationsHasNextPage && (
+        <Box
+          ref={ref}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            mt: 2,
+          }}
+        >
+          No more items!
         </Box>
       )}
     </Box>
