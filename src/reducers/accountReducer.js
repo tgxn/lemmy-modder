@@ -125,3 +125,7 @@ const accountReducer = (state = initialState, action = {}) => {
 };
 
 export default accountReducer;
+
+export const selectCurrentUser = (state) => state.accountReducer.currentUser;
+export const selectUsers = (state) => state.accountReducer.users;
+export const selectAccountIsLoading = (state) => state.accountReducer.accountIsLoading;

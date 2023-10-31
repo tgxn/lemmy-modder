@@ -7,6 +7,7 @@ import { getSiteData } from "../hooks/getSiteData";
 import { useSelector } from "react-redux";
 
 import { LemmyHttp } from "lemmy-js-client";
+import { selectCurrentUser } from "../reducers/accountReducer";
 
 export default function useLemmyInfinite({
   callLemmyMethod,
@@ -16,8 +17,8 @@ export default function useLemmyInfinite({
   enabled = true,
   perPage = 25,
 }) {
-  const currentUser = useSelector((state) => state.accountReducer.currentUser);
-  // const showResolved = useSelector((state) => state.configReducer.showResolved);
+  const currentUser = useSelector(selectCurrentUser);
+  // const showResolved = useSelector(selectShowResolved);
 
   const formDataArray = useMemo(() => {
     const formDataArray = [];

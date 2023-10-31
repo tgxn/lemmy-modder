@@ -13,6 +13,7 @@ import { useLemmyHttpAction } from "../../hooks/useLemmyHttp.js";
 import { getSiteData } from "../../hooks/getSiteData";
 
 import { BaseActionButton, InputElement, ConfirmDialog } from "./BaseElements.jsx";
+import { selectHideReadApprovals } from "../../reducers/configReducer.js";
 
 export const ApproveButton = ({ registration, ...props }) => {
   const queryClient = useQueryClient();
@@ -24,7 +25,7 @@ export const ApproveButton = ({ registration, ...props }) => {
     "approveRegistrationApplication",
   );
 
-  const hideReadApprovals = useSelector((state) => state.configReducer.hideReadApprovals);
+  const hideReadApprovals = useSelector(selectHideReadApprovals);
 
   const [isConfirming, setIsConfirming] = React.useState(false);
 
@@ -172,7 +173,7 @@ export const DenyButton = ({ registration, ...props }) => {
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [denyReason, setDenyReason] = React.useState("");
 
-  const hideReadApprovals = useSelector((state) => state.configReducer.hideReadApprovals);
+  const hideReadApprovals = useSelector(selectHideReadApprovals);
 
   React.useEffect(() => {
     if (isSuccess) {

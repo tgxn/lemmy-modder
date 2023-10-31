@@ -9,14 +9,15 @@ import { useSelector } from "react-redux";
 import { LemmyHttp } from "lemmy-js-client";
 
 import useLemmyInfinite from "./useLemmyInfinite";
+import { selectFilterCommunity, selectFilterType, selectOrderBy, selectShowRemoved, selectShowResolved } from "../reducers/configReducer";
 
 // gets paginated / infinite list of reports from lemmy
 export default function useLemmyReports() {
-  const orderBy = useSelector((state) => state.configReducer.orderBy);
-  const filterType = useSelector((state) => state.configReducer.filterType);
-  const filterCommunity = useSelector((state) => state.configReducer.filterCommunity);
-  const showResolved = useSelector((state) => state.configReducer.showResolved);
-  // const showRemoved = useSelector((state) => state.configReducer.showRemoved);
+  const orderBy = useSelector(selectOrderBy);
+  const filterType = useSelector(selectFilterType);
+  const filterCommunity = useSelector(selectFilterCommunity);
+  const showResolved = useSelector(selectShowResolved);
+  // const showRemoved = useSelector(selectShowRemoved);
 
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
