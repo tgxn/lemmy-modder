@@ -23,12 +23,14 @@ import Reports from "./pages/Reports";
 import Login from "./pages/Login";
 
 import AppStore from "./store";
+import { selectIsInElectron } from "./reducers/configReducer";
+import { selectCurrentUser } from "./reducers/accountReducer";
 
 function PageRouter() {
   const theme = useTheme();
 
-  const currentUser = useSelector((state) => state.accountReducer.currentUser);
-  const isInElectron = useSelector((state) => state.configReducer.isInElectron);
+  const currentUser = useSelector(selectCurrentUser);
+  const isInElectron = useSelector(selectIsInElectron);
 
   // when we get a jwt, set the cookie in electron
   React.useEffect(() => {

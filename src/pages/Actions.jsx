@@ -19,13 +19,14 @@ import { getSiteData } from "../hooks/getSiteData";
 import { parseActorId } from "../utils";
 
 import ModLogAccordians from "../components/Activity/ModLogAccordians";
+import { selectModLogType } from "../reducers/configReducer";
 
 export default function Actions() {
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
   const locaUserParsedActor = parseActorId(localPerson.actor_id);
 
-  const modLogType = useSelector((state) => state.configReducer.modLogType);
+  const modLogType = useSelector(selectModLogType);
 
   const [limitLocalInstance, setLimitLocalInstance] = React.useState(true);
   const [limitCommunityId, setLimitCommunityId] = React.useState(null);
