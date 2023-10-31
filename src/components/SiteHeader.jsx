@@ -82,10 +82,8 @@ function SiteMenu() {
   // if (userRole == "admin") userTooltip = "You are a site admin";
   // if (userRole == "mod") userTooltip = "You are a community moderator";
 
-  const totalReports =
-    reportCountsData?.post_reports +
-    reportCountsData?.comment_reports +
-    reportCountsData?.private_message_reports;
+  let totalReports = reportCountsData?.post_reports + reportCountsData?.comment_reports;
+  if (userRole == "admin") totalReports += reportCountsData?.private_message_reports;
 
   return (
     <>

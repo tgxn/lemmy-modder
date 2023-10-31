@@ -2,7 +2,7 @@ import React from "react";
 
 import { NumericFormat } from "react-number-format";
 
-import Box from "@mui/joy/Box";
+import Chip from "@mui/joy/Chip";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
 import Typography from "@mui/joy/Typography";
@@ -11,90 +11,76 @@ import CircularProgress from "@mui/joy/CircularProgress";
 import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import ForumIcon from "@mui/icons-material/Forum";
 import DraftsIcon from "@mui/icons-material/Drafts";
+import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 
-import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 
 import { getSiteData } from "../../hooks/getSiteData";
 import { useLemmyHttp } from "../../hooks/useLemmyHttp";
 
-export function StringStat({ title, value, icon = false, color = "primary", description = "", sx = {} }) {
-  let iconClone = null;
+import { MomentAdjustedTimeAgo } from "../Display.jsx";
 
-  if (icon)
-    iconClone = React.cloneElement(icon, {
-      sx: {
-        ...icon.props.sx,
-        fontSize: "xl5",
-        color: "#fff",
-        p: 0,
+// Basic Elements (string, chip, etc)
+//  -------------------------------------------------------------------------------------
 
-        // mb: "var(--Card-padding)",
-        // display: "inline",
-      },
-    });
+export const SimpleNumberFormat = React.memo(({ value }) => {
+  return <NumericFormat displayType="text" value={value} allowLeadingZeros thousandSeparator="," />;
+});
 
+export function StatCardChip({ value, icon = false, color = "primary", variant = "solid" }) {
+  return (
+    <Typography color={color} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <Chip
+        size="lg"
+        variant={variant}
+        color={color}
+        startDecorator={icon}
+        sx={{
+          borderRadius: 6,
+        }}
+      >
+        {value}
+      </Chip>
+    </Typography>
+  );
+}
+
+// grid of name:value pairs
+export function StatDataItem({ title, value, icon = false, color = "primary", variant = "solid" }) {
+  return (
+    <Typography color={color} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      {icon} {title}: {value}
+    </Typography>
+  );
+}
+
+// card that is in loading state
+export function LoadingStatCard({ title }) {
   return (
     <Card
       size="lg"
-      variant="solid"
-      color={color}
+      variant="outlined"
+      color={"primary"}
       orientation="horizontal"
       sx={{
-        ...sx,
         borderRadius: "8px",
         display: "flex",
         flexDirection: "row",
-
-        // justifyContent: "center",
         alignItems: "center",
-
-        // space aroudn
         justifyContent: "space-between",
-
         maxWidth: "100%",
         width: "100%",
         overflow: "hidden",
       }}
     >
-      {iconClone && (
-        <CardContent
-          variant="solid"
-          color={color}
-          sx={{
-            ...sx,
-            // flex: "1",
-            display: "flex",
-            m: 0,
-            p: 0,
-            pl: 2,
-            flexGrow: 0,
-            // justifyContent: "center",
-            // alignItems: "center",
-            flexDirection: "row",
-            height: "100%",
-            // justifyContent: "center",
-            // alignItems: "center",
-            // px: "var(--Card-padding)",
-          }}
-        >
-          {iconClone}
-        </CardContent>
-      )}
       <CardContent
         variant="solid"
-        color={color}
         sx={{
-          ...sx,
-          // flex: "1",
           borderRadius: "8px",
           display: "flex",
           flexGrow: 1,
           justifyContent: "center",
           alignItems: "center",
-          // width: "100%",
           flexDirection: "column",
           justifyContent: "center",
           px: 1,
@@ -102,15 +88,19 @@ export function StringStat({ title, value, icon = false, color = "primary", desc
       >
         <Typography textColor="primary.100">{title}</Typography>
         <Typography fontSize="xl5" fontWeight="xl" textColor="#fff">
-          {value}
+          <CircularProgress size="md" color="primary" />
         </Typography>
-        {description && <Typography textColor="primary.200">{description}</Typography>}
       </CardContent>
     </Card>
   );
 }
 
-export function ReportsStat({ title, value, icon = false, color = "primary", description = "", sx = {} }) {
+//  -------------------------------------------------------------------------------------
+
+// Content Report Stat Card (TanStack API Response)
+export function ReportsStat() {
+  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+
   const {
     isLoading: reportCountsLoading,
     isFetching: reportCountsFetching,
@@ -118,61 +108,12 @@ export function ReportsStat({ title, value, icon = false, color = "primary", des
     data: reportCountsData,
   } = useLemmyHttp("getReportCount");
 
-  const totalReports =
-    reportCountsData?.post_reports +
-    reportCountsData?.comment_reports +
-    reportCountsData?.private_message_reports;
-
-  //loading
   if (reportCountsLoading) {
-    return (
-      <Card
-        size="lg"
-        variant="outlined"
-        color={"primary"}
-        orientation="horizontal"
-        sx={{
-          ...sx,
-          borderRadius: "8px",
-          display: "flex",
-          flexDirection: "row",
-
-          // justifyContent: "center",
-          alignItems: "center",
-
-          // space aroudn
-          justifyContent: "space-between",
-
-          maxWidth: "100%",
-          width: "100%",
-          overflow: "hidden",
-        }}
-      >
-        <CardContent
-          variant="solid"
-          color={color}
-          sx={{
-            ...sx,
-            // flex: "1",
-            borderRadius: "8px",
-            display: "flex",
-            flexGrow: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            // width: "100%",
-            flexDirection: "column",
-            justifyContent: "center",
-            px: 1,
-          }}
-        >
-          <Typography textColor="primary.100">Counts Loading....</Typography>
-          <Typography fontSize="xl5" fontWeight="xl" textColor="#fff">
-            <CircularProgress size="md" color="primary" />
-          </Typography>
-        </CardContent>
-      </Card>
-    );
+    return <LoadingStatCard title="Report Counts Loading..." />;
   }
+
+  let totalReports = reportCountsData?.post_reports + reportCountsData?.comment_reports;
+  if (userRole == "admin") totalReports += reportCountsData?.private_message_reports;
 
   return (
     <Card
@@ -181,17 +122,10 @@ export function ReportsStat({ title, value, icon = false, color = "primary", des
       color={totalReports > 0 ? "danger" : "success"}
       orientation="horizontal"
       sx={{
-        ...sx,
         borderRadius: "8px",
         display: "flex",
         flexDirection: "column",
-
-        // justifyContent: "center",
         alignItems: "center",
-
-        // space aroudn
-        // justifyContent: "space-between",
-
         maxWidth: "100%",
         width: "100%",
         overflow: "hidden",
@@ -199,9 +133,9 @@ export function ReportsStat({ title, value, icon = false, color = "primary", des
     >
       <CardContent
         variant="solid"
-        color={color}
+        // color={color}
         sx={{
-          ...sx,
+          // ...sx,
           // flex: "1",
           display: "flex",
           m: 0,
@@ -235,31 +169,38 @@ export function ReportsStat({ title, value, icon = false, color = "primary", des
           px: 1,
         }}
       >
-        <Typography
+        <StatCardChip
+          icon={<StickyNote2Icon />}
+          value={reportCountsData?.post_reports !== undefined ? reportCountsData.post_reports : ""}
           color={reportCountsData?.post_reports > 0 ? "danger" : "success"}
-          sx={{ display: "flex", alignItems: "center", gap: 1 }}
-        >
-          <StickyNote2Icon /> {reportCountsData?.post_reports}
-        </Typography>
-        <Typography
+          variant={reportCountsData?.post_reports > 0 ? "soft" : "soft"}
+        />
+        <StatCardChip
+          icon={<ForumIcon />}
+          value={reportCountsData?.comment_reports !== undefined ? reportCountsData.comment_reports : ""}
           color={reportCountsData?.comment_reports > 0 ? "danger" : "success"}
-          sx={{ display: "flex", alignItems: "center", gap: 1 }}
-        >
-          <ForumIcon /> {reportCountsData?.comment_reports}
-        </Typography>
-        <Typography
-          color={reportCountsData?.private_message_reports > 0 ? "danger" : "success"}
-          sx={{ display: "flex", alignItems: "center", gap: 1 }}
-        >
-          <DraftsIcon /> {reportCountsData?.private_message_reports}
-        </Typography>
+          variant={reportCountsData?.comment_reports > 0 ? "soft" : "soft"}
+        />
+        {userRole == "admin" && (
+          <StatCardChip
+            icon={<DraftsIcon />}
+            value={
+              reportCountsData?.private_message_reports !== undefined
+                ? reportCountsData.private_message_reports
+                : ""
+            }
+            color={reportCountsData?.private_message_reports > 0 ? "danger" : "success"}
+            variant={reportCountsData?.private_message_reports > 0 ? "soft" : "soft"}
+          />
+        )}
         {/* </Box> */}
       </CardContent>
     </Card>
   );
 }
 
-export function ApprovalStat({ title, value, icon = false, color = "primary", description = "", sx = {} }) {
+// User Registration Stat Card (TanStack API Response)
+export function ApprovalStat() {
   const {
     isLoading: regAppCountIsLoading,
     isFetching: regAppCountIsFetching,
@@ -269,53 +210,7 @@ export function ApprovalStat({ title, value, icon = false, color = "primary", de
 
   //loading
   if (regAppCountIsLoading) {
-    return (
-      <Card
-        size="lg"
-        variant="outlined"
-        color={"primary"}
-        orientation="horizontal"
-        sx={{
-          ...sx,
-          borderRadius: "8px",
-          display: "flex",
-          flexDirection: "row",
-
-          // justifyContent: "center",
-          alignItems: "center",
-
-          // space aroudn
-          justifyContent: "space-between",
-
-          maxWidth: "100%",
-          width: "100%",
-          overflow: "hidden",
-        }}
-      >
-        <CardContent
-          variant="solid"
-          color={color}
-          sx={{
-            ...sx,
-            // flex: "1",
-            borderRadius: "8px",
-            display: "flex",
-            flexGrow: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            // width: "100%",
-            flexDirection: "column",
-            justifyContent: "center",
-            px: 1,
-          }}
-        >
-          <Typography textColor="primary.100">Counts Loading....</Typography>
-          <Typography fontSize="xl5" fontWeight="xl" textColor="#fff">
-            <CircularProgress size="md" color="primary" />
-          </Typography>
-        </CardContent>
-      </Card>
-    );
+    return <LoadingStatCard title="Counts Loading..." />;
   }
 
   return (
@@ -325,7 +220,7 @@ export function ApprovalStat({ title, value, icon = false, color = "primary", de
       color={regCountAppData?.registration_applications > 0 ? "danger" : "success"}
       orientation="horizontal"
       sx={{
-        ...sx,
+        // ...sx,
         borderRadius: "8px",
         display: "flex",
         flexDirection: "column",
@@ -343,9 +238,9 @@ export function ApprovalStat({ title, value, icon = false, color = "primary", de
     >
       <CardContent
         variant="solid"
-        color={color}
+        // color={color}
         sx={{
-          ...sx,
+          // ...sx,
           // flex: "1",
           display: "flex",
           m: 0,
@@ -379,38 +274,36 @@ export function ApprovalStat({ title, value, icon = false, color = "primary", de
           px: 1,
         }}
       >
-        <Typography
-          // color={reportCountsData?.post_reports > 0 ? "danger" : "success"}
-          sx={{ display: "flex", alignItems: "center", gap: 1 }}
-        >
-          <HowToRegIcon /> {regCountAppData?.registration_applications}
-        </Typography>
+        <StatCardChip
+          icon={<HowToRegIcon />}
+          value={
+            regCountAppData?.registration_applications !== undefined
+              ? regCountAppData.registration_applications
+              : ""
+          }
+          color={regCountAppData?.registration_applications > 0 ? "danger" : "success"}
+          variant={regCountAppData?.registration_applications > 0 ? "soft" : "soft"}
+        />
       </CardContent>
     </Card>
   );
 }
 
-export function UserStat({ title, value, icon = false, color = "primary", description = "", sx = {} }) {
-  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+// User Content Stat Card (Site Data Result)
+export function UserStat() {
+  const { baseUrl, siteResponse, siteData, localPerson, userRole } = getSiteData();
 
   return (
     <Card
       size="lg"
-      variant="solid"
-      // color={regCountAppData?.registration_applications > 0 ? "danger" : "success"}
+      variant="soft"
+      color="primary"
       orientation="horizontal"
       sx={{
-        ...sx,
         borderRadius: "8px",
         display: "flex",
         flexDirection: "column",
-
-        // justifyContent: "center",
         alignItems: "center",
-
-        // space aroudn
-        // justifyContent: "space-between",
-
         maxWidth: "100%",
         width: "100%",
         overflow: "hidden",
@@ -418,75 +311,132 @@ export function UserStat({ title, value, icon = false, color = "primary", descri
     >
       <CardContent
         variant="solid"
-        color={color}
         sx={{
-          ...sx,
-          // flex: "1",
           display: "flex",
           m: 0,
           p: 0,
           pl: 2,
           flexGrow: 0,
-          // justifyContent: "center",
-          // alignItems: "center",
           flexDirection: "row",
           height: "100%",
-          // justifyContent: "center",
-          // alignItems: "center",
-          // px: "var(--Card-padding)",
         }}
       >
-        User Stats
+        Local Content
       </CardContent>
 
       <CardContent
         sx={{
-          // ...sx,
-          // flex: "1",
-          // borderRadius: "8px",
-          // display: "flex",
-          // flexGrow: 1,
-          justifyContent: "space-around",
-          alignItems: "center",
-          // width: "100%",
-          flexDirection: "row",
-          justifyContent: "space-around",
+          alignItems: "left",
+          flexDirection: "column",
           px: 1,
         }}
       >
-        <Typography
-          // color={reportCountsData?.post_reports > 0 ? "danger" : "success"}
-          sx={{ display: "flex", alignItems: "center", gap: 1 }}
-        >
-          <HowToRegIcon /> 123123
-        </Typography>
+        <StatDataItem
+          title="Users"
+          icon={<HowToRegIcon />}
+          value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.users} />}
+        />
+        <StatDataItem
+          title="Posts"
+          icon={<StickyNote2Icon />}
+          value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.posts} />}
+        />
+        <StatDataItem
+          title="Comments"
+          icon={<ForumIcon />}
+          value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.comments} />}
+        />
+        <StatDataItem
+          title="Communities"
+          icon={<SupervisedUserCircleIcon />}
+          value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.communities} />}
+        />
       </CardContent>
     </Card>
   );
 }
 
-export function SiteStat({ title, value, icon = false, color = "primary", description = "", sx = {} }) {
-  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+// User Activity Stat Card (Site Data Result)
+export function ActivityStat() {
+  const { baseUrl, siteResponse, siteData, localPerson, userRole } = getSiteData();
 
-  console.log("siteData", siteData);
+  return (
+    <Card
+      size="lg"
+      variant="soft"
+      color="primary"
+      orientation="horizontal"
+      sx={{
+        borderRadius: "8px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        maxWidth: "100%",
+        width: "100%",
+        overflow: "hidden",
+      }}
+    >
+      <CardContent
+        variant="solid"
+        sx={{
+          display: "flex",
+          m: 0,
+          p: 0,
+          pl: 2,
+          flexGrow: 0,
+          flexDirection: "row",
+          height: "100%",
+        }}
+      >
+        User Activity
+      </CardContent>
+
+      <CardContent
+        sx={{
+          alignItems: "left",
+          flexDirection: "column",
+          px: 1,
+        }}
+      >
+        <StatDataItem
+          title="Active Users (day)"
+          // icon={<SupervisedUserCircleIcon />}
+          value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.users_active_day} />}
+        />
+        <StatDataItem
+          title="Active Users (week)"
+          // icon={<SupervisedUserCircleIcon />}
+          value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.users_active_week} />}
+        />
+        <StatDataItem
+          title="Active Users (month)"
+          // icon={<SupervisedUserCircleIcon />}
+          value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.users_active_month} />}
+        />
+        <StatDataItem
+          title="Active Users (6mos)"
+          // icon={<SupervisedUserCircleIcon />}
+          value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.users_active_half_year} />}
+        />
+      </CardContent>
+    </Card>
+  );
+}
+
+// Site Configurations Stat Card (Site Data Result)
+export function SiteStat() {
+  const { baseUrl, siteResponse, siteData, localPerson, userRole } = getSiteData();
 
   return (
     <Card
       size="lg"
       variant="solid"
-      // color={regCountAppData?.registration_applications > 0 ? "danger" : "success"}
       orientation="horizontal"
       sx={{
-        ...sx,
         borderRadius: "8px",
         display: "flex",
         flexDirection: "column",
-
-        // justifyContent: "center",
         alignItems: "center",
-
-        // space aroudn
-        // justifyContent: "space-between",
 
         maxWidth: "100%",
         width: "100%",
@@ -495,22 +445,15 @@ export function SiteStat({ title, value, icon = false, color = "primary", descri
     >
       <CardContent
         variant="solid"
-        color={color}
+        // color={color}
         sx={{
-          ...sx,
-          // flex: "1",
           display: "flex",
           m: 0,
           p: 0,
           pl: 2,
           flexGrow: 0,
-          // justifyContent: "center",
-          // alignItems: "center",
           flexDirection: "row",
           height: "100%",
-          // justifyContent: "center",
-          // alignItems: "center",
-          // px: "var(--Card-padding)",
         }}
       >
         Site Config
@@ -518,48 +461,69 @@ export function SiteStat({ title, value, icon = false, color = "primary", descri
 
       <CardContent
         sx={{
-          // ...sx,
-          // flex: "1",
-          // borderRadius: "8px",
-          // display: "flex",
-          // flexGrow: 1,
-          justifyContent: "space-around",
-          alignItems: "center",
-          // width: "100%",
-          flexDirection: "row",
-          justifyContent: "space-around",
+          // justifyContent: "space-around",
+          alignItems: "left",
+          flexDirection: "column",
+          // justifyContent: "left",
           px: 1,
         }}
       >
-        <Typography
-          // color={reportCountsData?.post_reports > 0 ? "danger" : "success"}
-          sx={{ display: "flex", alignItems: "center", gap: 1 }}
-        >
-          <HowToRegIcon /> 123123
-        </Typography>
+        <StatDataItem
+          // color="neutral"
+          title="NSFW Enabled"
+          color={siteResponse?.site_view?.local_site?.enable_nsfw ? "success" : "warning"}
+          value={siteResponse?.site_view?.local_site?.enable_nsfw ? "Yes" : "No"}
+        />
+
+        <StatDataItem
+          // color="neutral"
+          title="Downvotes Enabled"
+          color={siteResponse?.site_view?.local_site?.enable_downvotes ? "success" : "warning"}
+          value={siteResponse?.site_view?.local_site?.enable_downvotes ? "Yes" : "No"}
+        />
+        <StatDataItem
+          // color="neutral"
+          title="Force Email Verify"
+          color={siteResponse?.site_view?.local_site?.require_email_verification ? "success" : "warning"}
+          value={siteResponse?.site_view?.local_site?.require_email_verification ? "Yes" : "No"}
+        />
+        <StatDataItem
+          // color="neutral"
+          title="Captcha Enabled"
+          color={siteResponse?.site_view?.local_site?.captcha_enabled ? "success" : "warning"}
+          value={siteResponse?.site_view?.local_site?.captcha_enabled ? "Yes" : "No"}
+        />
+        <StatDataItem
+          // color="neutral"
+          title="Federation Enabled"
+          color={siteResponse?.site_view?.local_site?.federation_enabled ? "success" : "warning"}
+          value={siteResponse?.site_view?.local_site?.federation_enabled ? "Yes" : "No"}
+        />
+        <StatDataItem
+          color="neutral"
+          title="Register Mode"
+          value={siteResponse?.site_view?.local_site?.registration_mode}
+        />
+
+        <StatDataItem
+          color="neutral"
+          title="Published"
+          value={
+            <MomentAdjustedTimeAgo fromNow>
+              {siteResponse?.site_view?.local_site?.published}
+            </MomentAdjustedTimeAgo>
+          }
+        />
+        <StatDataItem
+          color="neutral"
+          title="Updated"
+          value={
+            <MomentAdjustedTimeAgo fromNow>
+              {siteResponse?.site_view?.local_site?.updated}
+            </MomentAdjustedTimeAgo>
+          }
+        />
       </CardContent>
     </Card>
   );
 }
-
-export function NumberStat({ value, ...props }) {
-  return <StringStat {...props} value={<SimpleNumberFormat value={value} />} />;
-}
-
-export const SimpleNumberFormat = React.memo(({ value }) => {
-  return <NumericFormat displayType="text" value={value} allowLeadingZeros thousandSeparator="," />;
-});
-
-export const TinyNumber = React.memo(({ value }) => {
-  const number = React.useMemo(() => {
-    if (value >= 1000000) {
-      return (value / 1000000).toFixed(1).replace(/\.0$/, "") + "m";
-    }
-    if (value >= 1000) {
-      return (value / 1000).toFixed(1).replace(/\.0$/, "") + "k";
-    }
-    return value;
-  }, [value]);
-
-  return <React.Fragment>{number}</React.Fragment>;
-});

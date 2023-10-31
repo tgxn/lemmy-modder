@@ -1,6 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
+import Chip from "@mui/joy/Chip";
+
 import { useQueryClient } from "@tanstack/react-query";
 
 import DoneAllIcon from "@mui/icons-material/DoneAll";
@@ -34,7 +36,7 @@ export const ResolvePMReportButton = ({ report, ...props }) => {
               ? null
               : old.pages.map((page) => {
                   const newData = page.data.filter((oldReport) => {
-                    return oldReport.pm_report.id !== report.pm_report.id;
+                    return oldReport?.pm_report?.id !== report?.pm_report?.id;
                   });
 
                   return {

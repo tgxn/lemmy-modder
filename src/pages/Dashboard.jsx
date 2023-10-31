@@ -20,11 +20,17 @@ import { parseActorId } from "../utils";
 
 import ModLogAccordians from "../components/Activity/ModLogAccordians";
 
-import { ReportsStat, ApprovalStat, UserStat, SiteStat, NumberStat } from "../components/Dashboard/StatCards";
+import {
+  ReportsStat,
+  ApprovalStat,
+  UserStat,
+  ActivityStat,
+  SiteStat,
+} from "../components/Dashboard/StatCards";
 
 import { useLemmyHttp } from "../hooks/useLemmyHttp";
 export default function Dashboard() {
-  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+  const { baseUrl, siteResponse, siteData, localPerson, userRole } = getSiteData();
 
   const {
     isLoading,
@@ -53,91 +59,36 @@ export default function Dashboard() {
         }}
       >
         <Grid container rowSpacing={2} columnSpacing={2}>
-          <Grid xs={12} md={6}>
-            <ReportsStat />
-          </Grid>
-          <Grid xs={12} md={6}>
-            <ApprovalStat />
-          </Grid>
+          {userRole != "user" && (
+            <Grid xs={12} md={6}>
+              <ReportsStat />
+            </Grid>
+          )}
+          {userRole == "admin" && (
+            <Grid xs={12} md={6}>
+              <ApprovalStat />
+            </Grid>
+          )}
           <Grid xs={12} md={6}>
             <UserStat />
           </Grid>
           <Grid xs={12} md={6}>
+            <ActivityStat />
+          </Grid>
+          <Grid xs={12} md={6}>
             <SiteStat />
           </Grid>
-          {/* 
-          <Grid xs={12} md={6} xl={3}>
-            <Sheet
-              sx={{
-                display: "flex",
-              }}
-            >
-              <NumberStat
-                color="info"
-                title="Total Users"
-                value={1}
-                description="A total count from all known instances."
-              />
-            </Sheet>
-          </Grid>
-          <Grid xs={12} md={6} xl={3}>
-            <Sheet
-              sx={{
-                display: "flex",
-              }}
-            >
-              <NumberStat
-                color="danger"
-                title="Total Bad Users"
-                value={1}
-                description="A total count for all known instances."
-              />
-            </Sheet>
-          </Grid>
-          <Grid xs={12} md={6} xl={4}>
-            <Sheet
-              sx={{
-                display: "flex",
-              }}
-            >
-              <NumberStat
-                color="primary"
-                title="Total Comments"
-                value={1}
-                description="A total comment count for all known instances."
-              />
-            </Sheet>
-          </Grid>
-          <Grid xs={12} md={6} xl={4}>
-            <Sheet
-              sx={{
-                display: "flex",
-              }}
-            >
-              <NumberStat
-                color="info"
-                title="Total Posts"
-                value={1}
-                description="A total post count for all known instances."
-              />
-            </Sheet>
-          </Grid>
-          <Grid xs={12} md={6} xl={4}>
-            <Sheet
-              sx={{
-                display: "flex",
-              }}
-            >
-              <NumberStat
-                color="success"
-                title="Total Communities"
-                value={1}
-                description="A total count for all known instances."
-              />
-            </Sheet>
-          </Grid> */}
         </Grid>
       </Sheet>
+      {/* code display json raw */}
+      {/* <Sheet
+        sx={{
+          borderRadius: 8,
+          p: 1,
+        }}
+      >
+        <pre>{JSON.stringify(siteResponse, null, 2)}</pre>
+      </Sheet> */}
     </Box>
   );
 }
