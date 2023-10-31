@@ -130,7 +130,7 @@ export function PersonMetaLine({ creator, by = false, sx }) {
   const actorInstanceBaseUrl = creator.actor_id.split("/")[2];
   const fediverseUserLink = creator.actor_id;
 
-  console.log("creator", actorInstanceBaseUrl, fediverseUserLink);
+  // console.log("creator", actorInstanceBaseUrl, fediverseUserLink);
 
   let localUserLink = `https://${baseUrl}/u/${creator.name}`;
   if (baseUrl != actorInstanceBaseUrl) localUserLink = `${localUserLink}@${actorInstanceBaseUrl}`;
