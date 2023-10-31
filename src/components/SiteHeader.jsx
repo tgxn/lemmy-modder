@@ -33,7 +33,7 @@ import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
-
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import SwitchAccountIcon from "@mui/icons-material/SwitchAccount";
 
 import GitHubIcon from "@mui/icons-material/GitHub";
@@ -82,21 +82,51 @@ function SiteMenu() {
   // if (userRole == "admin") userTooltip = "You are a site admin";
   // if (userRole == "mod") userTooltip = "You are a community moderator";
 
-  const totalReports =
-    reportCountsData?.post_reports +
-    reportCountsData?.comment_reports +
-    reportCountsData?.private_message_reports;
+  let totalReports = reportCountsData?.post_reports + reportCountsData?.comment_reports;
+  if (userRole == "admin") totalReports += reportCountsData?.private_message_reports;
 
   return (
     <>
+      <BasicInfoTooltip title="Dashboard" placement="bottom" variant="soft">
+        <Button
+          size="sm"
+          color={location.pathname == "/" ? "primary" : "neutral"}
+          variant={location.pathname == "/" ? "solid" : "soft"}
+          onClick={() => {
+            navigate("/");
+          }}
+          // endDecorator={
+          //   siteData && (
+          //     <Chip
+          //       startDecorator={regAppCountIsLoading ? <CircularProgress size="sm" /> : <HowToRegIcon />}
+          //       color={siteData && regCountAppData?.registration_applications > 0 ? "danger" : "success"}
+          //       sx={{
+          //         borderRadius: 6,
+          //       }}
+          //     >
+          //       {regCountAppData?.registration_applications !== undefined
+          //         ? regCountAppData.registration_applications
+          //         : "0"}
+          //     </Chip>
+          //   )
+          // }
+          sx={{
+            mr: 1,
+            borderRadius: 4,
+          }}
+        >
+          <DashboardIcon />
+        </Button>
+      </BasicInfoTooltip>
+
       {userRole != "user" && (
         <BasicInfoTooltip title="Reports" placement="bottom" variant="soft">
           <Button
             size="sm"
-            color={location.pathname == "/" ? "primary" : "neutral"}
-            variant={location.pathname == "/" ? "soft" : "soft"}
+            color={location.pathname == "/reports" ? "primary" : "neutral"}
+            variant={location.pathname == "/reports" ? "soft" : "soft"}
             onClick={() => {
-              navigate("/");
+              navigate("/reports");
             }}
             endDecorator={
               siteData && (
@@ -187,7 +217,7 @@ function SiteMenu() {
         </BasicInfoTooltip>
       )}
 
-      <BasicInfoTooltip title="Cite Site Mod Actions" placement="bottom" variant="soft">
+      <BasicInfoTooltip title="Site Mod Actions" placement="bottom" variant="soft">
         <Button
           size="sm"
           color={location.pathname == "/actions" ? "primary" : "neutral"}

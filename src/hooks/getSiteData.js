@@ -35,6 +35,7 @@ export function getSiteData() {
     baseUrl: currentUser?.base,
 
     isLoading: currentUser.site ? true : false,
+    siteResponse: currentUser.site,
     siteData: currentUser.site.site_view.site,
 
     userRole: userRole,
