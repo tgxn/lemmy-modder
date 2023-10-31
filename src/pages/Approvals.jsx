@@ -7,6 +7,7 @@ import Button from "@mui/joy/Button";
 import Sheet from "@mui/joy/Sheet";
 import CircularProgress from "@mui/joy/CircularProgress";
 import Checkbox from "@mui/joy/Checkbox";
+import Divider from "@mui/joy/Divider";
 
 import { useInView } from "react-intersection-observer";
 
@@ -75,6 +76,7 @@ export default function Approvals() {
     return reportsList;
   }, [registrationsData, sortOldestFirst]);
 
+  // load the next page when the button is in view (if there is a next page)
   React.useEffect(() => {
     if (inView && registrationsHasNextPage) {
       registrationsFetchNextPage();
@@ -176,6 +178,7 @@ export default function Approvals() {
 
       <ApprovalsList approvalsList={fullData} />
 
+      {fullData.length > 0 && !registrationsHasNextPage && <Divider variant="plain">no more items</Divider>}
       {registrationsHasNextPage && (
         <Box
           ref={ref}
@@ -193,19 +196,6 @@ export default function Approvals() {
           >
             Load More
           </Button>
-        </Box>
-      )}
-
-      {fullData > 0 && !registrationsHasNextPage && (
-        <Box
-          ref={ref}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            mt: 2,
-          }}
-        >
-          No more items!
         </Box>
       )}
     </Box>

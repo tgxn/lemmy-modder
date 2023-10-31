@@ -23,26 +23,11 @@ export const ApproveButton = ({ registration, ...props }) => {
   const [pageOffset, setPageOffset] = React.useState(0);
 
   // action to call lemmy approve/reject
-  const { data, callAction, isSuccess, isLoading, isPending, error } = useLemmyHttpAction(
+  const { data, callAction, isSuccess, isLoading, error } = useLemmyHttpAction(
     "approveRegistrationApplication",
   );
 
   const hideReadApprovals = useSelector(selectHideReadApprovals);
-
-  const [isConfirming, setIsConfirming] = React.useState(false);
-
-  // close confirm after 5 seconds of no activity
-  // React.useEffect(() => {
-  //   if (isConfirming) {
-  //     const timeout = setTimeout(() => {
-  //       setIsConfirming(false);
-  //     }, 5000);
-
-  //     return () => {
-  //       clearTimeout(timeout);
-  //     };
-  //   }
-  // }, [isConfirming]);
 
   // update page data when the action was successful
   React.useEffect(() => {
@@ -91,8 +76,6 @@ export const ApproveButton = ({ registration, ...props }) => {
       queryClient.invalidateQueries({
         queryKey: ["lemmyHttp", localPerson.id, "getUnreadRegistrationApplicationCount"],
       });
-
-      setIsConfirming(false);
 
       toast.success(`${registration.creator.name}: ${"approved"}!`, {
         duration: 30000,
@@ -143,34 +126,9 @@ export const ApproveButton = ({ registration, ...props }) => {
             approve: true,
           });
         }}
-        loading={isPending}
+        loading={isLoading}
       />
-      {/* 
-      <BaseActionButton
-        text={isConfirming ? "Confirm?" : "Approve"}
-        endDecorator={<ThumbUpIcon />}
-        size="md"
-        variant={"solid"}
-        tooltip={isConfirming ? `Really Approve?` : `Approve User`}
-        color={isConfirming ? "warning" : "success"}
-        onMouseLeave={() => setIsConfirming(false)}
-        onClick={() => {
-          // if they are clicking in the confirming state, do the action
-          if (isConfirming) {
-            callAction({
-              id: registration.registration_application.id,
-              approve: true,
-            });
-          } else {
-            setIsConfirming(true);
-          }
-        }}
-        sx={{
-          ml: 1, // this is needed for the thumb icon
-        }}
-        loading={isPending}
-        {...props}
-      /> */}
+
       {error && (
         <Typography
           component="div"

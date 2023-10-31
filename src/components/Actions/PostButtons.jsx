@@ -9,13 +9,7 @@ import DoneAllIcon from "@mui/icons-material/DoneAll";
 
 import { useLemmyHttpAction } from "../../hooks/useLemmyHttp.js";
 
-import {
-  BaseActionButton,
-  InputElement,
-  CheckboxElement,
-  ExpiryLengthElement,
-  ConfirmDialog,
-} from "./BaseElements.jsx";
+import { BaseActionButton, ActionConfirmButton, InputElement, ConfirmDialog } from "./BaseElements.jsx";
 import { getSiteData } from "../../hooks/getSiteData";
 import { selectShowResolved } from "../../reducers/configReducer.js";
 
@@ -26,30 +20,13 @@ export const ResolvePostReportButton = ({ report, ...props }) => {
   const showResolved = useSelector(selectShowResolved);
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
-  const { data, callAction, isSuccess, isLoading, error } = useLemmyHttpAction("resolvePostReport");
-
-  const [isConfirming, setIsConfirming] = React.useState(false);
-
-  // close confirm after 5 seconds of no activity
-  React.useEffect(() => {
-    if (isConfirming && !isLoading) {
-      const timeout = setTimeout(() => {
-        setIsConfirming(false);
-      }, 5000);
-
-      return () => {
-        clearTimeout(timeout);
-      };
-    }
-  }, [isConfirming, isLoading]);
+  const { data, callAction, isSuccess, isLoading } = useLemmyHttpAction("resolvePostReport");
 
   React.useEffect(() => {
     if (isSuccess) {
       console.log("useLemmyHttpAction", "onSuccess", data);
 
-      if (showResolved) {
-        queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
-      } else {
+      if (!showResolved) {
         queryClient.setQueryData(
           ["lemmyHttp", localPerson.id, "listPostReports", ["unresolved_only", true]],
           (old) => {
@@ -74,7 +51,13 @@ export const ResolvePostReportButton = ({ report, ...props }) => {
           },
         );
       }
-      setIsConfirming(false);
+
+      // invalidate report count
+      queryClient.invalidateQueries({
+        queryKey: ["lemmyHttp", localPerson.id, "getReportCount"],
+      });
+
+      queryClient.invalidateQueries({ queryKey: ["lemmyHttp", localPerson.id, "listPostReports"] });
     }
   }, [data]);
 
@@ -88,25 +71,19 @@ export const ResolvePostReportButton = ({ report, ...props }) => {
   }
 
   return (
-    <BaseActionButton
-      text={isConfirming ? "Confirm?" : actionText}
-      tooltip={isConfirming ? `Really ${actionText}?` : `${actionText} Report`}
-      color={isConfirming ? "warning" : actionColor}
-      endDecorator={<DoneAllIcon />}
-      loading={isLoading}
-      size="md"
+    <ActionConfirmButton
       variant={actionVariant}
-      onClick={() => {
-        if (isConfirming) {
-          callAction({ report_id: report.post_report.id, resolved: !report.post_report.resolved });
-        } else {
-          setIsConfirming(true);
-        }
+      baseText={actionText}
+      confirmText="Confirm?"
+      baseTooltip={`${actionText} Report`}
+      confirmTooltip={`Really ${actionText}?`}
+      baseColor={actionColor}
+      confirmColor="warning"
+      endDecorator={<DoneAllIcon />}
+      onConfirm={() => {
+        callAction({ report_id: report.post_report.id, resolved: !report.post_report.resolved });
       }}
-      sx={{
-        ml: 1, // this is needed for the thumb icon
-      }}
-      {...props}
+      loading={isLoading}
     />
   );
 };
