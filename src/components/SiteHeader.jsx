@@ -90,7 +90,7 @@ function SiteMenu() {
       <BasicInfoTooltip title="Dashboard" placement="bottom" variant="soft">
         <Button
           size="sm"
-          color={location.pathname == "/" ? "primary" : "primary"}
+          color={location.pathname == "/" ? "primary" : "neutral"}
           variant={location.pathname == "/" ? "solid" : "soft"}
           onClick={() => {
             navigate("/");
