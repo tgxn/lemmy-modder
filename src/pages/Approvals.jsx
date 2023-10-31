@@ -196,7 +196,7 @@ export default function Approvals() {
         </Box>
       )}
 
-      {!registrationsHasNextPage && (
+      {fullData > 0 && !registrationsHasNextPage && (
         <Box
           ref={ref}
           sx={{
