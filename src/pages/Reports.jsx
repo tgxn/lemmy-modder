@@ -4,6 +4,7 @@ import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
 import Sheet from "@mui/joy/Sheet";
 import CircularProgress from "@mui/joy/CircularProgress";
+import Divider from "@mui/joy/Divider";
 
 import SoapIcon from "@mui/icons-material/Soap";
 
@@ -142,6 +143,7 @@ export default function Reports() {
 
       <ReportsList reportsList={reportsList} />
 
+      {reportsList.length > 0 && !hasNextPageReports && <Divider variant="plain">no more items</Divider>}
       {hasNextPageReports && (
         <Box
           ref={ref}
