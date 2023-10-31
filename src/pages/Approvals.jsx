@@ -7,6 +7,7 @@ import Button from "@mui/joy/Button";
 import Sheet from "@mui/joy/Sheet";
 import CircularProgress from "@mui/joy/CircularProgress";
 import Checkbox from "@mui/joy/Checkbox";
+import Divider from "@mui/joy/Divider";
 
 import { useInView } from "react-intersection-observer";
 
@@ -59,22 +60,23 @@ export default function Approvals() {
       reportsList = reportsList.concat(pageEntries);
     }
 
-    // sort by date
-    reportsList = reportsList.sort((a, b) => {
-      const aEpoch = new Date(a.registration_application.published.replace(/(\.\d{6})/, "Z")).getTime();
-      const bEpoch = new Date(b.registration_application.published.replace(/(\.\d{6})/, "Z")).getTime();
+    // TODO sort by date - needs upstream support to work really...
+    // reportsList = reportsList.sort((a, b) => {
+    //   const aEpoch = new Date(a.registration_application.published.replace(/(\.\d{6})/, "Z")).getTime();
+    //   const bEpoch = new Date(b.registration_application.published.replace(/(\.\d{6})/, "Z")).getTime();
 
-      if (sortOldestFirst) {
-        return aEpoch - bEpoch;
-      } else {
-        return bEpoch - aEpoch;
-      }
-    });
-    console.log("sortOldestFirst", sortOldestFirst);
+    //   if (sortOldestFirst) {
+    //     return aEpoch - bEpoch;
+    //   } else {
+    //     return bEpoch - aEpoch;
+    //   }
+    // });
+    // console.log("sortOldestFirst", sortOldestFirst);
 
     return reportsList;
   }, [registrationsData, sortOldestFirst]);
 
+  // load the next page when the button is in view (if there is a next page)
   React.useEffect(() => {
     if (inView && registrationsHasNextPage) {
       registrationsFetchNextPage();
@@ -176,6 +178,7 @@ export default function Approvals() {
 
       <ApprovalsList approvalsList={fullData} />
 
+      {fullData.length > 0 && !registrationsHasNextPage && <Divider variant="plain">no more items</Divider>}
       {registrationsHasNextPage && (
         <Box
           ref={ref}

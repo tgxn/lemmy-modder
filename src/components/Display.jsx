@@ -24,7 +24,6 @@ export function MomentAdjustedTimeAgo({ children, ...props }) {
     children = children.replace(/(\.\d{6})/, "Z");
 
     children = new Date(children).getTime();
-    console.log("time", children);
   }
 
   return <Moment {...props}>{children}</Moment>;

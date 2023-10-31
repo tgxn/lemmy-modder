@@ -32,7 +32,14 @@ export const BaseActionButton = ({
   // const { isFetching } = useLemmyReports();
 
   return (
-    <BasicInfoTooltip title={tooltip} color={color} variant="plain" placement="top" arrow disableInteractive>
+    <BasicInfoTooltip
+      title={tooltip}
+      color={color}
+      variant="outlined" // tooltip variant is static
+      placement="bottom"
+      arrow
+      disableInteractive
+    >
       <Button
         variant={variant}
         color={color}
@@ -50,6 +57,57 @@ export const BaseActionButton = ({
         {text}
       </Button>
     </BasicInfoTooltip>
+  );
+};
+
+export const ActionConfirmButton = ({
+  size = "md",
+  variant = "outlined",
+
+  baseText,
+  confirmText,
+
+  baseTooltip,
+  confirmTooltip,
+
+  baseColor = "neutral",
+  confirmColor = "danger",
+
+  // confirmVariant = "solid",
+
+  loading = false,
+  onConfirm,
+  ...props
+}) => {
+  const [isConfirming, setIsConfirming] = React.useState(false);
+
+  let finalColor = !isConfirming ? baseColor : confirmColor;
+  if (loading) {
+    finalColor = "neutral";
+  }
+
+  return (
+    <BaseActionButton
+      size={size}
+      variant={variant}
+      color={finalColor}
+      text={!isConfirming ? baseText : confirmText}
+      tooltip={!isConfirming ? baseTooltip : confirmTooltip}
+      onMouseLeave={() => setIsConfirming(false)}
+      onClick={() => {
+        if (isConfirming) {
+          onConfirm();
+          setIsConfirming(false);
+        } else {
+          setIsConfirming(true);
+        }
+      }}
+      sx={{
+        ml: 1, // this is needed for the thumb icon
+      }}
+      loading={loading}
+      {...props}
+    />
   );
 };
 

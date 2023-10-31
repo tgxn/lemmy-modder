@@ -12,13 +12,15 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import { useLemmyHttpAction } from "../../hooks/useLemmyHttp.js";
 import { getSiteData } from "../../hooks/getSiteData";
 
-import { BaseActionButton, InputElement, ConfirmDialog } from "./BaseElements.jsx";
+import { BaseActionButton, ActionConfirmButton, InputElement, ConfirmDialog } from "./BaseElements.jsx";
 import { selectHideReadApprovals } from "../../reducers/configReducer.js";
 
 export const ApproveButton = ({ registration, ...props }) => {
   const queryClient = useQueryClient();
 
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+
+  const [pageOffset, setPageOffset] = React.useState(0);
 
   // action to call lemmy approve/reject
   const { data, callAction, isSuccess, isLoading, error } = useLemmyHttpAction(
@@ -27,49 +29,36 @@ export const ApproveButton = ({ registration, ...props }) => {
 
   const hideReadApprovals = useSelector(selectHideReadApprovals);
 
-  const [isConfirming, setIsConfirming] = React.useState(false);
-
-  // close confirm after 5 seconds of no activity
-  React.useEffect(() => {
-    if (isConfirming) {
-      const timeout = setTimeout(() => {
-        setIsConfirming(false);
-      }, 5000);
-
-      return () => {
-        clearTimeout(timeout);
-      };
-    }
-  }, [isConfirming]);
-
   // update page data when the action was successful
   React.useEffect(() => {
     if (isSuccess) {
       console.log("useLemmyHttpAction", "onSuccess", data);
 
       // if we are not hiding read approvals, just invalidate the whole list
-      if (!hideReadApprovals) {
-        queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
-      } else {
+      if (hideReadApprovals) {
         queryClient.setQueryData(
           ["lemmyHttp", localPerson.id, "listRegistrationApplications", ["unread_only", true]],
           (old) => {
             // remove it from the array
             const newPages = !old
               ? null
-              : old.pages.map((page) => {
-                  const newData = page.data.filter((registrationItem) => {
-                    return (
-                      registrationItem.registration_application.id !==
-                      registration.registration_application.id
-                    );
-                  });
+              : old.pages
+                  .map((page) => {
+                    // filter the result from all pages
+                    const newData = page.data.filter((registrationItem) => {
+                      return (
+                        registrationItem.registration_application.id !==
+                        registration.registration_application.id
+                      );
+                    });
+                    console.log("newData", page, newData);
 
-                  return {
-                    ...page,
-                    data: newData,
-                  };
-                });
+                    return {
+                      ...page,
+                      data: newData,
+                    };
+                  })
+                  .filter((page) => page !== null);
 
             return {
               ...old,
@@ -79,12 +68,14 @@ export const ApproveButton = ({ registration, ...props }) => {
         );
       }
 
+      queryClient.invalidateQueries({
+        queryKey: ["lemmyHttp", localPerson.id, "listRegistrationApplications"],
+      });
+
       // invalidate application count
       queryClient.invalidateQueries({
         queryKey: ["lemmyHttp", localPerson.id, "getUnreadRegistrationApplicationCount"],
       });
-
-      setIsConfirming(false);
 
       toast.success(`${registration.creator.name}: ${"approved"}!`, {
         duration: 30000,
@@ -120,30 +111,24 @@ export const ApproveButton = ({ registration, ...props }) => {
 
   return (
     <>
-      <BaseActionButton
-        text={isConfirming ? "Confirm?" : "Approve"}
+      <ActionConfirmButton
+        variant="solid"
+        baseText="Approve"
+        confirmText="Confirm?"
+        baseTooltip="Approve User"
+        confirmTooltip="Really Approve?"
+        baseColor="success"
+        confirmColor="warning"
         endDecorator={<ThumbUpIcon />}
-        size="md"
-        variant={"solid"}
-        tooltip={isConfirming ? `Really Approve?` : `Approve User`}
-        color={isConfirming ? "warning" : "success"}
-        onClick={() => {
-          // if they are clicking in the confirming state, do the action
-          if (isConfirming) {
-            callAction({
-              id: registration.registration_application.id,
-              approve: true,
-            });
-          } else {
-            setIsConfirming(true);
-          }
-        }}
-        sx={{
-          ml: 1, // this is needed for the thumb icon
+        onConfirm={() => {
+          callAction({
+            id: registration.registration_application.id,
+            approve: true,
+          });
         }}
         loading={isLoading}
-        {...props}
       />
+
       {error && (
         <Typography
           component="div"

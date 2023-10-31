@@ -260,10 +260,7 @@ function UserMenu() {
     userIcon = <SupervisedUserCircleIcon />;
   }
 
-  // console.log("localPerson", localPerson);
-
   const parsedActor = parseActorId(localPerson.actor_id);
-  // console.log("parseActorId", parsedActor);
 
   return (
     <>
@@ -308,6 +305,7 @@ function UserMenu() {
             {users.map((user, index) => {
               return (
                 <MenuItem
+                  key={index}
                   sx={{
                     color: "text.body",
                   }}
@@ -315,7 +313,7 @@ function UserMenu() {
                   onClick={async () => {
                     handleClose();
 
-                    queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
+                    queryClient.invalidateQueries({ queryKey: ["lemmyHttp", localPerson.id] });
                     dispatch(logoutCurrent());
 
                     setIsLoading(true);
