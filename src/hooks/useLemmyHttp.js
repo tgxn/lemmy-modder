@@ -66,9 +66,9 @@ export function useLemmyHttpAction(callLemmyMethod) {
 
   return {
     callAction,
-    isLoading: mutation.isLoading,
+    status: mutation.status,
+    isLoading: mutation.isPending,
     isSuccess: mutation.isSuccess,
-    isPending: mutation.isPending,
     error: mutation.error,
     data: mutation.data,
   };
