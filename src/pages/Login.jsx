@@ -2,8 +2,6 @@ import React from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import jwt_decode from "jwt-decode";
-
 import Card from "@mui/joy/Card";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
@@ -24,7 +22,14 @@ import { LemmyHttp } from "lemmy-js-client";
 
 import { useLemmyUserDataAction } from "../hooks/useLemmyHttp";
 
-import { addUser, setAccountIsLoading, setUsers, setCurrentUser, selectAccountIsLoading, selectUsers } from "../reducers/accountReducer";
+import {
+  addUser,
+  setAccountIsLoading,
+  setUsers,
+  setCurrentUser,
+  selectAccountIsLoading,
+  selectUsers,
+} from "../reducers/accountReducer";
 
 import { BasicInfoTooltip } from "../components/Tooltip.jsx";
 import { selectIsInElectron } from "../reducers/configReducer";
