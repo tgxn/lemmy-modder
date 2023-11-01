@@ -3,13 +3,11 @@ import React from "react";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 import Alert from "@mui/joy/Alert";
+import Divider from "@mui/joy/Divider";
 
-import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ForumIcon from "@mui/icons-material/Forum";
-import DraftsIcon from "@mui/icons-material/Drafts";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 
 import { SquareChip } from "../Display.jsx";
@@ -158,6 +156,8 @@ export default function CommentListItem({ report }) {
           {/* @ TODO SHOW FOR CREATOR? */}
           {/* <DeletePostButton report={report} /> */}
           <RemoveCommentButton report={report} />
+
+          <Divider orientation="vertical" flexItem />
 
           <BanUserCommunityButton person={report.comment_creator} community={report.community} />
           <BanUserSiteButton person={report.comment_creator} />

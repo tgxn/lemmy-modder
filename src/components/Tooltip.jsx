@@ -32,7 +32,10 @@ export const UserTooltip = ({ user, ...props }) => {
     >
       <Box sx={{ display: "flex", flexDirection: "column", maxWidth: 320, justifyContent: "center", p: 1 }}>
         <Typography fontSize="lg" gutterBottom>
-          @{user.name} {user.display_name && ` ${user.display_name}`}
+          <Typography component="span">
+            {user.name}@{user.actor_id.split("/")[2]}
+          </Typography>{" "}
+          {user.display_name && ` ${user.display_name}`}
         </Typography>
 
         {user.published && (

@@ -3,6 +3,7 @@ import React from "react";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 import Alert from "@mui/joy/Alert";
+import Divider from "@mui/joy/Divider";
 
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import BlockIcon from "@mui/icons-material/Block";
@@ -18,7 +19,8 @@ import {
   FediverseChipLink,
   UpvoteDownvoteChip,
 } from "../Display.jsx";
-import Image from "../Image.jsx";
+
+import PostThumb from "../Content/PostThumb.jsx";
 
 import { ResolvePostReportButton, RemovePostButton, PurgePostButton } from "../Actions/PostButtons.jsx";
 
@@ -136,8 +138,8 @@ const PostContentDetail = ({ report }) => {
 
       {/* Post Content */}
       {report.post.body && (
-        <Alert startDecorator={<FormatQuoteIcon />} variant="outlined" color="neutral" sx={{ mt: 1 }}>
-          {report.post.body}
+        <Alert startDecorator={<FormatQuoteIcon />} variant="outlined" color="neutral" sx={{ mt: 1, p: 1 }}>
+          <Box sx={{ maxHeight: "150px", overflowX: "auto" }}>{report.post.body}</Box>
         </Alert>
       )}
     </Box>
@@ -175,23 +177,16 @@ export default function PostListItem({ report }) {
           >
             <PostContentDetail report={report} />
           </Box>
+
           {/* Show External Link or Image for URLs */}
           {report.post.url && (
             <Box
               sx={{
                 flexGrow: 0,
                 flexShrink: 0,
-                flexBasis: "auto",
-                // width: "175px",
-                // height: "200px",
-                pr: 2,
-                // flexAlign: "center",
-                justifyContent: "center",
-                display: "flex",
-                // flexDirection: "column",
               }}
             >
-              <Image imageSrc={report.post.url} />
+              <PostThumb post={report.post} />
             </Box>
           )}
         </Box>
@@ -222,6 +217,8 @@ export default function PostListItem({ report }) {
 
             {/* @TODO Maybe only show purge is post is deleted?? */}
             <PurgePostButton report={report} />
+
+            <Divider orientation="vertical" flexItem />
 
             <BanUserCommunityButton person={report.post_creator} community={report.community} />
             <BanUserSiteButton person={report.post_creator} />

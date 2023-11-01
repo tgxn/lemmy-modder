@@ -13,18 +13,12 @@ import Chip from "@mui/joy/Chip";
 import Sheet from "@mui/joy/Sheet";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
-import Badge from "@mui/joy/Badge";
-import ListItemDecorator from "@mui/joy/ListItemDecorator";
-import Tooltip from "@mui/joy/Tooltip";
 import Menu from "@mui/joy/Menu";
 import MenuItem from "@mui/joy/MenuItem";
 import IconButton from "@mui/joy/IconButton";
 import CircularProgress from "@mui/joy/CircularProgress";
 
 import CachedIcon from "@mui/icons-material/Cached";
-import StickyNote2Icon from "@mui/icons-material/StickyNote2";
-import ForumIcon from "@mui/icons-material/Forum";
-import DraftsIcon from "@mui/icons-material/Drafts";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
