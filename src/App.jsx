@@ -17,6 +17,7 @@ import { Toaster, toast } from "sonner";
 
 import SiteHeader from "./components/SiteHeader";
 
+import Dashboard from "./pages/Dashboard";
 import Actions from "./pages/Actions";
 import Approvals from "./pages/Approvals";
 import Reports from "./pages/Reports";
@@ -99,6 +100,27 @@ function PageRouter() {
           <Routes>
             <Route
               path="/"
+              element={
+                <Box
+                  sx={{
+                    overflow: "auto",
+                    height: "calc(100% - 50px)",
+                    width: "100%",
+                  }}
+                >
+                  <Container
+                    maxWidth={"lg"}
+                    sx={{
+                      py: 2,
+                    }}
+                  >
+                    <Dashboard />
+                  </Container>
+                </Box>
+              }
+            />
+            <Route
+              path="/reports"
               element={
                 <Box
                   sx={{
