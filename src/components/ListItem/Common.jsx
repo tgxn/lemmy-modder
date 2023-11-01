@@ -159,6 +159,7 @@ export function PersonMetaLine({ creator, by = false, sx }) {
         display: "flex",
         flexDirection: "row",
         gap: 1,
+        py: 0.5,
         ...sx,
       }}
     >
