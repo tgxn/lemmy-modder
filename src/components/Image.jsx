@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
+import Box from "@mui/joy/Box";
 import AspectRatio from "@mui/joy/AspectRatio";
 import Typography from "@mui/joy/Typography";
 
@@ -41,16 +42,22 @@ export default function LazyImage({ width = 200, imageSrc, imageAlt = "" }) {
   const isImage = imageSrc.match(/\.(jpeg|jpg|gif|png)$/) != null;
 
   return (
-    <AspectRatio sx={{ width: width }} ratio="1/1">
-      <SanitizedLink underline={"none"} href={imageSrc} target="_new">
-        {isImage ? (
-          <RenderImage imageSrc={imageSrc} imageAlt={imageAlt} />
-        ) : (
-          <Typography component="div">
-            <LaunchIcon color="neutral" />
-          </Typography>
-        )}
-      </SanitizedLink>
-    </AspectRatio>
+    <Box
+      sx={{
+        pl: 2,
+      }}
+    >
+      <AspectRatio sx={{ width: width }} ratio="1/1">
+        <SanitizedLink underline={"none"} href={imageSrc} target="_new">
+          {isImage ? (
+            <RenderImage imageSrc={imageSrc} imageAlt={imageAlt} />
+          ) : (
+            <Typography component="div">
+              <LaunchIcon color="neutral" />
+            </Typography>
+          )}
+        </SanitizedLink>
+      </AspectRatio>
+    </Box>
   );
 }

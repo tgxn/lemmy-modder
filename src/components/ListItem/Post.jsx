@@ -137,8 +137,8 @@ const PostContentDetail = ({ report }) => {
 
       {/* Post Content */}
       {report.post.body && (
-        <Alert startDecorator={<FormatQuoteIcon />} variant="outlined" color="neutral" sx={{ mt: 1 }}>
-          {report.post.body}
+        <Alert startDecorator={<FormatQuoteIcon />} variant="outlined" color="neutral" sx={{ mt: 1, p: 1 }}>
+          <Box sx={{ maxHeight: "150px", overflowX: "auto" }}>{report.post.body}</Box>
         </Alert>
       )}
     </Box>
@@ -178,24 +178,7 @@ export default function PostListItem({ report }) {
           </Box>
 
           {/* Show External Link or Image for URLs */}
-          {report.post.url && (
-            <Box
-              sx={{
-                // flexGrow: 0,
-                // flexShrink: 0,
-                // flexBasis: "auto",
-                // width: "175px",
-                // height: "500px",
-                pl: 2,
-                // flexAlign: "center",
-                // justifyContent: "center",
-                // display: "flex",
-                // flexDirection: "column",
-              }}
-            >
-              <Image imageSrc={report.post.url} />
-            </Box>
-          )}
+          {report.post.url && <Image imageSrc={report.post.url} />}
         </Box>
 
         <ReportDetails report={report.post_report} creator={report.creator} />
