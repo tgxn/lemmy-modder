@@ -1,24 +1,12 @@
 import React from "react";
 
-import { useSelector } from "react-redux";
-import { useInView } from "react-intersection-observer";
-
 import Box from "@mui/joy/Box";
 import Grid from "@mui/joy/Grid";
 import Sheet from "@mui/joy/Sheet";
-import CircularProgress from "@mui/joy/CircularProgress";
-import AccordionGroup from "@mui/joy/AccordionGroup";
-import { accordionSummaryClasses } from "@mui/joy/AccordionSummary";
-import Checkbox from "@mui/joy/Checkbox";
 
-import { FilterModLogType } from "../components/Filters";
+import Masonry from "@mui/lab/Masonry";
 
-import useLVQueryCache from "../hooks/useLVQueryCache";
 import { getSiteData } from "../hooks/getSiteData";
-
-import { parseActorId } from "../utils";
-
-import ModLogAccordians from "../components/Activity/ModLogAccordians";
 
 import {
   ReportsStat,
@@ -29,7 +17,6 @@ import {
   GrowthCard,
 } from "../components/Dashboard/StatCards";
 
-import { useLemmyHttp } from "../hooks/useLemmyHttp";
 export default function Dashboard() {
   const { baseUrl, siteResponse, siteData, localPerson, userRole } = getSiteData();
 
@@ -38,21 +25,16 @@ export default function Dashboard() {
       sx={{
         display: "flex",
         flexDirection: "column",
-        gap: 2,
+        gap: 0,
       }}
     >
       <Sheet
         sx={{
-          // // display: "flex",
-          // flexDirection: "row",
-          // alignItems: "center",
           borderRadius: 8,
           p: 1,
-          // gap: 2,
-          // mb: 0,
         }}
       >
-        <Grid container rowSpacing={2} columnSpacing={2}>
+        <Masonry sx={{ m: 0 }} columns={{ xs: 1, sm: 2 }} spacing={1}>
           {userRole != "user" && (
             <Grid xs={12} md={6}>
               <ReportsStat />
@@ -75,7 +57,7 @@ export default function Dashboard() {
           <Grid xs={12} md={6}>
             <GrowthCard />
           </Grid>
-        </Grid>
+        </Masonry>
       </Sheet>
       {/* code display json raw */}
       {/* <Sheet
