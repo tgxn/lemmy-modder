@@ -27,18 +27,21 @@ function RenderImage({ imageSrc, imageAlt = "" }) {
       height={"100%"}
       width={"100%"}
       loading="lazy"
-      style={{ visible: imageLoaded ? "visible" : "hidden" }}
+      style={{
+        visible: imageLoaded ? "visible" : "hidden",
+        // fit image to container
+      }}
       onLoad={() => setImageLoaded(true)}
       onError={() => setImageError(true)}
     />
   );
 }
 
-export default function LazyImage({ width = 175, imageSrc, imageAlt = "" }) {
+export default function LazyImage({ width = 200, imageSrc, imageAlt = "" }) {
   const isImage = imageSrc.match(/\.(jpeg|jpg|gif|png)$/) != null;
 
   return (
-    <AspectRatio sx={{ width: width }}>
+    <AspectRatio sx={{ width: width }} ratio="1/1">
       <SanitizedLink underline={"none"} href={imageSrc} target="_new">
         {isImage ? (
           <RenderImage imageSrc={imageSrc} imageAlt={imageAlt} />

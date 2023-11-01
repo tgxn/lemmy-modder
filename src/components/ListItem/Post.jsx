@@ -3,6 +3,7 @@ import React from "react";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 import Alert from "@mui/joy/Alert";
+import Divider from "@mui/joy/Divider";
 
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import BlockIcon from "@mui/icons-material/Block";
@@ -175,19 +176,20 @@ export default function PostListItem({ report }) {
           >
             <PostContentDetail report={report} />
           </Box>
+
           {/* Show External Link or Image for URLs */}
           {report.post.url && (
             <Box
               sx={{
-                flexGrow: 0,
-                flexShrink: 0,
-                flexBasis: "auto",
+                // flexGrow: 0,
+                // flexShrink: 0,
+                // flexBasis: "auto",
                 // width: "175px",
-                // height: "200px",
-                pr: 2,
+                // height: "500px",
+                pl: 2,
                 // flexAlign: "center",
-                justifyContent: "center",
-                display: "flex",
+                // justifyContent: "center",
+                // display: "flex",
                 // flexDirection: "column",
               }}
             >
@@ -222,6 +224,8 @@ export default function PostListItem({ report }) {
 
             {/* @TODO Maybe only show purge is post is deleted?? */}
             <PurgePostButton report={report} />
+
+            <Divider orientation="vertical" flexItem />
 
             <BanUserCommunityButton person={report.post_creator} community={report.community} />
             <BanUserSiteButton person={report.post_creator} />

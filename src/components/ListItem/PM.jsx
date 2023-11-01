@@ -3,6 +3,7 @@ import React from "react";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 import Alert from "@mui/joy/Alert";
+import Divider from "@mui/joy/Divider";
 
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";

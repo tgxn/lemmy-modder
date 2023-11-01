@@ -2,6 +2,8 @@ import React from "react";
 
 import Alert from "@mui/joy/Alert";
 import Card from "@mui/joy/Card";
+
+import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 import Badge from "@mui/joy/Badge";
@@ -24,6 +26,22 @@ import { UserTooltip } from "../Tooltip.jsx";
 import { parseActorId } from "../../utils.js";
 
 import { getSiteData } from "../../hooks/getSiteData";
+
+export function UserAvatar({ source, ...props }) {
+  return (
+    <Avatar
+      component="span"
+      size="sm"
+      src={source}
+      sx={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+      {...props}
+    />
+  );
+}
 
 export function ReportListItem({ itemType, report, children }) {
   let itemColor;
@@ -130,7 +148,7 @@ export function PersonMetaLine({ creator, by = false, sx }) {
   const actorInstanceBaseUrl = creator.actor_id.split("/")[2];
   const fediverseUserLink = creator.actor_id;
 
-  // console.log("creator", actorInstanceBaseUrl, fediverseUserLink);
+  // console.log("creator", creator);
 
   let localUserLink = `https://${baseUrl}/u/${creator.name}`;
   if (baseUrl != actorInstanceBaseUrl) localUserLink = `${localUserLink}@${actorInstanceBaseUrl}`;
@@ -144,16 +162,20 @@ export function PersonMetaLine({ creator, by = false, sx }) {
         ...sx,
       }}
     >
-      <Typography
-        variant="body3"
-        component="p"
+      <Box
         sx={{
           fontSize: "14px",
           overflow: "hidden",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
         }}
       >
-        {by && "by "}
-        {creator.display_name && `${creator.display_name} `}
+        {by && <Typography sx={{ pr: 1 }}>by</Typography>}
+        <UserAvatar source={creator.avatar} />
+        {creator.display_name && (
+          <Typography sx={{ fontSize: "15px", px: 1 }}>{creator.display_name}</Typography>
+        )}
         <Tooltip
           placement="top-start"
           variant="outlined"
@@ -162,18 +184,16 @@ export function PersonMetaLine({ creator, by = false, sx }) {
           disableInteractive
         >
           <Link href={creator.actor_id} target="_blank" rel="noopener noreferrer" sx={{ pb: 0.7, pl: 1 }}>
-            <Typography component="span" sx={{ fontSize: "16px", mr: 0.25 }}>
+            <Typography component="span" sx={{ mr: 0.25 }}>
               {creator.name}
             </Typography>
-            <Typography component="span" sx={{ fontSize: "12px" }}>
-              @{creator.actor_id.split("/")[2]}
-            </Typography>
+            <Typography component="span">@{creator.actor_id.split("/")[2]}</Typography>
           </Link>
         </Tooltip>
-      </Typography>
+      </Box>
 
       {/* Post Author Meta */}
-      <Typography variant="h6" component="h2" sx={{ display: "flex", gap: 1 }}>
+      <Box sx={{ display: "flex", gap: 1 }}>
         {baseUrl != actorInstanceBaseUrl && <FediverseChipLink href={fediverseUserLink} size="sm" />}
 
         {creator.admin && (
@@ -199,7 +219,7 @@ export function PersonMetaLine({ creator, by = false, sx }) {
         {creator.deleted && (
           <SquareChip color={"danger"} tooltip="User is deleted" iconOnly={<DeleteIcon fontSize="small" />} />
         )}
-      </Typography>
+      </Box>
     </Box>
   );
 }
@@ -279,7 +299,7 @@ export function ReportDetails({ report, creator }) {
       variant={"soft"}
       color="warning"
       sx={{
-        mt: 2,
+        mt: 1,
         mb: 1,
         p: 2,
       }}
