@@ -62,7 +62,7 @@ const ContentError = React.memo(function ({ message = false, bgcolor = "#ff55551
   );
 });
 
-export const Image = React.memo(({ imageSrc, nsfw }) => {
+export const Image = React.memo(({ imageSrc, nsfw, onClick }) => {
   const { src, isLoading, error } = useImage({
     srcList: imageSrc,
     useSuspense: false,
@@ -82,7 +82,7 @@ export const Image = React.memo(({ imageSrc, nsfw }) => {
         width: "200px",
         cursor: "pointer",
       }}
-      onClick={() => setOpen(true)}
+      onClick={onClick}
     >
       {!imageSrc && <ContentError message={"No Banner"} bgcolor={"#ff55fc21"} />}
       {imageSrc && (
@@ -97,43 +97,13 @@ export const Image = React.memo(({ imageSrc, nsfw }) => {
             // alt={"Banner"}
             //scaling
             style={{
-              filter: nsfw ? "blur(8px)" : null,
+              filter: nsfw ? "blur(8px)" : null, // TODO this should use user setting
               // consdytr
               objectFit: "contain",
               objectPosition: "center center",
               // aligh
             }}
           />
-          {/* Image Popup Modal */}
-          <Modal
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              // "&:hover": {
-              //   backgroundcolor: "red",
-              // },
-            }}
-            open={open}
-            onClose={handleClose}
-            hideBackdrop
-            // closeAfterTransition
-            // BackdropComponent={Backdrop}
-            // BackdropProps={{
-            //   timeout: 500,
-            // }}
-            // disablePortal
-          >
-            {/* <Fade
-            in={open}
-            timeout={500}
-            sx={{
-              outline: "none",
-            }}
-          > */}
-            <img src={src} style={{ maxHeight: "90%", maxWidth: "90%" }} />
-            {/* </Fade> */}
-          </Modal>
         </React.Fragment>
       )}
     </Box>
