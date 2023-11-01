@@ -19,7 +19,8 @@ import {
   FediverseChipLink,
   UpvoteDownvoteChip,
 } from "../Display.jsx";
-import Image from "../Image.jsx";
+
+import PostThumb from "../Content/PostThumb.jsx";
 
 import { ResolvePostReportButton, RemovePostButton, PurgePostButton } from "../Actions/PostButtons.jsx";
 
@@ -178,7 +179,16 @@ export default function PostListItem({ report }) {
           </Box>
 
           {/* Show External Link or Image for URLs */}
-          {report.post.url && <Image imageSrc={report.post.url} />}
+          {report.post.url && (
+            <Box
+              sx={{
+                flexGrow: 0,
+                flexShrink: 0,
+              }}
+            >
+              <PostThumb post={report.post} />
+            </Box>
+          )}
         </Box>
 
         <ReportDetails report={report.post_report} creator={report.creator} />
