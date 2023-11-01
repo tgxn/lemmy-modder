@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { Routes, Route, Navigate } from "react-router-dom";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 
 import { useTheme } from "@mui/joy";
 
@@ -58,7 +58,7 @@ function PageRouter() {
         overflow: "hidden",
       }}
     >
-      <BrowserRouter>
+      <HashRouter>
         <SiteHeader height="50px" />
 
         <Global
@@ -184,7 +184,7 @@ function PageRouter() {
             />
           </Routes>
         </Box>
-      </BrowserRouter>
+      </HashRouter>
     </Container>
   );
 }
