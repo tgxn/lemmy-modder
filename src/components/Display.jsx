@@ -87,7 +87,7 @@ export const SanitizedLink = ({ children, href, ...props }) => {
 export const UpvoteDownvoteChip = ({ counts, ...props }) => {
   return (
     <SquareChip
-      color={"neutral"}
+      color={counts.score < 0 ? "danger" : counts.score == 0 ? "neutral" : "success"}
       tooltip={
         <>
           <Typography color="success" sx={{ pr: 1 }}>
