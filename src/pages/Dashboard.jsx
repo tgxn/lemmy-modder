@@ -34,7 +34,7 @@ export default function Dashboard() {
           p: 1,
         }}
       >
-        <Masonry sx={{ m: 0 }} columns={{ xs: 1, sm: 2 }} spacing={1}>
+        <Masonry sx={{ m: 0 }} columns={{ xs: 1, sm: 2 }} spacing={2}>
           {userRole != "user" && (
             <Grid xs={12} md={6}>
               <ReportsStat />
