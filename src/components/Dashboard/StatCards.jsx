@@ -3,6 +3,7 @@ import React from "react";
 import moment from "moment";
 import { NumericFormat } from "react-number-format";
 
+import Box from "@mui/joy/Box";
 import Tooltip from "@mui/joy/Tooltip";
 import Button from "@mui/joy/Button";
 import Chip from "@mui/joy/Chip";
@@ -47,7 +48,7 @@ export const SimpleNumberFormat = React.memo(({ showChange = false, value }) => 
 
 function StatCardChip({ value, icon = false, color = "neutral", variant = "solid" }) {
   return (
-    <Typography color={color} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+    <Box color={color} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
       <Chip
         size="lg"
         variant={variant}
@@ -59,7 +60,7 @@ function StatCardChip({ value, icon = false, color = "neutral", variant = "solid
       >
         {value}
       </Chip>
-    </Typography>
+    </Box>
   );
 }
 
@@ -447,7 +448,11 @@ export function GrowthCard() {
         <>
           Growth Stats
           <Tooltip title="Data from Lemmyverse.net" variant="outlined" placement="top">
-            <Button size="sm" variant="outlined" onClick={() => window.open("https://lemmyverse.net")}>
+            <Button
+              size="sm"
+              variant="outlined"
+              onClick={() => window.open(`https://lemmyverse.net/instance/${baseUrl}`)}
+            >
               <OpenInNewIcon size="sm" />
             </Button>
           </Tooltip>
