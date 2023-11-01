@@ -109,3 +109,46 @@ export const Image = React.memo(({ imageSrc, nsfw, onClick }) => {
     </Box>
   );
 });
+
+export const Video = React.memo(({ imageSrc, nsfw, onClick }) => {
+  const [open, setOpen] = useState(false);
+  // const [image, setImage] = useState("false");
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <Box
+      sx={{
+        height: "200px",
+        width: "200px",
+        cursor: "pointer",
+      }}
+      onClick={onClick}
+    >
+      {!imageSrc && <ContentError message={"No Content"} bgcolor={"#ff55fc21"} />}
+      {imageSrc && (
+        <React.Fragment>
+          {/* {isLoading && <ContentSkeleton />} */}
+          {/* {error && <ContentError />} */}
+          <video
+            src={imageSrc}
+            loading="lazy"
+            width={"100%"}
+            height={"100%"}
+            // alt={"Banner"}
+            //scaling
+            style={{
+              filter: nsfw ? "blur(8px)" : null, // TODO this should use user setting
+              // consdytr
+              objectFit: "contain",
+              objectPosition: "center center",
+              // aligh
+            }}
+          />
+        </React.Fragment>
+      )}
+    </Box>
+  );
+});

@@ -11,7 +11,7 @@ import CircularProgress from "@mui/joy/CircularProgress";
 import LaunchIcon from "@mui/icons-material/Launch";
 
 import { SanitizedLink } from "../Display.jsx";
-import { Image } from "./Image.jsx";
+import { Image, Video } from "./Image.jsx";
 
 function ThumbWrapper({ width = 200, tooltip, modal = null, children }) {
   return (
@@ -43,8 +43,8 @@ export default function PostThumb({ width = 200, post }) {
 
   const { url, thumbnail_url, nsfw, embed_title, embed_description } = post;
 
-  const isImage = url.match(/\.(jpeg|jpg|gif|png)$/) != null;
-  const isPlayableMedia = url.match(/\.(mp4|vp9)$/) != null;
+  const isImage = url.match(/\.(jpeg|jpg|gif|png|webp)$/) != null;
+  const isVideo = url.match(/\.(mp4|vppppp)$/) != null;
 
   const [open, setOpen] = useState(false);
   // const [image, setImage] = useState("false");
@@ -56,6 +56,7 @@ export default function PostThumb({ width = 200, post }) {
   if (isImage) {
     return (
       <ThumbWrapper
+        tooltip={url}
         // tooltip="Expand Image"
         modal={
           <Modal
@@ -63,23 +64,18 @@ export default function PostThumb({ width = 200, post }) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              // "&:hover": {
-              //   backgroundcolor: "red",
-              // },
             }}
             open={open}
             onClose={handleClose}
-            // hideBackdrop
-            // closeAfterTransition
-            // BackdropComponent={Backdrop}
-            // BackdropProps={{
-            //   timeout: 500,
-            // }}
-            // disablePortal
           >
             <Box
               sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 outline: "none",
+                width: "100%",
+                height: "90%",
               }}
               // TODO should clicking the popup open new tab?
               // onClick={() => window.open(url, "_new")}
@@ -91,6 +87,48 @@ export default function PostThumb({ width = 200, post }) {
         }
       >
         <Image
+          imageSrc={url}
+          nsfw={nsfw}
+          onClick={() => {
+            setOpen(true);
+          }}
+        />
+      </ThumbWrapper>
+    );
+  }
+  if (isVideo) {
+    return (
+      <ThumbWrapper
+        tooltip={url}
+        modal={
+          <Modal
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            open={open}
+            onClose={handleClose}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                outline: "none",
+                width: "100%",
+                height: "90%",
+              }}
+              // TODO should clicking the popup open new tab?
+              // onClick={() => window.open(url, "_new")}
+              onClick={() => setOpen(false)}
+            >
+              <video autoplay="false" src={url} style={{ maxHeight: "90%", maxWidth: "90%" }} controls />
+            </Box>
+          </Modal>
+        }
+      >
+        <Video
           imageSrc={url}
           nsfw={nsfw}
           onClick={() => {
