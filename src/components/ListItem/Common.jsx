@@ -187,7 +187,9 @@ export function PersonMetaLine({ creator, by = false, sx }) {
             <Typography component="span" sx={{ mr: 0.25 }}>
               {creator.name}
             </Typography>
-            <Typography component="span">@{creator.actor_id.split("/")[2]}</Typography>
+            {baseUrl != actorInstanceBaseUrl && (
+              <Typography component="span">@{creator.actor_id.split("/")[2]}</Typography>
+            )}
           </Link>
         </Tooltip>
       </Box>
