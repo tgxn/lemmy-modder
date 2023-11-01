@@ -3,6 +3,8 @@ import React from "react";
 import moment from "moment";
 import { NumericFormat } from "react-number-format";
 
+import Tooltip from "@mui/joy/Tooltip";
+import Button from "@mui/joy/Button";
 import Chip from "@mui/joy/Chip";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
@@ -13,7 +15,7 @@ import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import ForumIcon from "@mui/icons-material/Forum";
 import DraftsIcon from "@mui/icons-material/Drafts";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
-
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 
 import useLVQueryCache from "../../hooks/useLVQueryCache";
@@ -26,11 +28,24 @@ import { MomentAdjustedTimeAgo } from "../Display.jsx";
 // Basic Elements (string, chip, etc)
 //  -------------------------------------------------------------------------------------
 
-export const SimpleNumberFormat = React.memo(({ value }) => {
-  return <NumericFormat displayType="text" value={value} allowLeadingZeros thousandSeparator="," />;
+export const SimpleNumberFormat = React.memo(({ showChange = false, value }) => {
+  // get "+", "-", or "" depending on value
+  function plusMinusIndicator(value) {
+    return value > 0 ? "+" : value < 0 ? "-" : "";
+  }
+
+  return (
+    <NumericFormat
+      prefix={showChange ? plusMinusIndicator(value) : undefined}
+      displayType="text"
+      value={value}
+      allowLeadingZeros
+      thousandSeparator=","
+    />
+  );
 });
 
-export function StatCardChip({ value, icon = false, color = "primary", variant = "solid" }) {
+function StatCardChip({ value, icon = false, color = "neutral", variant = "solid" }) {
   return (
     <Typography color={color} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
       <Chip
@@ -49,7 +64,7 @@ export function StatCardChip({ value, icon = false, color = "primary", variant =
 }
 
 // grid of name:value pairs
-export function StatDataItem({ title, value, icon = false, color = "primary", variant = "solid" }) {
+function StatDataItem({ title, value, icon = false, color = "neutral" }) {
   return (
     <Typography color={color} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
       {icon} {title}: {value}
@@ -58,7 +73,7 @@ export function StatDataItem({ title, value, icon = false, color = "primary", va
 }
 
 // card that is in loading state
-export function LoadingStatCard({ title }) {
+function LoadingStatCard({ title }) {
   return (
     <Card
       size="lg"
@@ -97,7 +112,9 @@ export function LoadingStatCard({ title }) {
     </Card>
   );
 }
-export function ErrorStatCard({ title }) {
+
+// error state
+function ErrorStatCard({ title }) {
   return (
     <Card
       size="lg"
@@ -137,6 +154,47 @@ export function ErrorStatCard({ title }) {
   );
 }
 
+// common card for usage with other stat cards
+function CommonStatCard({ title, color = "neutral", hexBackground = null, flexDirection = "row", children }) {
+  return (
+    <Card
+      size="lg"
+      variant="solid"
+      color={color}
+      orientation="horizontal"
+      sx={{
+        borderRadius: "8px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        maxWidth: "100%",
+        width: "100%",
+        overflow: "hidden",
+        background: hexBackground ? hexBackground : null,
+      }}
+    >
+      <CardContent
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        {title}
+      </CardContent>
+
+      <CardContent
+        sx={{
+          flexDirection: flexDirection,
+          alignItems: flexDirection == "row" ? "space-around" : "flex-start",
+        }}
+      >
+        {children}
+      </CardContent>
+    </Card>
+  );
+}
+
 //  -------------------------------------------------------------------------------------
 
 // Content Report Stat Card (TanStack API Response)
@@ -158,86 +216,32 @@ export function ReportsStat() {
   if (userRole == "admin") totalReports += reportCountsData?.private_message_reports;
 
   return (
-    <Card
-      size="lg"
-      variant="solid"
-      color={totalReports > 0 ? "danger" : "success"}
-      orientation="horizontal"
-      sx={{
-        borderRadius: "8px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        maxWidth: "100%",
-        width: "100%",
-        overflow: "hidden",
-      }}
-    >
-      <CardContent
-        variant="solid"
-        // color={color}
-        sx={{
-          // ...sx,
-          // flex: "1",
-          display: "flex",
-          m: 0,
-          p: 0,
-          pl: 2,
-          flexGrow: 0,
-          // justifyContent: "center",
-          // alignItems: "center",
-          flexDirection: "row",
-          height: "100%",
-          // justifyContent: "center",
-          // alignItems: "center",
-          // px: "var(--Card-padding)",
-        }}
-      >
-        Content Reports
-      </CardContent>
-
-      <CardContent
-        sx={{
-          // ...sx,
-          // flex: "1",
-          // borderRadius: "8px",
-          // display: "flex",
-          // flexGrow: 1,
-          justifyContent: "space-around",
-          alignItems: "center",
-          // width: "100%",
-          flexDirection: "row",
-          justifyContent: "space-around",
-          px: 1,
-        }}
-      >
+    <CommonStatCard title={"Content Reports"} color={totalReports > 0 ? "danger" : "success"}>
+      <StatCardChip
+        icon={<StickyNote2Icon />}
+        value={reportCountsData?.post_reports !== undefined ? reportCountsData.post_reports : ""}
+        color={reportCountsData?.post_reports > 0 ? "danger" : "success"}
+        variant={reportCountsData?.post_reports > 0 ? "soft" : "soft"}
+      />
+      <StatCardChip
+        icon={<ForumIcon />}
+        value={reportCountsData?.comment_reports !== undefined ? reportCountsData.comment_reports : ""}
+        color={reportCountsData?.comment_reports > 0 ? "danger" : "success"}
+        variant={reportCountsData?.comment_reports > 0 ? "soft" : "soft"}
+      />
+      {userRole == "admin" && (
         <StatCardChip
-          icon={<StickyNote2Icon />}
-          value={reportCountsData?.post_reports !== undefined ? reportCountsData.post_reports : ""}
-          color={reportCountsData?.post_reports > 0 ? "danger" : "success"}
-          variant={reportCountsData?.post_reports > 0 ? "soft" : "soft"}
+          icon={<DraftsIcon />}
+          value={
+            reportCountsData?.private_message_reports !== undefined
+              ? reportCountsData.private_message_reports
+              : ""
+          }
+          color={reportCountsData?.private_message_reports > 0 ? "danger" : "success"}
+          variant={reportCountsData?.private_message_reports > 0 ? "soft" : "soft"}
         />
-        <StatCardChip
-          icon={<ForumIcon />}
-          value={reportCountsData?.comment_reports !== undefined ? reportCountsData.comment_reports : ""}
-          color={reportCountsData?.comment_reports > 0 ? "danger" : "success"}
-          variant={reportCountsData?.comment_reports > 0 ? "soft" : "soft"}
-        />
-        {userRole == "admin" && (
-          <StatCardChip
-            icon={<DraftsIcon />}
-            value={
-              reportCountsData?.private_message_reports !== undefined
-                ? reportCountsData.private_message_reports
-                : ""
-            }
-            color={reportCountsData?.private_message_reports > 0 ? "danger" : "success"}
-            variant={reportCountsData?.private_message_reports > 0 ? "soft" : "soft"}
-          />
-        )}
-        {/* </Box> */}
-      </CardContent>
-    </Card>
+      )}
+    </CommonStatCard>
   );
 }
 
@@ -256,78 +260,21 @@ export function ApprovalStat() {
   }
 
   return (
-    <Card
-      size="lg"
-      variant="solid"
+    <CommonStatCard
+      title={"Pending Registrations"}
       color={regCountAppData?.registration_applications > 0 ? "danger" : "success"}
-      orientation="horizontal"
-      sx={{
-        // ...sx,
-        borderRadius: "8px",
-        display: "flex",
-        flexDirection: "column",
-
-        // justifyContent: "center",
-        alignItems: "center",
-
-        // space aroudn
-        // justifyContent: "space-between",
-
-        maxWidth: "100%",
-        width: "100%",
-        overflow: "hidden",
-      }}
     >
-      <CardContent
-        variant="solid"
-        // color={color}
-        sx={{
-          // ...sx,
-          // flex: "1",
-          display: "flex",
-          m: 0,
-          p: 0,
-          pl: 2,
-          flexGrow: 0,
-          // justifyContent: "center",
-          // alignItems: "center",
-          flexDirection: "row",
-          height: "100%",
-          // justifyContent: "center",
-          // alignItems: "center",
-          // px: "var(--Card-padding)",
-        }}
-      >
-        Pending Registrations
-      </CardContent>
-
-      <CardContent
-        sx={{
-          // ...sx,
-          // flex: "1",
-          // borderRadius: "8px",
-          // display: "flex",
-          // flexGrow: 1,
-          justifyContent: "space-around",
-          alignItems: "center",
-          // width: "100%",
-          flexDirection: "row",
-          justifyContent: "space-around",
-          px: 1,
-        }}
-      >
-        <StatCardChip
-          icon={<HowToRegIcon />}
-          value={
-            regCountAppData?.registration_applications !== undefined
-              ? regCountAppData.registration_applications
-              : ""
-          }
-          color={regCountAppData?.registration_applications > 0 ? "danger" : "success"}
-          variant={regCountAppData?.registration_applications > 0 ? "soft" : "soft"}
-        />
-      </CardContent>
-    </Card>
+      <StatCardChip
+        icon={<HowToRegIcon />}
+        value={
+          regCountAppData?.registration_applications !== undefined
+            ? regCountAppData.registration_applications
+            : ""
+        }
+        color={regCountAppData?.registration_applications > 0 ? "danger" : "success"}
+        variant={regCountAppData?.registration_applications > 0 ? "soft" : "soft"}
+      />
+    </CommonStatCard>
   );
 }
 
@@ -336,65 +283,28 @@ export function UserStat() {
   const { baseUrl, siteResponse, siteData, localPerson, userRole } = getSiteData();
 
   return (
-    <Card
-      size="lg"
-      variant="soft"
-      color="primary"
-      orientation="horizontal"
-      sx={{
-        borderRadius: "8px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        maxWidth: "100%",
-        width: "100%",
-        overflow: "hidden",
-      }}
-    >
-      <CardContent
-        variant="solid"
-        sx={{
-          display: "flex",
-          m: 0,
-          p: 0,
-          pl: 2,
-          flexGrow: 0,
-          flexDirection: "row",
-          height: "100%",
-        }}
-      >
-        Local Content
-      </CardContent>
-
-      <CardContent
-        sx={{
-          alignItems: "left",
-          flexDirection: "column",
-          px: 1,
-        }}
-      >
-        <StatDataItem
-          title="Users"
-          icon={<HowToRegIcon />}
-          value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.users} />}
-        />
-        <StatDataItem
-          title="Posts"
-          icon={<StickyNote2Icon />}
-          value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.posts} />}
-        />
-        <StatDataItem
-          title="Comments"
-          icon={<ForumIcon />}
-          value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.comments} />}
-        />
-        <StatDataItem
-          title="Communities"
-          icon={<SupervisedUserCircleIcon />}
-          value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.communities} />}
-        />
-      </CardContent>
-    </Card>
+    <CommonStatCard title={"Local Content"} color={"primary"} flexDirection="column">
+      <StatDataItem
+        title="Users"
+        icon={<HowToRegIcon />}
+        value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.users} />}
+      />
+      <StatDataItem
+        title="Posts"
+        icon={<StickyNote2Icon />}
+        value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.posts} />}
+      />
+      <StatDataItem
+        title="Comments"
+        icon={<ForumIcon />}
+        value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.comments} />}
+      />
+      <StatDataItem
+        title="Communities"
+        icon={<SupervisedUserCircleIcon />}
+        value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.communities} />}
+      />
+    </CommonStatCard>
   );
 }
 
@@ -403,65 +313,24 @@ export function ActivityStat() {
   const { baseUrl, siteResponse, siteData, localPerson, userRole } = getSiteData();
 
   return (
-    <Card
-      size="lg"
-      variant="soft"
-      color="primary"
-      orientation="horizontal"
-      sx={{
-        borderRadius: "8px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        maxWidth: "100%",
-        width: "100%",
-        overflow: "hidden",
-      }}
-    >
-      <CardContent
-        variant="solid"
-        sx={{
-          display: "flex",
-          m: 0,
-          p: 0,
-          pl: 2,
-          flexGrow: 0,
-          flexDirection: "row",
-          height: "100%",
-        }}
-      >
-        User Activity
-      </CardContent>
-
-      <CardContent
-        sx={{
-          alignItems: "left",
-          flexDirection: "column",
-          px: 1,
-        }}
-      >
-        <StatDataItem
-          title="Active Users (day)"
-          // icon={<SupervisedUserCircleIcon />}
-          value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.users_active_day} />}
-        />
-        <StatDataItem
-          title="Active Users (week)"
-          // icon={<SupervisedUserCircleIcon />}
-          value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.users_active_week} />}
-        />
-        <StatDataItem
-          title="Active Users (month)"
-          // icon={<SupervisedUserCircleIcon />}
-          value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.users_active_month} />}
-        />
-        <StatDataItem
-          title="Active Users (6mos)"
-          // icon={<SupervisedUserCircleIcon />}
-          value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.users_active_half_year} />}
-        />
-      </CardContent>
-    </Card>
+    <CommonStatCard title={"User Activity"} color={"primary"} flexDirection="column">
+      <StatDataItem
+        title="Active Users (day)"
+        value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.users_active_day} />}
+      />
+      <StatDataItem
+        title="Active Users (week)"
+        value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.users_active_week} />}
+      />
+      <StatDataItem
+        title="Active Users (month)"
+        value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.users_active_month} />}
+      />
+      <StatDataItem
+        title="Active Users (6mos)"
+        value={<SimpleNumberFormat value={siteResponse?.site_view?.counts?.users_active_half_year} />}
+      />
+    </CommonStatCard>
   );
 }
 
@@ -470,103 +339,52 @@ export function SiteStat() {
   const { baseUrl, siteResponse, siteData, localPerson, userRole } = getSiteData();
 
   return (
-    <Card
-      size="lg"
-      variant="solid"
-      orientation="horizontal"
-      sx={{
-        borderRadius: "8px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
+    <CommonStatCard title={"Site Config"} flexDirection="column">
+      <StatDataItem
+        title="NSFW Enabled"
+        color={siteResponse?.site_view?.local_site?.enable_nsfw ? "success" : "warning"}
+        value={siteResponse?.site_view?.local_site?.enable_nsfw ? "Yes" : "No"}
+      />
 
-        maxWidth: "100%",
-        width: "100%",
-        overflow: "hidden",
-      }}
-    >
-      <CardContent
-        variant="solid"
-        // color={color}
-        sx={{
-          display: "flex",
-          m: 0,
-          p: 0,
-          pl: 2,
-          flexGrow: 0,
-          flexDirection: "row",
-          height: "100%",
-        }}
-      >
-        Site Config
-      </CardContent>
+      <StatDataItem
+        title="Downvotes Enabled"
+        color={siteResponse?.site_view?.local_site?.enable_downvotes ? "success" : "warning"}
+        value={siteResponse?.site_view?.local_site?.enable_downvotes ? "Yes" : "No"}
+      />
+      <StatDataItem
+        title="Force Email Verify"
+        color={siteResponse?.site_view?.local_site?.require_email_verification ? "success" : "warning"}
+        value={siteResponse?.site_view?.local_site?.require_email_verification ? "Yes" : "No"}
+      />
+      <StatDataItem
+        title="Captcha Enabled"
+        color={siteResponse?.site_view?.local_site?.captcha_enabled ? "success" : "warning"}
+        value={siteResponse?.site_view?.local_site?.captcha_enabled ? "Yes" : "No"}
+      />
+      <StatDataItem
+        title="Federation Enabled"
+        color={siteResponse?.site_view?.local_site?.federation_enabled ? "success" : "warning"}
+        value={siteResponse?.site_view?.local_site?.federation_enabled ? "Yes" : "No"}
+      />
+      <StatDataItem title="Register Mode" value={siteResponse?.site_view?.local_site?.registration_mode} />
 
-      <CardContent
-        sx={{
-          // justifyContent: "space-around",
-          alignItems: "left",
-          flexDirection: "column",
-          // justifyContent: "left",
-          px: 1,
-        }}
-      >
-        <StatDataItem
-          // color="neutral"
-          title="NSFW Enabled"
-          color={siteResponse?.site_view?.local_site?.enable_nsfw ? "success" : "warning"}
-          value={siteResponse?.site_view?.local_site?.enable_nsfw ? "Yes" : "No"}
-        />
-
-        <StatDataItem
-          // color="neutral"
-          title="Downvotes Enabled"
-          color={siteResponse?.site_view?.local_site?.enable_downvotes ? "success" : "warning"}
-          value={siteResponse?.site_view?.local_site?.enable_downvotes ? "Yes" : "No"}
-        />
-        <StatDataItem
-          // color="neutral"
-          title="Force Email Verify"
-          color={siteResponse?.site_view?.local_site?.require_email_verification ? "success" : "warning"}
-          value={siteResponse?.site_view?.local_site?.require_email_verification ? "Yes" : "No"}
-        />
-        <StatDataItem
-          // color="neutral"
-          title="Captcha Enabled"
-          color={siteResponse?.site_view?.local_site?.captcha_enabled ? "success" : "warning"}
-          value={siteResponse?.site_view?.local_site?.captcha_enabled ? "Yes" : "No"}
-        />
-        <StatDataItem
-          // color="neutral"
-          title="Federation Enabled"
-          color={siteResponse?.site_view?.local_site?.federation_enabled ? "success" : "warning"}
-          value={siteResponse?.site_view?.local_site?.federation_enabled ? "Yes" : "No"}
-        />
-        <StatDataItem
-          color="neutral"
-          title="Register Mode"
-          value={siteResponse?.site_view?.local_site?.registration_mode}
-        />
-
-        <StatDataItem
-          color="neutral"
-          title="Published"
-          value={
-            <MomentAdjustedTimeAgo fromNow>
-              {siteResponse?.site_view?.local_site?.published}
-            </MomentAdjustedTimeAgo>
-          }
-        />
-        <StatDataItem
-          color="neutral"
-          title="Updated"
-          value={
-            <MomentAdjustedTimeAgo fromNow>
-              {siteResponse?.site_view?.local_site?.updated}
-            </MomentAdjustedTimeAgo>
-          }
-        />
-      </CardContent>
-    </Card>
+      <StatDataItem
+        title="Published"
+        value={
+          <MomentAdjustedTimeAgo fromNow>
+            {siteResponse?.site_view?.local_site?.published}
+          </MomentAdjustedTimeAgo>
+        }
+      />
+      <StatDataItem
+        title="Updated"
+        value={
+          <MomentAdjustedTimeAgo fromNow>
+            {siteResponse?.site_view?.local_site?.updated}
+          </MomentAdjustedTimeAgo>
+        }
+      />
+    </CommonStatCard>
   );
 }
 
@@ -599,11 +417,6 @@ export function GrowthCard() {
     return latestValue - maxOneWeekValue.value;
   }
 
-  // get "+", "-", or "" depending on value
-  function plusMinusIndicator(value) {
-    return value > 0 ? "+" + value : value < 0 ? "-" + value : "" + value;
-  }
-
   const usersWeekChange = React.useMemo(() => {
     if (isSuccess) {
       return getChangeOverTime(metaData.users, moment().subtract(1, "week").unix());
@@ -629,60 +442,36 @@ export function GrowthCard() {
   }
 
   return (
-    <Card
-      size="lg"
-      variant="solid"
-      orientation="horizontal"
-      sx={{
-        borderRadius: "8px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-
-        maxWidth: "100%",
-        width: "100%",
-        overflow: "hidden",
-      }}
+    <CommonStatCard
+      title={
+        <>
+          Growth Stats
+          <Tooltip title="Data from Lemmyverse.net" variant="outlined" placement="top">
+            <Button size="sm" variant="outlined" onClick={() => window.open("https://lemmyverse.net")}>
+              <OpenInNewIcon size="sm" />
+            </Button>
+          </Tooltip>
+        </>
+      }
+      hexBackground="#6a27ac78"
+      flexDirection="column"
     >
-      <CardContent
-        variant="solid"
-        color={"secondary"}
-        sx={{
-          display: "flex",
-          m: 0,
-          p: 0,
-          pl: 2,
-          flexGrow: 0,
-          flexDirection: "row",
-          height: "100%",
-        }}
-      >
-        Growth Stats
-      </CardContent>
-
-      <CardContent
-        sx={{
-          alignItems: "left",
-          flexDirection: "column",
-          px: 1,
-        }}
-      >
-        <StatDataItem
-          icon={<HowToRegIcon />}
-          title="Week User Growth"
-          value={plusMinusIndicator(usersWeekChange)}
-        />
-        <StatDataItem
-          icon={<ForumIcon />}
-          title="Week Comment Growth"
-          value={plusMinusIndicator(commentsWeekChange)}
-        />
-        <StatDataItem
-          icon={<StickyNote2Icon />}
-          title="Week Post Growth"
-          value={plusMinusIndicator(postsWeekChange)}
-        />
-      </CardContent>
-    </Card>
+      <StatDataItem
+        // color="neutral"
+        icon={<HowToRegIcon />}
+        title="Week User Growth"
+        value={<SimpleNumberFormat value={usersWeekChange} showChange />}
+      />
+      <StatDataItem
+        icon={<ForumIcon />}
+        title="Week Comment Growth"
+        value={<SimpleNumberFormat value={commentsWeekChange} showChange />}
+      />
+      <StatDataItem
+        icon={<StickyNote2Icon />}
+        title="Week Post Growth"
+        value={<SimpleNumberFormat value={postsWeekChange} showChange />}
+      />
+    </CommonStatCard>
   );
 }
