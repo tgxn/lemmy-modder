@@ -11,7 +11,7 @@ const initialState = {
 
   orderBy: localStorage.getItem("config.orderBy") || "hot",
 
-  modLogType: localStorage.getItem("config.modLogType") || "All",
+  modLogType: localStorage.getItem("config.modLogType") || "all",
   modLogLocal: localStorage.getItem("config.modLogLocal") || true,
 
   filterType: localStorage.getItem("config.filterType") || "all",
