@@ -89,7 +89,7 @@ export const UserTooltip = ({ user, ...props }) => {
 
       {/* List of actions taken on this user */}
       <Box sx={{ display: "flex", flexDirection: "column", maxWidth: 500, justifyContent: "center", p: 1 }}>
-        {userModActionsLoading || (userModActionsFetching && <Typography>Loading...</Typography>)}
+        {(userModActionsLoading || userModActionsFetching) && <Typography>Loading...</Typography>}
         {userModActionsError && <Typography>Error: {userModActionsError.message}</Typography>}
         {userModActionsData && (
           <List size={"sm"} variant="plain" sx={{ p: 0 }}>

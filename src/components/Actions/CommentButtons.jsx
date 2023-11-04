@@ -9,7 +9,7 @@ import { useLemmyHttpAction } from "../../hooks/useLemmyHttp.js";
 
 import { BaseActionButton, ActionConfirmButton, InputElement, ConfirmDialog } from "./BaseElements.jsx";
 import { getSiteData } from "../../hooks/getSiteData";
-import { selectShowResolved } from "../../reducers/configReducer.js";
+import { selectShowResolved, selectMandatoryModComment } from "../../reducers/configReducer.js";
 
 export const ResolveCommentReportButton = ({ report, ...props }) => {
   const queryClient = useQueryClient();
@@ -86,6 +86,8 @@ export const ResolveCommentReportButton = ({ report, ...props }) => {
 };
 
 export const RemoveCommentButton = ({ report, ...props }) => {
+  const mandatoryModComment = useSelector(selectMandatoryModComment);
+
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [removeReason, setRemoveReason] = React.useState("");
 
@@ -139,6 +141,7 @@ export const RemoveCommentButton = ({ report, ...props }) => {
         // placeholder={`reason`}
         // inputText="Reason for removal"
         // isRequired={!report.comment.removed}
+        disabled={mandatoryModComment && removeReason == ""}
         buttonMessage={actionText}
         color={actionColor}
         onConfirm={() => {
@@ -157,12 +160,14 @@ export const RemoveCommentButton = ({ report, ...props }) => {
 };
 
 export const PurgeCommentButton = ({ report, ...props }) => {
+  const mandatoryModComment = useSelector(selectMandatoryModComment);
+
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [purgeReason, setPurgeReason] = React.useState("");
 
   const queryClient = useQueryClient();
 
-  const { data, callAction, isSuccess, isLoading, error } = useLemmyHttpAction("purgePost");
+  const { data, callAction, isSuccess, isLoading, error } = useLemmyHttpAction("purgeComment");
 
   React.useEffect(() => {
     if (isSuccess) {
@@ -178,7 +183,7 @@ export const PurgeCommentButton = ({ report, ...props }) => {
     <>
       <BaseActionButton
         text={"Purge"}
-        tooltip={`Purge Post`}
+        tooltip={`Purge Comment`}
         color={"danger"}
         onClick={() => setConfirmOpen(true)}
         {...props}
@@ -187,8 +192,8 @@ export const PurgeCommentButton = ({ report, ...props }) => {
         open={confirmOpen}
         loading={isLoading}
         error={error}
-        title={`Purge Post`}
-        message={`Are you sure you want to purge this post? Purging will delete this item, and all its children from the database. You will not be able to recover the data. Use with extreme caution.`}
+        title={`Purge Comment`}
+        message={`Are you sure you want to purge this comment? Purging will delete this item, and all its children from the database. You will not be able to recover the data. Use with extreme caution.`}
         extraElements={[
           <InputElement
             key="purgeReason"
@@ -198,10 +203,11 @@ export const PurgeCommentButton = ({ report, ...props }) => {
           />,
         ]}
         // disabled={purgeReason == ""}
+        disabled={mandatoryModComment && purgeReason == ""}
         buttonMessage={"Purge"}
         color={"danger"}
         onConfirm={() => {
-          callAction({ post_id: report.post.id, reason: purgeReason });
+          callAction({ _id: report.comment.id, reason: purgeReason });
         }}
         onCancel={() => {
           setConfirmOpen(false);

@@ -15,6 +15,7 @@ import ModalClose from "@mui/joy/ModalClose";
 import Divider from "@mui/joy/Divider";
 
 import {
+  selectMandatoryModComment,
   setConfigItem,
   setConfigItemJson,
   selectBlurNsfw,
@@ -82,6 +83,7 @@ export default function ConfigModal({ open, onClose }) {
   const blurNsfw = useSelector(selectBlurNsfw);
   const showAvatars = useSelector(selectShowAvatars);
   const nsfwWords = useSelector(selectNsfwWords);
+  const mandatoryModComment = useSelector(selectMandatoryModComment);
 
   const dispatch = useDispatch();
 
@@ -103,8 +105,8 @@ export default function ConfigModal({ open, onClose }) {
         })}
       >
         <ModalClose variant="plain" sx={{ m: 1 }} />
-        <DialogTitle>UI Configuration</DialogTitle>
-        <Divider />
+        <DialogTitle>Configuration</DialogTitle>
+        <Divider>User Interface</Divider>
         <Box
           sx={{
             display: "flex",
@@ -134,6 +136,23 @@ export default function ConfigModal({ open, onClose }) {
               onChange={(e) => dispatch(setConfigItemJson("nsfwWords", e))}
             />
           )}
+        </Box>
+        <Divider>Moderation</Divider>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+            gap: 2,
+            width: "500px",
+          }}
+        >
+          <BooleanSetting
+            label="Mandatory Comment?"
+            subtext="should you be required to leave a comment when taking actions?"
+            value={mandatoryModComment}
+            onChange={(e) => dispatch(setConfigItem("mandatoryModComment", e))}
+          />
         </Box>
       </ModalDialog>
     </Modal>

@@ -100,27 +100,7 @@ export default function UserMenu() {
         </IconButton>
       </BasicInfoTooltip>
 
-      <BasicInfoTooltip title={"Open User Switcher"} placement="bottom" variant="soft">
-        <Button
-          aria-controls={menuOpen ? "user-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={menuOpen ? "true" : undefined}
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          onClick={handleClick}
-          startDecorator={userIcon}
-          endDecorator={<ArrowDropDown />}
-          sx={{
-            mx: 1,
-            borderRadius: 4,
-          }}
-        >
-          {parsedActor.actorName}@{parsedActor.actorBaseUrl} ({userTooltip})
-        </Button>
-      </BasicInfoTooltip>
-
-      <AccountMenu anchorEl={anchorEl} open={menuOpen} onClose={handleClose} />
+      <AccountMenu />
 
       <BasicInfoTooltip title="End Session" placement="bottom" variant="soft">
         <IconButton

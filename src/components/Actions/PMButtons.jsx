@@ -11,7 +11,7 @@ import { useLemmyHttpAction } from "../../hooks/useLemmyHttp.js";
 
 import { BaseActionButton, ActionConfirmButton, InputElement, ConfirmDialog } from "./BaseElements.jsx";
 import { getSiteData } from "../../hooks/getSiteData";
-import { selectShowResolved } from "../../reducers/configReducer.js";
+import { selectShowResolved, selectMandatoryModComment } from "../../reducers/configReducer.js";
 
 // allow resolving / unresolving a post report
 // resolvePrivateMessageReport
@@ -93,7 +93,10 @@ export const ResolvePMReportButton = ({ report, ...props }) => {
 };
 
 // deletePrivateMessage
+// onyl useful for owner
 export const DeletePMButton = ({ report, ...props }) => {
+  const mandatoryModComment = useSelector(selectMandatoryModComment);
+
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [removeReason, setRemoveReason] = React.useState("");
 
@@ -147,6 +150,7 @@ export const DeletePMButton = ({ report, ...props }) => {
         // placeholder={`reason`}
         // inputText="Reason for removal"
         // isRequired={!report.post.removed}
+        disabled={mandatoryModComment && removeReason == ""}
         buttonMessage={actionText}
         color={actionColor}
         onConfirm={() => {
