@@ -23,12 +23,12 @@ import { logoutCurrent, selectUsers } from "../../reducers/accountReducer";
 
 import { getSiteData } from "../../hooks/getSiteData";
 
-import { HeaderChip, UserAvatar } from "../Display.jsx";
+import { UserAvatar } from "../Display.jsx";
 import { BasicInfoTooltip } from "../Tooltip.jsx";
 
 import { parseActorId, getUserRole } from "../../utils.js";
 
-import { addUser, setAccountIsLoading, setUsers, setCurrentUser } from "../../reducers/accountReducer";
+import { setAccountIsLoading, setCurrentUser } from "../../reducers/accountReducer";
 
 import { RoleIcons } from "../Shared/Icons.jsx";
 
@@ -122,7 +122,7 @@ function UserListItem({ user, onClose }) {
 export default function AccountMenu() {
   const users = useSelector(selectUsers);
 
-  const { baseUrl, siteData, localUser, localPerson, userRole } = getSiteData();
+  const { localPerson, userRole } = getSiteData();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [menuOpen, setMenuOpen] = React.useState(false);
@@ -181,20 +181,6 @@ export default function AccountMenu() {
             })}
           </>
         )}
-        {/* 
-        <MenuItem
-          sx={{
-            color: "text.body",
-          }}
-          onClick={() => {
-            handleClose();
-
-            queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
-            dispatch(logoutCurrent());
-          }}
-        >
-          End Session
-        </MenuItem> */}
       </Menu>
     </>
   );
