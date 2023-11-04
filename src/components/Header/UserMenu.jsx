@@ -6,6 +6,7 @@ import { useQueryClient, useIsFetching } from "@tanstack/react-query";
 
 import Button from "@mui/joy/Button";
 import IconButton from "@mui/joy/IconButton";
+import CircularProgress from "@mui/joy/CircularProgress";
 
 import CachedIcon from "@mui/icons-material/Cached";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -67,12 +68,15 @@ export default function UserMenu() {
     userIcon = <SupervisedUserCircleIcon />;
   }
 
+  const anythingLoading = accountIsLoading == true || isFetching == true;
+
   const parsedActor = parseActorId(localPerson.actor_id);
 
   return (
     <>
       <BasicInfoTooltip title="Reload all data" placement="bottom" variant="soft">
         <IconButton
+          disabled={anythingLoading}
           size="sm"
           variant="outlined"
           color="primary"
@@ -83,7 +87,16 @@ export default function UserMenu() {
             refreshMutate();
           }}
         >
-          <CachedIcon />
+          {!anythingLoading && <CachedIcon />}
+          {anythingLoading && (
+            <CircularProgress
+              size="sm"
+              color="neutral"
+              sx={{
+                "--CircularProgress-size": "16px",
+              }}
+            />
+          )}
         </IconButton>
       </BasicInfoTooltip>
 
