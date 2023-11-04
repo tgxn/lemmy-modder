@@ -1,50 +1,41 @@
-export function addUser(base, jwt, site) {
-  return {
-    type: "addUser",
-    payload: { base, jwt, site },
-  };
-}
+export const setAccountIsLoading = (isLoading) => ({
+  type: "setAccountIsLoading",
+  payload: { isLoading },
+});
 
-export function setCurrentUser(base, jwt, site) {
-  return {
-    type: "setCurrentUser",
-    payload: { base, jwt, site },
-  };
-}
-export function updateCurrentUserData(site) {
-  return {
-    type: "updateCurrentUserData",
-    payload: { site },
-  };
-}
+export const addUser = (base, jwt, site) => ({
+  type: "addUser",
+  payload: { base, jwt, site },
+});
 
-export function logoutCurrent() {
-  return {
-    type: "logoutCurrent",
-  };
-}
+export const setCurrentUser = (base, jwt, site) => ({
+  type: "setCurrentUser",
+  payload: { base, jwt, site },
+});
 
-export function setAccountIsLoading(isLoading) {
-  return {
-    type: "setAccountIsLoading",
-    payload: { isLoading },
-  };
-}
+export const updateCurrentUserData = (site) => ({
+  type: "updateCurrentUserData",
+  payload: { site },
+});
 
-export function setUsers(users) {
-  return {
-    type: "setUsers",
-    payload: { users },
-  };
-}
+export const logoutCurrent = () => ({
+  type: "logoutCurrent",
+});
 
-const lsUsers = localStorage.getItem("users");
-const cUser = localStorage.getItem("currentUser");
+export const setUsers = (users) => ({
+  type: "setUsers",
+  payload: { users },
+});
+
+// both stored arrays include the full data for the current user, since we might not always have a saved user
+const storedUsers = localStorage.getItem("users");
+const storedCurrentUser = localStorage.getItem("currentUser");
 
 const initialState = {
   accountIsLoading: false,
-  users: lsUsers ? JSON.parse(lsUsers) : [], // { base, jwt, site }
-  currentUser: cUser ? JSON.parse(cUser) : null, // { base, jwt, site }
+
+  users: storedUsers ? JSON.parse(storedUsers) : [], // { base, jwt, site }
+  currentUser: storedCurrentUser ? JSON.parse(storedCurrentUser) : null, // { base, jwt, site }
 };
 
 const accountReducer = (state = initialState, action = {}) => {
@@ -126,6 +117,8 @@ const accountReducer = (state = initialState, action = {}) => {
 
 export default accountReducer;
 
+export const selectIsLoading = (state) => state.accountReducer.isLoading;
+export const selectAccountIsLoading = (state) => state.accountReducer.accountIsLoading;
+
 export const selectCurrentUser = (state) => state.accountReducer.currentUser;
 export const selectUsers = (state) => state.accountReducer.users;
-export const selectAccountIsLoading = (state) => state.accountReducer.accountIsLoading;
