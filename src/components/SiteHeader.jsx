@@ -2,7 +2,7 @@ import React from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useIsFetching } from "@tanstack/react-query";
 
 import { Toaster, toast } from "sonner";
 
@@ -35,8 +35,6 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import FlagIcon from "@mui/icons-material/Flag";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 
-import { logoutCurrent, selectUsers } from "../reducers/accountReducer";
-
 import { LemmyHttp } from "lemmy-js-client";
 
 import { useLemmyHttp, refreshAllData } from "../hooks/useLemmyHttp";
@@ -47,7 +45,13 @@ import { BasicInfoTooltip } from "./Tooltip.jsx";
 
 import { parseActorId } from "../utils.js";
 
-import { addUser, setAccountIsLoading, setUsers, setCurrentUser } from "../reducers/accountReducer";
+import {
+  setAccountIsLoading,
+  setCurrentUser,
+  logoutCurrent,
+  selectUsers,
+  selectAccountIsLoading,
+} from "../reducers/accountReducer";
 
 function SiteMenu() {
   // const dispatch = useDispatch();
@@ -252,10 +256,10 @@ function UserMenu() {
   const queryClient = useQueryClient();
 
   const users = useSelector(selectUsers);
+  const accountIsLoading = useSelector(selectAccountIsLoading);
 
   const { mutate: refreshMutate } = refreshAllData();
-
-  const [isLoading, setIsLoading] = React.useState(false);
+  const isFetching = useIsFetching();
 
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
@@ -285,12 +289,15 @@ function UserMenu() {
     userIcon = <SupervisedUserCircleIcon />;
   }
 
+  const anythingLoading = accountIsLoading == true || isFetching == true;
+
   const parsedActor = parseActorId(localPerson.actor_id);
 
   return (
     <>
       <BasicInfoTooltip title="Reload all data" placement="bottom" variant="soft">
         <IconButton
+          disabled={anythingLoading}
           size="sm"
           variant="outlined"
           color="primary"
@@ -301,7 +308,16 @@ function UserMenu() {
             refreshMutate();
           }}
         >
-          <CachedIcon />
+          {!anythingLoading && <CachedIcon />}
+          {anythingLoading && (
+            <CircularProgress
+              size="sm"
+              color="neutral"
+              sx={{
+                "--CircularProgress-size": "16px",
+              }}
+            />
+          )}
         </IconButton>
       </BasicInfoTooltip>
 
@@ -340,8 +356,6 @@ function UserMenu() {
 
                     queryClient.invalidateQueries({ queryKey: ["lemmyHttp", localPerson.id] });
                     dispatch(logoutCurrent());
-
-                    setIsLoading(true);
 
                     dispatch(setAccountIsLoading(true));
 
