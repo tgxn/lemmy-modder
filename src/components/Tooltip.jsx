@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useDispatch, useSelector } from "react-redux";
+
 import Alert from "@mui/joy/Alert";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
@@ -20,8 +22,17 @@ import { UserAvatar, MomentAdjustedTimeAgo } from "./Display.jsx";
 
 import { PersonMetaChips } from "./Shared/UserChips.jsx";
 
+import {
+  setConfigItem,
+  setConfigItemJson,
+  selectBlurNsfw,
+  selectShowAvatars,
+  selectNsfwWords,
+} from "../reducers/configReducer";
+
 export const UserTooltip = ({ user, ...props }) => {
   console.log("user", user);
+  const showAvatars = useSelector(selectShowAvatars);
 
   // get user modlog entries
   const {
@@ -60,7 +71,7 @@ export const UserTooltip = ({ user, ...props }) => {
             gap: 1,
           }}
         >
-          <UserAvatar source={user.avatar} />
+          {showAvatars && <UserAvatar source={user.avatar} />}
           <Typography component="span">
             {user.display_name && user.display_name}
             {!user.display_name && fullUserString}

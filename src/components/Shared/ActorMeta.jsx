@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useDispatch, useSelector } from "react-redux";
+
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 import Tooltip from "@mui/joy/Tooltip";
@@ -19,8 +21,18 @@ import { getSiteData } from "../../hooks/getSiteData";
 
 import { PersonMetaChips } from "./UserChips.jsx";
 
+import {
+  setConfigItem,
+  setConfigItemJson,
+  selectBlurNsfw,
+  selectShowAvatars,
+  selectNsfwWords,
+} from "../../reducers/configReducer";
+
 export function PersonMetaLine({ creator, by = false, sx }) {
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+
+  const showAvatars = useSelector(selectShowAvatars);
 
   const actorInstanceBaseUrl = creator.actor_id.split("/")[2];
   const fediverseUserLink = creator.actor_id;
@@ -50,7 +62,7 @@ export function PersonMetaLine({ creator, by = false, sx }) {
         }}
       >
         {by && <Typography sx={{ pr: 1 }}>by</Typography>}
-        <UserAvatar source={creator.avatar} />
+        {showAvatars && <UserAvatar source={creator.avatar} />}
         {creator.display_name && (
           <Typography sx={{ fontSize: "15px", px: 1 }}>{creator.display_name}</Typography>
         )}

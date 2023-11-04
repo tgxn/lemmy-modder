@@ -62,7 +62,7 @@ const ContentError = React.memo(function ({ message = false, bgcolor = "#ff55551
   );
 });
 
-export const Image = React.memo(({ imageSrc, nsfw, onClick }) => {
+export const Image = React.memo(({ imageSrc, blurPreview, onClick }) => {
   const { src, isLoading, error } = useImage({
     srcList: imageSrc,
     useSuspense: false,
@@ -97,7 +97,7 @@ export const Image = React.memo(({ imageSrc, nsfw, onClick }) => {
             // alt={"Banner"}
             //scaling
             style={{
-              filter: nsfw ? "blur(8px)" : null, // TODO this should use user setting
+              filter: blurPreview ? "blur(8px)" : null, // TODO this should use user setting
               // consdytr
               objectFit: "contain",
               objectPosition: "center center",
@@ -110,7 +110,7 @@ export const Image = React.memo(({ imageSrc, nsfw, onClick }) => {
   );
 });
 
-export const Video = React.memo(({ imageSrc, nsfw, onClick }) => {
+export const Video = React.memo(({ imageSrc, blurPreview, onClick }) => {
   const [open, setOpen] = useState(false);
   // const [image, setImage] = useState("false");
 
@@ -140,7 +140,7 @@ export const Video = React.memo(({ imageSrc, nsfw, onClick }) => {
             // alt={"Banner"}
             //scaling
             style={{
-              filter: nsfw ? "blur(8px)" : null, // TODO this should use user setting
+              filter: blurPreview ? "blur(8px)" : null, // TODO this should use user setting
               // consdytr
               objectFit: "contain",
               objectPosition: "center center",
