@@ -4,8 +4,8 @@ import Moment from "react-moment";
 
 import { sanitizeUrl } from "@braintree/sanitize-url";
 
+import Avatar from "@mui/joy/Avatar";
 import Typography from "@mui/joy/Typography";
-import Tooltip from "@mui/joy/Tooltip";
 import Link from "@mui/joy/Link";
 import Chip from "@mui/joy/Chip";
 
@@ -135,3 +135,19 @@ export const FediverseChipLink = ({ href, size = "md", ...props }) => {
     </BasicInfoTooltip>
   );
 };
+
+export function UserAvatar({ source, ...props }) {
+  return (
+    <Avatar
+      component="span"
+      size="sm"
+      src={source}
+      sx={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+      {...props}
+    />
+  );
+}

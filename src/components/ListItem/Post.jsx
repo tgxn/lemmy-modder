@@ -26,7 +26,8 @@ import { ResolvePostReportButton, RemovePostButton, PurgePostButton } from "../A
 
 import { BanUserCommunityButton, BanUserSiteButton, PurgeUserSiteButton } from "../Actions/GenButtons.jsx";
 
-import { PersonMetaLine, CommunityMetaLine, ReportDetails } from "./Common.jsx";
+import { PersonMetaLine, CommunityMetaLine } from "../Shared/ActorMeta.jsx";
+import { ReportDetails } from "../Shared/ReportDetails.jsx";
 
 import { getSiteData } from "../../hooks/getSiteData";
 
