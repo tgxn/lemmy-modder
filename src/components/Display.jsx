@@ -136,13 +136,14 @@ export const FediverseChipLink = ({ href, size = "md", ...props }) => {
   );
 };
 
-export function UserAvatar({ source, ...props }) {
+export function UserAvatar({ source, size, ...props }) {
   return (
     <Avatar
       component="span"
       size="sm"
       src={source}
       sx={{
+        "--Avatar-size": size ? size : "24px",
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",

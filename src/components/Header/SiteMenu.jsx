@@ -1,58 +1,21 @@
 import React from "react";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useLocation } from "react-router-dom";
 
-import { useQueryClient } from "@tanstack/react-query";
-
-import { Toaster, toast } from "sonner";
-
-import { BrowserRouter as Router, useNavigate, useLocation } from "react-router-dom";
-
-import Typography from "@mui/joy/Typography";
 import Chip from "@mui/joy/Chip";
-import Sheet from "@mui/joy/Sheet";
-import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
-import Menu from "@mui/joy/Menu";
-import MenuItem from "@mui/joy/MenuItem";
-import IconButton from "@mui/joy/IconButton";
 import CircularProgress from "@mui/joy/CircularProgress";
 
-import CachedIcon from "@mui/icons-material/Cached";
-import LogoutIcon from "@mui/icons-material/Logout";
-import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-
-// user role icons
-import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
-import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import SwitchAccountIcon from "@mui/icons-material/SwitchAccount";
-
-import GitHubIcon from "@mui/icons-material/GitHub";
-
 import FlagIcon from "@mui/icons-material/Flag";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 
-import { logoutCurrent, selectUsers } from "../../reducers/accountReducer";
-
-import { LemmyHttp } from "lemmy-js-client";
-
-import { useLemmyHttp, refreshAllData } from "../../hooks/useLemmyHttp";
+import { useLemmyHttp } from "../../hooks/useLemmyHttp";
 import { getSiteData } from "../../hooks/getSiteData";
 
-import { HeaderChip } from "../Display.jsx";
 import { BasicInfoTooltip } from "../Tooltip.jsx";
 
-import { parseActorId } from "../../utils.js";
-
-import { addUser, setAccountIsLoading, setUsers, setCurrentUser } from "../../reducers/accountReducer";
-
 export default function SiteMenu() {
-  // const dispatch = useDispatch();
-  // const queryClient = useQueryClient();
-
   const location = useLocation();
   const navigate = useNavigate();
 
