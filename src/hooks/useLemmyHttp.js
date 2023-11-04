@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -9,13 +9,23 @@ import { LemmyHttp } from "lemmy-js-client";
 
 import { selectCurrentUser, updateCurrentUserData } from "../reducers/accountReducer";
 
-export function useLemmyHttp(callLemmyMethod, formData) {
+export function useLemmyHttp(callLemmyMethod, formData = {}) {
   const currentUser = useSelector(selectCurrentUser);
+
+  const formDataArray = useMemo(() => {
+    const formDataArray = [];
+    for (const [key, value] of Object.entries(formData)) {
+      formDataArray.push(key);
+      formDataArray.push(value);
+    }
+    return formDataArray;
+  }, [formData]);
+
 
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
   const { isSuccess, isLoading, isError, error, data, isFetching, refetch } = useQuery({
-    queryKey: ["lemmyHttp", localPerson.id, callLemmyMethod],
+    queryKey: ["lemmyHttp", localPerson.id, callLemmyMethod, formDataArray],
     queryFn: async () => {
       const lemmyClient = new LemmyHttp(`https://${currentUser.base}`);
 

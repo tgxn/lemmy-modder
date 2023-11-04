@@ -1,24 +1,31 @@
 import React from "react";
 
 import Alert from "@mui/joy/Alert";
-import Card from "@mui/joy/Card";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
-import Badge from "@mui/joy/Badge";
 import Tooltip from "@mui/joy/Tooltip";
-
-import Link from "@mui/joy/Link";
-import Chip from "@mui/joy/Chip";
-import AdjustIcon from "@mui/icons-material/Adjust";
 
 import SecurityIcon from "@mui/icons-material/Security";
 import BlockIcon from "@mui/icons-material/Block";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import DeleteIcon from "@mui/icons-material/Delete";
 
+import { useLemmyHttp, refreshAllData } from "../hooks/useLemmyHttp";
 import { MomentAdjustedTimeAgo } from "./Display.jsx";
 
 export const UserTooltip = ({ user, ...props }) => {
+  console.log("user", user);
+
+  // get user modlog entries
+  const {
+    isLoading: userModActionsLoading,
+    isFetching: userModActionsFetching,
+    error: userModActionsError,
+    data: userModActionsData,
+  } = useLemmyHttp("getModlog", {
+    other_person_id: user.id,
+  });
+
   return (
     <Box
       sx={{
@@ -42,6 +49,32 @@ export const UserTooltip = ({ user, ...props }) => {
           <Typography fontSize="sm" gutterBottom>
             registered <MomentAdjustedTimeAgo fromNow>{user.published}</MomentAdjustedTimeAgo>
           </Typography>
+        )}
+      </Box>
+
+      {/* List of actions taken on this user */}
+      <Box sx={{ display: "flex", flexDirection: "column", maxWidth: 500, justifyContent: "center", p: 1 }}>
+        {userModActionsLoading && <Typography>Loading...</Typography>}
+        {userModActionsFetching && <Typography>Fetching...</Typography>}
+        {userModActionsError && <Typography>Error: {userModActionsError.message}</Typography>}
+        {userModActionsData && (
+          <Box
+            sx={{ display: "flex", flexDirection: "column", maxWidth: 500, justifyContent: "center", p: 1 }}
+          >
+            {Object.keys(userModActionsData).map(
+              (action) =>
+                userModActionsData[action].length > 0 && (
+                  <Typography fontSize="sm">
+                    {action} {userModActionsData[action].length} times
+                  </Typography>
+                ),
+            )}
+            {/* {userModActionsData.actions.map((action) => (
+              <Typography fontSize="sm" gutterBottom>
+                {action.action} {action.count} times
+              </Typography>
+            ))} */}
+          </Box>
         )}
       </Box>
 
