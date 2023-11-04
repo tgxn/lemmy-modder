@@ -9,7 +9,13 @@ import { useSelector } from "react-redux";
 import { LemmyHttp } from "lemmy-js-client";
 
 import useLemmyInfinite from "./useLemmyInfinite";
-import { selectFilterCommunity, selectFilterType, selectOrderBy, selectShowRemoved, selectShowResolved } from "../reducers/configReducer";
+import {
+  selectFilterCommunity,
+  selectFilterType,
+  selectOrderBy,
+  selectShowRemoved,
+  selectShowResolved,
+} from "../reducers/configReducer";
 
 // gets paginated / infinite list of reports from lemmy
 export default function useLemmyReports() {
@@ -172,10 +178,10 @@ export default function useLemmyReports() {
 
     mergedReports.sort((a, b) => {
       // check for values that are null
-      if (!a.post_report?.published) return 1;
-      if (!b.post_report?.published) return -1;
+      if (!a.time) return 1;
+      if (!b.time) return -1;
 
-      return new Date(b.post_report.published).getTime() - new Date(a.post_report.published).getTime();
+      return new Date(b.time).getTime() - new Date(a.time).getTime();
     });
 
     console.log("mergedReports", mergedReports);
