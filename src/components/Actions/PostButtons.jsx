@@ -13,6 +13,8 @@ import { BaseActionButton, ActionConfirmButton, InputElement, ConfirmDialog } fr
 import { getSiteData } from "../../hooks/getSiteData";
 import { selectShowResolved } from "../../reducers/configReducer.js";
 
+import { selectMandatoryModComment } from "../../reducers/configReducer";
+
 // allow resolving / unresolving a post report
 export const ResolvePostReportButton = ({ report, ...props }) => {
   const queryClient = useQueryClient();
@@ -140,6 +142,8 @@ export const DeletePostButton = ({ report, ...props }) => {
 
 // A moderator remove for a post.
 export const RemovePostButton = ({ report, ...props }) => {
+  const mandatoryModComment = useSelector(selectMandatoryModComment);
+
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [removeReason, setRemoveReason] = React.useState("");
 
@@ -193,6 +197,7 @@ export const RemovePostButton = ({ report, ...props }) => {
         // placeholder={`reason`}
         // inputText="Reason for removal"
         // isRequired={!report.post.removed}
+        disabled={mandatoryModComment && removeReason == ""}
         buttonMessage={actionText}
         color={actionColor}
         onConfirm={() => {
@@ -208,6 +213,8 @@ export const RemovePostButton = ({ report, ...props }) => {
 
 // completely purge a post
 export const PurgePostButton = ({ report, ...props }) => {
+  const mandatoryModComment = useSelector(selectMandatoryModComment);
+
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [purgeReason, setPurgeReason] = React.useState("");
 
@@ -252,7 +259,7 @@ export const PurgePostButton = ({ report, ...props }) => {
             placeholder={`purge reason`}
           />,
         ]}
-        disabled={purgeReason == ""}
+        disabled={mandatoryModComment && purgeReason == ""}
         buttonMessage={"Purge"}
         color={"danger"}
         onConfirm={() => {

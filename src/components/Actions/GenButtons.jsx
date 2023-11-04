@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useDispatch, useSelector } from "react-redux";
+
 import { useQueryClient } from "@tanstack/react-query";
 import moment from "moment";
 
@@ -14,8 +16,12 @@ import {
   ConfirmDialog,
 } from "./BaseElements.jsx";
 
+import { selectMandatoryModComment } from "../../reducers/configReducer";
+
 // banFromCommunity
 export const BanUserCommunityButton = ({ person, community, isBanned, ...props }) => {
+  const mandatoryModComment = useSelector(selectMandatoryModComment);
+
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [banReason, setBanReason] = React.useState("");
   const [removeData, setRemoveData] = React.useState(false);
@@ -91,7 +97,7 @@ export const BanUserCommunityButton = ({ person, community, isBanned, ...props }
             />
           ) : null,
         ]}
-        // disabled={banReason == ""}
+        disabled={mandatoryModComment && banReason == ""}
         buttonMessage={actionText}
         color={actionColor}
         onConfirm={() => {
@@ -133,6 +139,8 @@ export const BanUserCommunityButton = ({ person, community, isBanned, ...props }
 
 // band from site
 export const BanUserSiteButton = ({ person, ...props }) => {
+  const mandatoryModComment = useSelector(selectMandatoryModComment);
+
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [banReason, setBanReason] = React.useState("");
   const [removeData, setRemoveData] = React.useState(false);
@@ -204,7 +212,7 @@ export const BanUserSiteButton = ({ person, ...props }) => {
             />
           ) : null,
         ]}
-        // disabled={banReason == ""}
+        disabled={mandatoryModComment && banReason == ""}
         buttonMessage={actionText}
         color={actionColor}
         onConfirm={() => {
@@ -245,6 +253,8 @@ export const BanUserSiteButton = ({ person, ...props }) => {
 
 // PURGE from site
 export const PurgeUserSiteButton = ({ person, ...props }) => {
+  const mandatoryModComment = useSelector(selectMandatoryModComment);
+
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [purgeReason, setPurgeReason] = React.useState("");
 
@@ -294,7 +304,7 @@ export const PurgeUserSiteButton = ({ person, ...props }) => {
             placeholder={`${actionText.toLowerCase()} reason`}
           />,
         ]}
-        // disabled={purgeReason == ""}
+        disabled={mandatoryModComment && purgeReason == ""}
         buttonMessage={actionText}
         color={actionColor}
         onConfirm={() => {

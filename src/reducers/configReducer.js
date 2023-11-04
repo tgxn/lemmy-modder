@@ -92,6 +92,7 @@ export const selectModLogCommunityId = (state) => state.configReducer.modLogComm
 export const selectOrderBy = (state) => state.configReducer.orderBy;
 
 // export const selectPurgeWithoutDelete = (state) => state.configReducer.purgeWithoutDelete;
+export const selectMandatoryModComment = (state) => state.configReducer.mandatoryModComment;
 export const selectBlurNsfw = (state) => state.configReducer.blurNsfw;
 export const selectShowAvatars = (state) => state.configReducer.showAvatars;
 export const selectNsfwWords = (state) => state.configReducer.nsfwWords;

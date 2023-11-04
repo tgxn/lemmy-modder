@@ -1,27 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import Tooltip from "@mui/joy/Tooltip";
 import AspectRatio from "@mui/joy/AspectRatio";
 import Typography from "@mui/joy/Typography";
-
 import Box from "@mui/joy/Box";
 import Modal from "@mui/joy/Modal";
-import CircularProgress from "@mui/joy/CircularProgress";
-
 import LaunchIcon from "@mui/icons-material/Launch";
 
 import { SanitizedLink } from "../Display.jsx";
 import { Image, Video } from "./Image.jsx";
 
-import {
-  setConfigItem,
-  setConfigItemJson,
-  selectBlurNsfw,
-  selectShowAvatars,
-  selectNsfwWords,
-} from "../../reducers/configReducer";
+import { selectBlurNsfw, selectNsfwWords } from "../../reducers/configReducer";
 
 function ThumbWrapper({ width = 200, tooltip, modal = null, children }) {
   return (

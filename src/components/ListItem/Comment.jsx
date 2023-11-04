@@ -12,7 +12,11 @@ import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 
 import { SquareChip } from "../Display.jsx";
 
-import { ResolveCommentReportButton, RemoveCommentButton } from "../Actions/CommentButtons.jsx";
+import {
+  ResolveCommentReportButton,
+  RemoveCommentButton,
+  PurgeCommentButton,
+} from "../Actions/CommentButtons.jsx";
 import { BanUserCommunityButton, BanUserSiteButton, PurgeUserSiteButton } from "../Actions/GenButtons.jsx";
 
 import { PersonMetaLine, CommunityMetaLine } from "../Shared/ActorMeta.jsx";
@@ -157,6 +161,7 @@ export default function CommentListItem({ report }) {
           {/* @ TODO SHOW FOR CREATOR? */}
           {/* <DeletePostButton report={report} /> */}
           <RemoveCommentButton report={report} />
+          <PurgeCommentButton report={report} />
 
           <Divider orientation="vertical" />
 
