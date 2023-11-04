@@ -1,3 +1,14 @@
+export function getUserRole(currentUser) {
+  if (!currentUser) return null;
+
+  // is admin
+  if (currentUser.site.my_user.local_user_view.person.admin) return "admin";
+
+  // is mod
+  if (currentUser.site.my_user.moderates.length > 0) return "mod";
+
+  return "user";
+}
 // given a Lemmy actor_id, determine the type, user and base url of the actor
 // https://lemmy.tgxn.net/u/tgxn
 // https://lemmy.tgxn.net/c/lemmy
