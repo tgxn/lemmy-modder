@@ -1,42 +1,91 @@
 import * as React from "react";
 
+import { useDispatch, useSelector } from "react-redux";
+
+import FormControl from "@mui/joy/FormControl";
+import FormLabel from "@mui/joy/FormLabel";
+import FormHelperText from "@mui/joy/FormHelperText";
+import TextField from "@mui/joy/TextField";
+import Autocomplete from "@mui/joy/Autocomplete";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
-import Typography from "@mui/joy/Typography";
 import Switch from "@mui/joy/Switch";
-import Grid from "@mui/joy/Grid";
+import DialogTitle from "@mui/joy/DialogTitle";
+import ModalClose from "@mui/joy/ModalClose";
+import Divider from "@mui/joy/Divider";
 
-import List from "@mui/joy/List";
-import ListItem from "@mui/joy/ListItem";
-import ListItemDecorator, { listItemDecoratorClasses } from "@mui/joy/ListItemDecorator";
-import ListItemContent from "@mui/joy/ListItemContent";
-import ListItemButton from "@mui/joy/ListItemButton";
-import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
-import InboxIcon from "@mui/icons-material/Inbox";
-import Label from "@mui/icons-material/Label";
-import People from "@mui/icons-material/People";
-import Info from "@mui/icons-material/Info";
-import Star from "@mui/icons-material/Star";
+import {
+  setConfigItem,
+  setConfigItemJson,
+  selectBlurNsfw,
+  selectShowAvatars,
+  selectNsfwWords,
+} from "../../reducers/configReducer";
 
-import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+function BooleanSetting({ label, subtext, value, onChange }) {
+  return (
+    <FormControl orientation="horizontal" sx={{ width: 500, justifyContent: "space-between" }}>
+      <div>
+        <FormLabel>{label}</FormLabel>
+        <FormHelperText sx={{ mt: 0 }}>{subtext}</FormHelperText>
+      </div>
+      <Switch
+        checked={value}
+        onChange={(event) => onChange(event.target.checked)}
+        color={value ? "success" : "neutral"}
+        variant={value ? "solid" : "outlined"}
+        endDecorator={value ? "On" : "Off"}
+        slotProps={{
+          endDecorator: {
+            sx: {
+              minWidth: 24,
+            },
+          },
+        }}
+      />
+    </FormControl>
+  );
+}
+
+function ArraySetting({ label, subtext, value, onChange }) {
+  return (
+    <FormControl
+      orientation="horizontal"
+      sx={{ width: 500, justifyContent: "space-between", flexDirection: "column" }}
+      size="sm"
+    >
+      <div>
+        <FormLabel>{label}</FormLabel>
+        {/* <FormHelperText sx={{ mt: 0 }}>{subtext}</FormHelperText> */}
+      </div>
+      <Autocomplete
+        freeSolo
+        multiple
+        size="sm"
+        id="tags-default"
+        autoComplete={false}
+        openOnFocus={false}
+        placeholder={subtext}
+        options={[]}
+        getOptionLabel={(option) => option}
+        defaultValue={value}
+        onChange={(e, newval, reason) => {
+          console.log("onChange", newval, reason);
+          onChange(newval);
+        }}
+      />
+    </FormControl>
+  );
+}
 
 export default function ConfigModal({ open, onClose }) {
-  // Settings
+  const blurNsfw = useSelector(selectBlurNsfw);
+  const showAvatars = useSelector(selectShowAvatars);
+  const nsfwWords = useSelector(selectNsfwWords);
 
-  /**
-   * - Blur NSFW Previews?
-   * - Media Click Action: Popup, Spotlight
-   * - Show Full instance for remote users?
-   * - Show Avatars?
-   * -
-   *
-   */
-
-  const [blurNSFW, setBlurNSFW] = React.useState(true);
-
-  // open = true;
+  const dispatch = useDispatch();
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -55,87 +104,38 @@ export default function ConfigModal({ open, onClose }) {
           },
         })}
       >
+        <ModalClose variant="plain" sx={{ m: 1 }} />
+        <DialogTitle>User Configuration</DialogTitle>
+        <Divider />
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
             alignItems: "center",
-            flexDirection: "row",
+            flexDirection: "column",
+            gap: 2,
+            width: "500px",
           }}
         >
-          {/** right side settings */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              flexDirection: "column",
-            }}
-          >
-            {/* // config/sdettings */}
-
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexDirection: "row",
-              }}
-            >
-              <Typography
-                sx={{
-                  mr: 1,
-                }}
-              >
-                Blur NSFW?
-              </Typography>
-              <Switch
-                checked={blurNSFW}
-                onChange={(e) => {
-                  setBlurNSFW(e.target.checked);
-                }}
-                inputProps={{ "aria-label": "controlled" }}
-              />
-            </Box>
-
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexDirection: "row",
-              }}
-            >
-              <Typography
-                sx={{
-                  mr: 1,
-                }}
-              >
-                Show Avatars?
-              </Typography>
-              <Switch
-                checked={blurNSFW}
-                onChange={(e) => {
-                  setBlurNSFW(e.target.checked);
-                }}
-                inputProps={{ "aria-label": "controlled" }}
-              />
-            </Box>
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            mt: 1,
-            display: "flex",
-            gap: 1,
-            flexDirection: { xs: "column", sm: "row-reverse" },
-          }}
-        >
-          <Button variant="solid" color="primary" onClick={onClose}>
-            Save
-          </Button>
-          <Button variant="outlined" color="neutral" onClick={onClose}>
-            Cancel
-          </Button>
+          <BooleanSetting
+            label="Show Avatars?"
+            subtext="should we display avatars for users?"
+            value={showAvatars}
+            onChange={(e) => dispatch(setConfigItem("showAvatars", e))}
+          />
+          <BooleanSetting
+            label="Blur NSFW previews?"
+            subtext="should posts with NSFW (or reports with words in the NSFW list) be blurred?"
+            value={blurNsfw}
+            onChange={(e) => dispatch(setConfigItem("blurNsfw", e))}
+          />
+          {blurNsfw && (
+            <ArraySetting
+              label="NSFW Words List"
+              subtext="list of words to also mark as NSFW"
+              value={nsfwWords}
+              onChange={(e) => dispatch(setConfigItemJson("nsfwWords", e))}
+            />
+          )}
         </Box>
       </ModalDialog>
     </Modal>
