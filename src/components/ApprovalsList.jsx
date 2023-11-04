@@ -16,7 +16,7 @@ import ReportIcon from "@mui/icons-material/Report";
 
 import { MomentAdjustedTimeAgo, SquareChip } from "./Display.jsx";
 
-import { PersonMetaLine, ReportDetails } from "./ListItem/Common.jsx";
+import { PersonMetaLine } from "./Shared/ActorMeta.jsx";
 
 import { ApproveButton, DenyButton } from "./Actions/RegistrationButtons.jsx";
 

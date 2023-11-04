@@ -26,7 +26,8 @@ import { ResolvePostReportButton, RemovePostButton, PurgePostButton } from "../A
 
 import { BanUserCommunityButton, BanUserSiteButton, PurgeUserSiteButton } from "../Actions/GenButtons.jsx";
 
-import { PersonMetaLine, CommunityMetaLine, ReportDetails } from "./Common.jsx";
+import { PersonMetaLine, CommunityMetaLine } from "../Shared/ActorMeta.jsx";
+import { ReportDetails } from "../Shared/ReportDetails.jsx";
 
 import { getSiteData } from "../../hooks/getSiteData";
 
@@ -186,7 +187,7 @@ export default function PostListItem({ report }) {
                 flexShrink: 0,
               }}
             >
-              <PostThumb post={report.post} />
+              <PostThumb post={report.post} report={report.post_report} />
             </Box>
           )}
         </Box>
@@ -218,7 +219,7 @@ export default function PostListItem({ report }) {
             {/* @TODO Maybe only show purge is post is deleted?? */}
             <PurgePostButton report={report} />
 
-            <Divider orientation="vertical" flexItem />
+            <Divider orientation="vertical" />
 
             <BanUserCommunityButton person={report.post_creator} community={report.community} />
             <BanUserSiteButton person={report.post_creator} />

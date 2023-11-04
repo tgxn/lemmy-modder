@@ -15,7 +15,8 @@ import { SquareChip } from "../Display.jsx";
 import { ResolveCommentReportButton, RemoveCommentButton } from "../Actions/CommentButtons.jsx";
 import { BanUserCommunityButton, BanUserSiteButton, PurgeUserSiteButton } from "../Actions/GenButtons.jsx";
 
-import { PersonMetaLine, CommunityMetaLine, ReportDetails } from "./Common.jsx";
+import { PersonMetaLine, CommunityMetaLine } from "../Shared/ActorMeta.jsx";
+import { ReportDetails } from "../Shared/ReportDetails.jsx";
 
 import { MomentAdjustedTimeAgo, SanitizedLink, FediverseChipLink, UpvoteDownvoteChip } from "../Display.jsx";
 
@@ -157,7 +158,7 @@ export default function CommentListItem({ report }) {
           {/* <DeletePostButton report={report} /> */}
           <RemoveCommentButton report={report} />
 
-          <Divider orientation="vertical" flexItem />
+          <Divider orientation="vertical" />
 
           <BanUserCommunityButton person={report.comment_creator} community={report.community} />
           <BanUserSiteButton person={report.comment_creator} />
