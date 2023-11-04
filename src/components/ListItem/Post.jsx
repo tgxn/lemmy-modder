@@ -187,7 +187,7 @@ export default function PostListItem({ report }) {
                 flexShrink: 0,
               }}
             >
-              <PostThumb post={report.post} />
+              <PostThumb post={report.post} report={report.post_report} />
             </Box>
           )}
         </Box>

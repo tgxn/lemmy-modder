@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
+import { useDispatch, useSelector } from "react-redux";
+
 import Tooltip from "@mui/joy/Tooltip";
 import AspectRatio from "@mui/joy/AspectRatio";
 import Typography from "@mui/joy/Typography";
@@ -12,6 +14,14 @@ import LaunchIcon from "@mui/icons-material/Launch";
 
 import { SanitizedLink } from "../Display.jsx";
 import { Image, Video } from "./Image.jsx";
+
+import {
+  setConfigItem,
+  setConfigItemJson,
+  selectBlurNsfw,
+  selectShowAvatars,
+  selectNsfwWords,
+} from "../../reducers/configReducer";
 
 function ThumbWrapper({ width = 200, tooltip, modal = null, children }) {
   return (
@@ -30,7 +40,7 @@ function ThumbWrapper({ width = 200, tooltip, modal = null, children }) {
   );
 }
 
-export default function PostThumb({ width = 200, post }) {
+export default function PostThumb({ width = 200, post, report }) {
   /**
    * look for these in `post`
    *
@@ -40,6 +50,13 @@ export default function PostThumb({ width = 200, post }) {
    * - embed_title
    * - embed_description
    */
+
+  const reportReason = report.reason.toLowerCase() || null;
+
+  console.log("report", reportReason);
+
+  const blurNsfw = useSelector(selectBlurNsfw);
+  const nsfwWords = useSelector(selectNsfwWords);
 
   const { url, thumbnail_url, nsfw, embed_title, embed_description } = post;
 
@@ -52,6 +69,13 @@ export default function PostThumb({ width = 200, post }) {
   const handleClose = () => {
     setOpen(false);
   };
+
+  let shouldBlurPreview = false;
+  if (blurNsfw && nsfw) shouldBlurPreview = true;
+  if (blurNsfw && nsfwWords.some((word) => reportReason.includes(word))) {
+    shouldBlurPreview = true;
+  }
+
   // return image content thumb
   if (isImage) {
     return (
@@ -88,7 +112,7 @@ export default function PostThumb({ width = 200, post }) {
       >
         <Image
           imageSrc={url}
-          nsfw={nsfw}
+          blurPreview={shouldBlurPreview}
           onClick={() => {
             setOpen(true);
           }}

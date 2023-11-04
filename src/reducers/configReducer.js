@@ -13,20 +13,17 @@ export function setConfigItemJson(configKey, configValue) {
   };
 }
 
-function loadWithDefault(key, defaultValue = null, parseJson = false) {
+function loadWithDefault(key, defaultValue = null, parseJson = true) {
   const storedValue = localStorage.getItem(key);
-  try {
-    if (storedValue) {
-      if (parseJson) {
-        return JSON.parse(storedValue);
-      } else {
-        return storedValue;
-      }
-    } else {
-      return defaultValue;
+
+  if (storedValue) {
+    try {
+      return JSON.parse(storedValue);
+    } catch (e) {
+      console.error("Error parsiong json config", e);
+      return storedValue;
     }
-  } catch (e) {
-    console.error("Error loading config", e);
+  } else {
     return defaultValue;
   }
 }
@@ -56,7 +53,7 @@ const initialState = {
 
   blurNsfw: loadWithDefault("config.blurNsfw", true),
   showAvatars: loadWithDefault("config.showAvatars", true),
-  nsfwWords: loadWithDefault("config.nsfwWords", [], true),
+  nsfwWords: loadWithDefault("config.nsfwWords", []),
 };
 
 const configReducer = (state = initialState, action = {}) => {
