@@ -17,6 +17,8 @@ import { parseActorId } from "../../utils.js";
 
 import { getSiteData } from "../../hooks/getSiteData";
 
+import { PersonMetaChips } from "./UserChips.jsx";
+
 export function PersonMetaLine({ creator, by = false, sx }) {
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
@@ -57,7 +59,7 @@ export function PersonMetaLine({ creator, by = false, sx }) {
           variant="outlined"
           title={<UserTooltip user={creator} />}
           arrow
-          disableInteractive
+          // disableInteractive
         >
           <Link href={creator.actor_id} target="_blank" rel="noopener noreferrer" sx={{ pb: 0.7, pl: 1 }}>
             <Typography component="span" sx={{ mr: 0.25 }}>
@@ -71,7 +73,8 @@ export function PersonMetaLine({ creator, by = false, sx }) {
       </Box>
 
       {/* Post Author Meta */}
-      <Box sx={{ display: "flex", gap: 1 }}>
+      <PersonMetaChips person={creator} />
+      {/* <Box sx={{ display: "flex", gap: 1 }}>
         {baseUrl != actorInstanceBaseUrl && <FediverseChipLink href={fediverseUserLink} size="sm" />}
 
         {creator.admin && (
@@ -97,7 +100,7 @@ export function PersonMetaLine({ creator, by = false, sx }) {
         {creator.deleted && (
           <SquareChip color={"danger"} tooltip="User is deleted" iconOnly={<DeleteIcon fontSize="small" />} />
         )}
-      </Box>
+      </Box> */}
     </Box>
   );
 }
