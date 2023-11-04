@@ -34,7 +34,7 @@ export default function UserMenu() {
 
   const queryClient = useQueryClient();
 
-  const users = useSelector(selectUsers);
+  // const users = useSelector(selectUsers);
   const accountIsLoading = useSelector(selectAccountIsLoading);
 
   const { mutate: refreshMutate } = refreshAllData();
