@@ -14,7 +14,8 @@ import { MomentAdjustedTimeAgo, SquareChip } from "../Display.jsx";
 import { ResolvePMReportButton } from "../Actions/PMButtons.jsx";
 import { BanUserSiteButton, PurgeUserSiteButton } from "../Actions/GenButtons.jsx";
 
-import { PersonMetaLine, ReportDetails } from "./Common.jsx";
+import { PersonMetaLine, CommunityMetaLine } from "../Shared/ActorMeta.jsx";
+import { ReportDetails } from "../Shared/ReportDetails.jsx";
 
 const PMContentDetail = ({ report }) => {
   return (
