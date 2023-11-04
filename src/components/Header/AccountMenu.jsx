@@ -34,13 +34,14 @@ import { parseActorId, getUserRole } from "../../utils.js";
 import { setAccountIsLoading, setCurrentUser } from "../../reducers/accountReducer";
 
 import { RoleIcons } from "../Shared/Icons.jsx";
+import { Typography } from "@mui/material";
 
 function UserListItem({ user }) {
   const dispatch = useDispatch();
 
   const queryClient = useQueryClient();
 
-  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+  const { localPerson } = getSiteData();
 
   const roleIcon = React.useMemo(() => {
     const personRole = getUserRole(user);
@@ -50,16 +51,6 @@ function UserListItem({ user }) {
     console.log("userIcon", userIcon);
     return userIcon;
   }, [user]);
-  // if (userRole == "admin") {
-  //   userTooltip = "admin";
-  //   userIcon = <VerifiedUserIcon />;
-  // }
-  // if (userRole == "mod") {
-  //   userTooltip = "mod";
-  //   userIcon = <SupervisedUserCircleIcon />;
-  // }
-
-  // const parsedActor = parseActorId(localPerson.actor_id);
 
   return (
     <MenuItem
@@ -81,25 +72,16 @@ function UserListItem({ user }) {
             auth: user.jwt,
           });
 
+          // there must be a user returned in this api call
           if (!getSite.my_user) {
-            // set instance base to the current instance
-            // setInstanceBase(user.base);
-            // setUsername(user.site.my_user.local_user_view?.person.name);
-
             throw new Error("jwt does not provide auth, re-authenticate");
           }
 
-          // if (saveSession) {
-          //   dispatch(addUser(user.base, auth.jwt, getSite));
-          // } else {
-          // dispatch(setCurrentUser(user.base, auth.jwt, getSite));
+          // TODO we need to update the user's details in the saved accounts array too, if this is a saved session
           dispatch(setCurrentUser(user.base, user.jwt, getSite));
-          // }
         } catch (e) {
           toast(typeof e == "string" ? e : e.message);
         } finally {
-          // setIsLoading(false);
-
           dispatch(setAccountIsLoading(false));
         }
       }}
@@ -107,11 +89,6 @@ function UserListItem({ user }) {
       <ListItemDecorator>
         <UserAvatar source={user.site.my_user?.local_user_view?.person.avatar} />
       </ListItemDecorator>
-      {/* {user.site.my_user?.local_user_view?.person.actor_id == localPerson.actor_id ? (
-        <SwitchAccountIcon sx={{ mr: 1 }} />
-      ) : (
-        <SwitchAccountIcon sx={{ mr: 1 }} />
-      )} */}
       <ListItemContent>
         {user.site.my_user?.local_user_view?.person.name}@{user.base}
       </ListItemContent>
@@ -123,25 +100,10 @@ function UserListItem({ user }) {
 export default function AccountMenu() {
   const users = useSelector(selectUsers);
 
-  const { localPerson, userRole } = getSiteData();
-
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [menuOpen, setMenuOpen] = React.useState(false);
-
-  const handleClick = (event) => {
-    if (menuOpen) return handleClose();
-
-    setAnchorEl(event.currentTarget);
-    setMenuOpen(true);
-  };
-
-  const handleClose = () => {
-    setMenuOpen(false);
-    setAnchorEl(null);
-  };
+  const { localUser, localPerson, userRole } = getSiteData();
 
   let userTooltip = "user";
-  let userIcon = <AccountBoxIcon />;
+  let userIcon = RoleIcons[userTooltip]();
   if (userRole == "admin") {
     userTooltip = "admin";
     userIcon = <VerifiedUserIcon />;
@@ -165,9 +127,20 @@ export default function AccountMenu() {
           sx={{
             mx: 1,
             borderRadius: 4,
+
+            // fontSize: "14px",
+            // overflow: "hidden",
+            display: "flex",
+            // flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            // gap: 1,
           }}
         >
-          {parsedActor.actorName}@{parsedActor.actorBaseUrl} ({userTooltip})
+          <Typography sx={{ pr: 1 }}>
+            {parsedActor.actorName}@{parsedActor.actorBaseUrl}
+          </Typography>{" "}
+          {userIcon}
         </MenuButton>
       </BasicInfoTooltip>
       <Menu placement="bottom-end">
