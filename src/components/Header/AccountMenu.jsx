@@ -9,6 +9,9 @@ import { Toaster, toast } from "sonner";
 
 import Button from "@mui/joy/Button";
 import Menu from "@mui/joy/Menu";
+import MenuList from "@mui/joy/MenuList";
+import MenuButton from "@mui/joy/MenuButton";
+import Dropdown from "@mui/joy/Dropdown";
 import MenuItem from "@mui/joy/MenuItem";
 import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import ListItemContent from "@mui/joy/ListItemContent";
@@ -32,7 +35,7 @@ import { setAccountIsLoading, setCurrentUser } from "../../reducers/accountReduc
 
 import { RoleIcons } from "../Shared/Icons.jsx";
 
-function UserListItem({ user, onClose }) {
+function UserListItem({ user }) {
   const dispatch = useDispatch();
 
   const queryClient = useQueryClient();
@@ -65,8 +68,6 @@ function UserListItem({ user, onClose }) {
       }}
       disabled={user.site.my_user?.local_user_view?.person.actor_id == localPerson.actor_id}
       onClick={async () => {
-        onClose();
-
         // delete cache for current user
         queryClient.invalidateQueries({ queryKey: ["lemmyHttp", localPerson.id] });
         dispatch(logoutCurrent());
@@ -153,16 +154,12 @@ export default function AccountMenu() {
   const parsedActor = parseActorId(localPerson.actor_id);
 
   return (
-    <>
+    <Dropdown>
       <BasicInfoTooltip title={"Open User Switcher"} placement="bottom" variant="soft">
-        <Button
-          aria-controls={menuOpen ? "user-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={menuOpen ? "true" : undefined}
+        <MenuButton
           size="sm"
           variant="outlined"
           color="neutral"
-          onClick={handleClick}
           startDecorator={<UserAvatar size="20px" source={localPerson?.avatar} />}
           endDecorator={<ArrowDropDown />}
           sx={{
@@ -171,17 +168,17 @@ export default function AccountMenu() {
           }}
         >
           {parsedActor.actorName}@{parsedActor.actorBaseUrl} ({userTooltip})
-        </Button>
+        </MenuButton>
       </BasicInfoTooltip>
-      <Menu id="user-menu" anchorEl={anchorEl} open={menuOpen} onClose={handleClose} placement="bottom-end">
+      <Menu placement="bottom-end">
         {users && users.length > 0 && (
           <>
             {users.map((user, index) => {
-              return <UserListItem user={user} key={index} onClose={handleClose} />;
+              return <UserListItem user={user} key={index} />;
             })}
           </>
         )}
       </Menu>
-    </>
+    </Dropdown>
   );
 }
