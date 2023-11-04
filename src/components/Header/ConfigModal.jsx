@@ -103,7 +103,7 @@ export default function ConfigModal({ open, onClose }) {
         })}
       >
         <ModalClose variant="plain" sx={{ m: 1 }} />
-        <DialogTitle>User Configuration</DialogTitle>
+        <DialogTitle>UI Configuration</DialogTitle>
         <Divider />
         <Box
           sx={{
