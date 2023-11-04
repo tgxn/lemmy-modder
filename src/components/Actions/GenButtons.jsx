@@ -188,19 +188,19 @@ export const BanUserSiteButton = ({ person, ...props }) => {
             placeholder={`${actionText.toLowerCase()} reason`}
           />,
           !person.banned ? (
-            <CheckboxElement
-              key="removeData"
-              inputText="Remove Data"
-              value={removeData}
-              setValue={setRemoveData}
-            />
-          ) : null,
-          !person ? (
             <ExpiryLengthElement
               key="banExpires"
               inputText="Ban Expires"
               value={expires}
               setValue={setExpires}
+            />
+          ) : null,
+          !person.banned ? (
+            <CheckboxElement
+              key="removeData"
+              inputText="Remove Data"
+              value={removeData}
+              setValue={setRemoveData}
             />
           ) : null,
         ]}
