@@ -5,10 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
 import FormHelperText from "@mui/joy/FormHelperText";
-import TextField from "@mui/joy/TextField";
 import Autocomplete from "@mui/joy/Autocomplete";
 import Box from "@mui/joy/Box";
-import Button from "@mui/joy/Button";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import Switch from "@mui/joy/Switch";
@@ -70,7 +68,7 @@ function ArraySetting({ label, subtext, value, onChange }) {
         placeholder={subtext}
         options={[]}
         getOptionLabel={(option) => option}
-        defaultValue={value}
+        defaultValue={[...value]}
         onChange={(e, newval, reason) => {
           console.log("onChange", newval, reason);
           onChange(newval);

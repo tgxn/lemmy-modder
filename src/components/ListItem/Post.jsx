@@ -219,7 +219,7 @@ export default function PostListItem({ report }) {
             {/* @TODO Maybe only show purge is post is deleted?? */}
             <PurgePostButton report={report} />
 
-            <Divider orientation="vertical" flexItem />
+            <Divider orientation="vertical" />
 
             <BanUserCommunityButton person={report.post_creator} community={report.community} />
             <BanUserSiteButton person={report.post_creator} />

@@ -158,7 +158,7 @@ export default function CommentListItem({ report }) {
           {/* <DeletePostButton report={report} /> */}
           <RemoveCommentButton report={report} />
 
-          <Divider orientation="vertical" flexItem />
+          <Divider orientation="vertical" />
 
           <BanUserCommunityButton person={report.comment_creator} community={report.community} />
           <BanUserSiteButton person={report.comment_creator} />

@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 
 import { useImage } from "react-image";
 
 import Box from "@mui/joy/Box";
-import Modal from "@mui/joy/Modal";
 import CircularProgress from "@mui/joy/CircularProgress";
 
 const ContentSkeleton = React.memo(function ({ radius = "4px" }) {
@@ -67,13 +66,6 @@ export const Image = React.memo(({ imageSrc, blurPreview, onClick }) => {
     srcList: imageSrc,
     useSuspense: false,
   });
-
-  const [open, setOpen] = useState(false);
-  // const [image, setImage] = useState("false");
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   return (
     <Box
