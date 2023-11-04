@@ -7,7 +7,7 @@ import { getSiteData } from "../hooks/getSiteData";
 
 import { LemmyHttp } from "lemmy-js-client";
 
-import { selectCurrentUser, updateCurrentUserData } from "../reducers/accountReducer";
+import { selectCurrentUser, updateCurrentUserData, setAccountIsLoading } from "../reducers/accountReducer";
 
 export function useLemmyHttp(callLemmyMethod, formData) {
   const currentUser = useSelector(selectCurrentUser);
@@ -82,6 +82,8 @@ export function refreshAllData() {
 
   const mutation = useMutation({
     mutationFn: async () => {
+      dispatch(setAccountIsLoading(true));
+
       const lemmyClient = new LemmyHttp(`https://${currentUser.base}`);
 
       const getSite = await lemmyClient.getSite({
@@ -91,6 +93,8 @@ export function refreshAllData() {
       dispatch(updateCurrentUserData(getSite));
 
       queryClient.invalidateQueries({ queryKey: ["lemmyHttp"] });
+
+      dispatch(setAccountIsLoading(false));
     },
   });
 
