@@ -21,6 +21,7 @@ import Dashboard from "./pages/Dashboard";
 import Actions from "./pages/Actions";
 import Approvals from "./pages/Approvals";
 import Reports from "./pages/Reports";
+import Messages from "./pages/Messages";
 import Login from "./pages/Login";
 
 import AppStore from "./store";
@@ -178,6 +179,27 @@ function PageRouter() {
                     }}
                   >
                     <Actions />
+                  </Container>
+                </Box>
+              }
+            />
+            <Route
+              path="/messages"
+              element={
+                <Box
+                  sx={{
+                    overflow: "auto",
+                    height: "calc(100% - 50px)",
+                    width: "100%",
+                  }}
+                >
+                  <Container
+                    maxWidth={"lg"}
+                    sx={{
+                      py: 2,
+                    }}
+                  >
+                    <Messages />
                   </Container>
                 </Box>
               }
