@@ -127,14 +127,9 @@ export default function AccountMenu() {
           sx={{
             mx: 1,
             borderRadius: 4,
-
-            // fontSize: "14px",
-            // overflow: "hidden",
             display: "flex",
-            // flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
-            // gap: 1,
           }}
         >
           <Typography sx={{ pr: 1 }}>
