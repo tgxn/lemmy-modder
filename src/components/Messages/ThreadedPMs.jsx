@@ -3,24 +3,21 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Box from "@mui/joy/Box";
-import Sheet from "@mui/joy/Sheet";
-import Divider from "@mui/joy/Divider";
 import Avatar from "@mui/joy/Avatar";
 import List from "@mui/joy/List";
 import Button from "@mui/joy/Button";
-import ListItem from "@mui/joy/ListItem";
 import ListItemButton from "@mui/joy/ListItemButton";
 import ListItemContent from "@mui/joy/ListItemContent";
 import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import Typography from "@mui/joy/Typography";
 import Badge from "@mui/joy/Badge";
 
+import { getSiteData } from "../../hooks/getSiteData";
 import useLemmyInfinite from "../../hooks/useLemmyInfinite";
 
-import { PersonMetaTitle, PersonMetaLine, CommunityMetaLine } from "../Shared/ActorMeta.jsx";
+import { PersonMetaTitle } from "../Shared/ActorMeta.jsx";
 
-import { getSiteData } from "../../hooks/getSiteData";
-import ChatMessage from "./ChatMessage.jsx";
+import PMSheet from "./PMSheet.jsx";
 
 export default function ThreadedPMs({ pms }) {
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
@@ -199,64 +196,7 @@ export default function ThreadedPMs({ pms }) {
       </Box>
 
       {/* pm list chat view */}
-      <Sheet
-        sx={{
-          p: 1,
-          ml: 1,
-          borderRadius: 6,
-
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-          width: "100%",
-          flexGrow: 1,
-        }}
-      >
-        {!selectedChat && <Typography>Select a chat to view</Typography>}
-        {selectedChat && (
-          <>
-            <Typography>
-              <PersonMetaLine display="outline" creator={selectedChat.person} />
-            </Typography>
-
-            <Divider />
-
-            <List
-              sx={{
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                minHeight: "200px",
-                maxHeight: "550px",
-                overflow: "auto",
-                // justifyContent: "flex-end",
-                // margin: "auto",
-              }}
-              dense={false}
-            >
-              {selectedChat.messages.map((message) => {
-                return <ChatMessage message={message} />;
-
-                return (
-                  <ListItem>
-                    <ListItemDecorator>
-                      <Avatar src={message.creator.avatar} />
-                    </ListItemDecorator>
-                    <ListItemContent>
-                      <Typography level="title-sm">
-                        {message.creator.display_name || message.creator.name}
-                      </Typography>
-                      <Typography level="body-sm" noWrap>
-                        {message.private_message.content}
-                      </Typography>
-                    </ListItemContent>
-                  </ListItem>
-                );
-              })}
-            </List>
-          </>
-        )}
-      </Sheet>
+      <PMSheet selectedChat={selectedChat} />
     </Box>
   );
 }
