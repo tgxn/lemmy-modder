@@ -117,6 +117,83 @@ export function PersonMetaLine({ creator, by = false, sx }) {
   );
 }
 
+export function PersonMetaTitle({ creator, sx }) {
+  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+
+  const actorInstanceBaseUrl = creator.actor_id.split("/")[2];
+
+  // console.log("creator", creator);
+
+  let localUserLink = `https://${baseUrl}/u/${creator.name}`;
+  if (baseUrl != actorInstanceBaseUrl) localUserLink = `${localUserLink}@${actorInstanceBaseUrl}`;
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        gap: 1,
+        py: 0.0,
+        ...sx,
+      }}
+    >
+      <Box
+        sx={{
+          fontSize: "14px",
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        {creator.display_name && (
+          <Typography sx={{ fontSize: "14px", px: 1 }}>{creator.display_name}</Typography>
+        )}
+
+        {/* <Link href={creator.actor_id} target="_blank" rel="noopener noreferrer" sx={{ pb: 0.7, pl: 1 }}> */}
+        <Typography component="span" sx={{ mr: 0.25 }}>
+          {creator.name}
+        </Typography>
+
+        {baseUrl != actorInstanceBaseUrl && (
+          <Typography component="span">@{creator.actor_id.split("/")[2]}</Typography>
+        )}
+        {/* </Link> */}
+      </Box>
+
+      {/* Post Author Meta */}
+      <PersonMetaChips person={creator} />
+      {/* <Box sx={{ display: "flex", gap: 1 }}>
+        {baseUrl != actorInstanceBaseUrl && <FediverseChipLink href={fediverseUserLink} size="sm" />}
+
+        {creator.admin && (
+          <SquareChip
+            color={"primary"}
+            tooltip="User is site admin"
+            iconOnly={<SecurityIcon fontSize="small" />}
+          />
+        )}
+
+        {creator.banned && (
+          <SquareChip color={"danger"} tooltip="User is banned" iconOnly={<BlockIcon fontSize="small" />} />
+        )}
+
+        {creator.bot_account && (
+          <SquareChip
+            color={"warning"}
+            tooltip="User is bot account"
+            iconOnly={<SmartToyIcon fontSize="small" />}
+          />
+        )}
+
+        {creator.deleted && (
+          <SquareChip color={"danger"} tooltip="User is deleted" iconOnly={<DeleteIcon fontSize="small" />} />
+        )}
+      </Box> */}
+    </Box>
+  );
+}
+
 export function CommunityMetaLine({ community, showIn = false, sx }) {
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 

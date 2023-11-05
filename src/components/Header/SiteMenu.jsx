@@ -91,7 +91,7 @@ export default function SiteMenu() {
           <DashboardIcon />
         </Button>
       </BasicInfoTooltip>
-
+      {/* 
       <BasicInfoTooltip title="PMs" placement="bottom" variant="soft">
         <Button
           size="sm"
@@ -120,7 +120,7 @@ export default function SiteMenu() {
         >
           Messages
         </Button>
-      </BasicInfoTooltip>
+      </BasicInfoTooltip> */}
 
       {userRole != "user" && (
         <BasicInfoTooltip title="Reports" placement="bottom" variant="soft">
