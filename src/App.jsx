@@ -204,6 +204,27 @@ function PageRouter() {
                 </Box>
               }
             />
+            <Route
+              path="/messages/:user"
+              element={
+                <Box
+                  sx={{
+                    overflow: "auto",
+                    height: "calc(100% - 50px)",
+                    width: "100%",
+                  }}
+                >
+                  <Container
+                    maxWidth={"lg"}
+                    sx={{
+                      py: 2,
+                    }}
+                  >
+                    <Messages />
+                  </Container>
+                </Box>
+              }
+            />
           </Routes>
         </Box>
       </HashRouter>

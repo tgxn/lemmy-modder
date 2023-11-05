@@ -55,7 +55,8 @@ export default function UserMenu() {
     if (!unreadCountData) return null;
 
     console.log("unreadCountData", unreadCountData);
-    return unreadCountData.replies + unreadCountData.mentions + unreadCountData.private_messages;
+    // return unreadCountData.replies + unreadCountData.mentions + unreadCountData.private_messages;
+    return unreadCountData.private_messages; // TODO we only show pms for now
   }, [unreadCountData]);
 
   // const users = useSelector(selectUsers);

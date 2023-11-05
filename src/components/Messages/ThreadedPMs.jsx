@@ -1,11 +1,13 @@
 import React from "react";
 
+import { useNavigate, useParams } from "react-router-dom";
+
 import Box from "@mui/joy/Box";
 import Sheet from "@mui/joy/Sheet";
 import Divider from "@mui/joy/Divider";
 import Avatar from "@mui/joy/Avatar";
-
 import List from "@mui/joy/List";
+import Button from "@mui/joy/Button";
 import ListItem from "@mui/joy/ListItem";
 import ListItemButton from "@mui/joy/ListItemButton";
 import ListItemContent from "@mui/joy/ListItemContent";
@@ -23,10 +25,6 @@ import ChatMessage from "./ChatMessage.jsx";
 export default function ThreadedPMs({ pms }) {
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
-  // const [unreadOnly, setUnreadOnly] = React.useState(true);
-
-  const [selectedChat, setSelectedChat] = React.useState(null);
-
   const {
     isLoading: privateMessagesLoading,
     isFetching: privateMessagesFetching,
@@ -39,8 +37,8 @@ export default function ThreadedPMs({ pms }) {
   } = useLemmyInfinite({
     callLemmyMethod: "getPrivateMessages",
     formData: {
-      // unread_only: unreadOnly === true,
-      unread_only: false,
+      unread_only: false, // we still need to display other messages in conversation which might not be read
+      // TODO could have a notifications tooltip that just shows the unread ones....
     },
     countResultElement: "private_messages",
   });
@@ -74,6 +72,7 @@ export default function ThreadedPMs({ pms }) {
       if (!sortedConversations[otherPerson.id]) {
         sortedConversations[otherPerson.id] = {
           person: otherPerson,
+          personFQUN: `${otherPerson.name}@${otherPerson.actor_id.split("/")[2]}`,
           messages: [],
         };
       }
@@ -107,6 +106,20 @@ export default function ThreadedPMs({ pms }) {
     return flatConversations;
   }, [privateMessagesData]);
 
+  const navigate = useNavigate();
+  const routeParams = useParams();
+
+  const setSelectedChatUser = (person) => {
+    navigate(`/messages/${person.name}@${person.actor_id.split("/")[2]}`);
+  };
+
+  const selectedChat = React.useMemo(() => {
+    if (!flatConversations) return null;
+    if (!routeParams.user) return null;
+
+    return flatConversations.find((pm) => pm.personFQUN == routeParams.user);
+  }, [flatConversations, routeParams.user]);
+
   return (
     <Box sx={{ width: "100%", display: "flex", flexDirection: "row" }}>
       <Box sx={{ width: 320 }}>
@@ -127,10 +140,14 @@ export default function ThreadedPMs({ pms }) {
                 //   disableInteractive
                 // >
                 <ListItemButton
-                  onClick={() => setSelectedChat(conversation)}
-                  variant="outlined"
+                  onClick={() => setSelectedChatUser(conversation.person)}
+                  // variant="outlined"
+                  variant={
+                    selectedChat && selectedChat.personFQUN == conversation.personFQUN ? "solid" : "soft"
+                  }
                   sx={{
                     p: 1,
+                    cursor: "pointer",
                     borderRadius: 6,
                   }}
                 >
@@ -159,6 +176,26 @@ export default function ThreadedPMs({ pms }) {
               );
             })}
         </List>
+
+        {privateMessagesHasNextPage && (
+          <Box
+            // ref={ref}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              mt: 2,
+            }}
+          >
+            <Button
+              // ref={ref}
+              variant="outlined"
+              onClick={() => privateMessagesFetchNextPage()}
+              loading={privateMessagesFetchingNextPage}
+            >
+              Load More
+            </Button>
+          </Box>
+        )}
       </Box>
 
       {/* pm list chat view */}
