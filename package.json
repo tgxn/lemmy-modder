@@ -45,6 +45,7 @@
     "react-redux": "^8.1.1",
     "react-router-dom": "^6.18.0",
     "redux": "^4.2.1",
+    "remove-markdown": "^0.5.0",
     "sass": "^1.69.5",
     "sass-loader": "^13.3.2",
     "sonner": "^1.1.0",

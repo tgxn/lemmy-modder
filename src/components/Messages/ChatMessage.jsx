@@ -15,6 +15,8 @@ import { useLemmyHttpAction } from "../../hooks/useLemmyHttp";
 import { MomentAdjustedTimeAgo, UserAvatar, SquareChip } from "../Display.jsx";
 import { PersonMetaTitle, PersonMetaLine, CommunityMetaLine } from "../Shared/ActorMeta.jsx";
 
+import SafeMD from "../Shared/SafeMD.jsx";
+
 export default function ChatMessage({ message, showTime = true }) {
   const queryClient = useQueryClient();
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
@@ -112,7 +114,7 @@ export default function ChatMessage({ message, showTime = true }) {
                 textAlign: "left",
               }}
             >
-              {private_message.content}
+              <SafeMD>{private_message.content}</SafeMD>
             </CardContent>
           </Tooltip>
         </Card>
