@@ -96,6 +96,8 @@ function PageRouter() {
         <Box
           sx={{
             height: "100%",
+            // height: "calc(100% - 48px)",
+            // overflow: "hidden",
           }}
         >
           <Routes>

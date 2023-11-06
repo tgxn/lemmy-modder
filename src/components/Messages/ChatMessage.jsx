@@ -34,6 +34,7 @@ export default function ChatMessage({ message, showTime = true }) {
   React.useEffect(() => {
     if (pmReadIsSuccess) {
       queryClient.invalidateQueries({ queryKey: ["lemmyHttp", localPerson.id, "getPrivateMessages"] });
+      queryClient.invalidateQueries({ queryKey: ["lemmyHttp", localPerson.id, "getUnreadCount"] });
     }
   }, [pmReadData]);
 

@@ -19,7 +19,54 @@ import { PersonMetaTitle } from "../Shared/ActorMeta.jsx";
 
 import PMSheet from "./PMSheet.jsx";
 
+function ConversationList({ flatConversations, selectedChat, setSelectedChatUser }) {
+  return (
+    <List aria-labelledby="ellipsis-list-demo" sx={{ "--ListItemDecorator-size": "56px", p: 0, gap: 0.5 }}>
+      {flatConversations &&
+        flatConversations.length != 0 &&
+        flatConversations.map((conversation) => {
+          console.log("conversation", conversation);
+          return (
+            <ListItemButton
+              onClick={() => setSelectedChatUser(conversation.person)}
+              // variant="outlined"
+              variant={selectedChat && selectedChat.personFQUN == conversation.personFQUN ? "solid" : "soft"}
+              sx={{
+                p: 1,
+                cursor: "pointer",
+                borderRadius: 6,
+              }}
+            >
+              <Badge
+                invisible={conversation.hasUnread === false}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+              >
+                <ListItemDecorator>
+                  <Avatar src={conversation.person.avatar} />
+                </ListItemDecorator>
+              </Badge>
+              <ListItemContent>
+                <Typography level="title-sm">
+                  <PersonMetaTitle noAvatar noLink display="outline" creator={conversation.person} />
+                </Typography>
+                <Typography level="body-sm" noWrap>
+                  {conversation.lastMessage.content}
+                </Typography>
+              </ListItemContent>
+            </ListItemButton>
+          );
+        })}
+    </List>
+  );
+}
+
 export default function ThreadedPMs({ pms }) {
+  const navigate = useNavigate();
+  const routeParams = useParams();
+
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
   const {
@@ -35,7 +82,6 @@ export default function ThreadedPMs({ pms }) {
     callLemmyMethod: "getPrivateMessages",
     formData: {
       unread_only: false, // we still need to display other messages in conversation which might not be read
-      // TODO could have a notifications tooltip that just shows the unread ones....
     },
     countResultElement: "private_messages",
   });
@@ -71,7 +117,12 @@ export default function ThreadedPMs({ pms }) {
           person: otherPerson,
           personFQUN: `${otherPerson.name}@${otherPerson.actor_id.split("/")[2]}`,
           messages: [],
+          hasUnread: false,
         };
+      }
+
+      if (message.private_message.read == false) {
+        sortedConversations[otherPerson.id].hasUnread = true;
       }
 
       sortedConversations[otherPerson.id].messages.push(message);
@@ -84,11 +135,20 @@ export default function ThreadedPMs({ pms }) {
 
       // sort the messages by newest first
       conversation.messages.sort((a, b) => {
-        return new Date(b.created).getTime() - new Date(a.created).getTime();
+        return (
+          new Date(b.private_message.published).getTime() - new Date(a.private_message.published).getTime()
+        );
       });
 
       // add the last message to the conversation
       conversation.lastMessage = conversation.messages[0].private_message;
+
+      // now put the messages in oldest-first order
+      conversation.messages = conversation.messages.sort((a, b) => {
+        return (
+          new Date(a.private_message.published).getTime() - new Date(b.private_message.published).getTime()
+        );
+      });
 
       flatConversations.push(conversation);
     });
@@ -103,9 +163,6 @@ export default function ThreadedPMs({ pms }) {
     return flatConversations;
   }, [privateMessagesData]);
 
-  const navigate = useNavigate();
-  const routeParams = useParams();
-
   const setSelectedChatUser = (person) => {
     navigate(`/messages/${person.name}@${person.actor_id.split("/")[2]}`);
   };
@@ -118,62 +175,14 @@ export default function ThreadedPMs({ pms }) {
   }, [flatConversations, routeParams.user]);
 
   return (
-    <Box sx={{ width: "100%", display: "flex", flexDirection: "row" }}>
-      <Box sx={{ width: 320 }}>
-        <List
-          aria-labelledby="ellipsis-list-demo"
-          sx={{ "--ListItemDecorator-size": "56px", p: 0, gap: 0.5 }}
-        >
-          {flatConversations &&
-            flatConversations.length != 0 &&
-            flatConversations.map((conversation) => {
-              console.log("conversation", conversation);
-              return (
-                // <Tooltip
-                //   placement="top-start"
-                //   variant="outlined"
-                //   title={<UserTooltip user={conversation.person} />}
-                //   arrow
-                //   disableInteractive
-                // >
-                <ListItemButton
-                  onClick={() => setSelectedChatUser(conversation.person)}
-                  // variant="outlined"
-                  variant={
-                    selectedChat && selectedChat.personFQUN == conversation.personFQUN ? "solid" : "soft"
-                  }
-                  sx={{
-                    p: 1,
-                    cursor: "pointer",
-                    borderRadius: 6,
-                  }}
-                >
-                  <Badge
-                    invisible={conversation.lastMessage.read === true}
-                    anchorOrigin={{
-                      vertical: "top",
-                      horizontal: "left",
-                    }}
-                  >
-                    <ListItemDecorator>
-                      <Avatar src={conversation.person.avatar} />
-                    </ListItemDecorator>
-                  </Badge>
-                  <ListItemContent>
-                    <Typography level="title-sm">
-                      {/* {conversation.person.display_name || conversation.person.name} */}
-                      <PersonMetaTitle noAvatar noLink display="outline" creator={conversation.person} />
-                    </Typography>
-                    <Typography level="body-sm" noWrap>
-                      {conversation.lastMessage.content}
-                    </Typography>
-                  </ListItemContent>
-                </ListItemButton>
-                // </Tooltip>
-              );
-            })}
-        </List>
-
+    <Box sx={{ width: "100%", display: "flex", flexDirection: "row", overflow: "hidden" }}>
+      {/* pm list view */}
+      <Box sx={{ width: 300 }}>
+        <ConversationList
+          flatConversations={flatConversations}
+          selectedChat={selectedChat}
+          setSelectedChatUser={setSelectedChatUser}
+        />
         {privateMessagesHasNextPage && (
           <Box
             // ref={ref}
@@ -195,7 +204,7 @@ export default function ThreadedPMs({ pms }) {
         )}
       </Box>
 
-      {/* pm list chat view */}
+      {/* pm chat view */}
       <PMSheet selectedChat={selectedChat} />
     </Box>
   );
