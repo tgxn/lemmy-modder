@@ -42,7 +42,6 @@ export default function ChatMessage({ message, showTime = true }) {
   return (
     <ListItem
       sx={{
-        // mb: 1,
         display: "flex",
         alignItems: messageIsMine ? "flex-end" : "flex-start",
         textAlign: messageIsMine ? "left" : "right",
@@ -62,13 +61,6 @@ export default function ChatMessage({ message, showTime = true }) {
           mb: 0.5,
           px: 1,
         }}
-        // primaryTypographyProps={{
-        //   sx: {
-        //     display: "inline-flex",
-        //     alignItems: "center",
-        //     fontSize: 16,
-        //   },
-        // }}
       >
         <UserAvatar source={creator.avatar} />
         <Box
@@ -129,17 +121,10 @@ export default function ChatMessage({ message, showTime = true }) {
       <Box
         sx={{
           display: "flex",
-
           justifyContent: messageIsMine ? "flex-start" : "flex-end",
           alignItems: messageIsMine ? "flex-start" : "flex-end",
-          // position: "absolute",
-          // alignItems: "center",
-          // justifyContent: "center",
           right: messageIsMine ? "0" : "unset",
           left: messageIsMine ? "unset" : "0",
-          //   left: 0,
-          // verticalAlign: "middle",
-          // bottom: "-28px",
           px: 1,
           fontSize: 12,
         }}

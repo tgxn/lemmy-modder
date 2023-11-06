@@ -22,8 +22,6 @@ export default function Messages() {
     return unreadCountData.replies + unreadCountData.mentions + unreadCountData.private_messages;
   }, [unreadCountData]);
 
-  const [index, setIndex] = React.useState(1);
-
   if (unreadCountLoading) {
     return (
       <Box

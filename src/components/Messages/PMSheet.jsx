@@ -11,7 +11,6 @@ import Textarea from "@mui/joy/Textarea";
 import Typography from "@mui/joy/Typography";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import SoapIcon from "@mui/icons-material/Soap";
 
 import { getSiteData } from "../../hooks/getSiteData";
 import { useLemmyHttpAction } from "../../hooks/useLemmyHttp";
@@ -24,9 +23,11 @@ export default function PMSheet({ selectedChat }) {
   const queryClient = useQueryClient();
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
-  const [message, setMessage] = useState("");
+  const messagesEndRef = useRef(null);
 
-  // send PM
+  const [message, setMessage] = useState("");
+  const [userId, setUserId] = useState(null);
+
   const {
     isLoading: sendPMIsLoading,
     isSuccess: sendPMIsSuccess,
@@ -41,6 +42,8 @@ export default function PMSheet({ selectedChat }) {
 
   const handleSendMessage = async () => {
     console.log("response", selectedChat, message);
+
+    if (message == "") return;
 
     sendPMCallAction({
       recipient_id: selectedChat.person.id,
@@ -58,8 +61,6 @@ export default function PMSheet({ selectedChat }) {
   }, [sendPMData]);
 
   // scroll to bottom when a new user is loaded
-  const [userId, setUserId] = useState(null);
-  const messagesEndRef = useRef(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ block: "nearest", inline: "nearest" });
   };
@@ -69,6 +70,7 @@ export default function PMSheet({ selectedChat }) {
     if (selectedChat !== null) {
       // if the user is not the currently loaded one
       if (selectedChat?.person?.id !== userId) {
+        console.log("selectedChat changed userid", userId, selectedChat?.person?.id);
         scrollToBottom();
         setUserId(selectedChat?.person?.id);
       }
@@ -85,6 +87,7 @@ export default function PMSheet({ selectedChat }) {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          justifyContent: "center",
           gap: 1,
           maxHeight: "650px",
           flexGrow: 1,
@@ -149,6 +152,12 @@ export default function PMSheet({ selectedChat }) {
           minRows={2}
           value={message}
           onChange={onMessageChange}
+          onKeyDown={(e) => {
+            // ctrl+enter to send
+            if (e.ctrlKey && e.key === "Enter") {
+              handleSendMessage();
+            }
+          }}
           endDecorator={
             <Box
               sx={{

@@ -11,6 +11,7 @@ import ListItemContent from "@mui/joy/ListItemContent";
 import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import Typography from "@mui/joy/Typography";
 import Badge from "@mui/joy/Badge";
+import CircularProgress from "@mui/joy/CircularProgress";
 
 import SoapIcon from "@mui/icons-material/Soap";
 
@@ -177,7 +178,7 @@ export default function ThreadedPMs({ pms }) {
     return flatConversations.find((pm) => pm.personFQUN == routeParams.user);
   }, [flatConversations, routeParams.user]);
 
-  if (!flatConversations || flatConversations?.length == 0) {
+  if (privateMessagesLoading) {
     return (
       <Box
         sx={{
@@ -190,6 +191,24 @@ export default function ThreadedPMs({ pms }) {
           borderRadius: 4,
           // border: "1px solid",
           // borderColor: "grey.500",
+        }}
+      >
+        <CircularProgress size="lg" color="primary" />
+        <Box sx={{ fontWeight: "bold" }}>Loading...</Box>
+      </Box>
+    );
+  }
+
+  if (!flatConversations || flatConversations?.length == 0) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 2,
+          mt: 8,
         }}
       >
         <SoapIcon sx={{ fontSize: 64 }} />
@@ -209,7 +228,6 @@ export default function ThreadedPMs({ pms }) {
         />
         {privateMessagesHasNextPage && (
           <Box
-            // ref={ref}
             sx={{
               display: "flex",
               justifyContent: "center",
@@ -217,7 +235,6 @@ export default function ThreadedPMs({ pms }) {
             }}
           >
             <Button
-              // ref={ref}
               variant="outlined"
               onClick={() => privateMessagesFetchNextPage()}
               loading={privateMessagesFetchingNextPage}
