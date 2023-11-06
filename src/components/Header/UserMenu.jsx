@@ -33,6 +33,7 @@ import { BasicInfoTooltip } from "../Tooltip.jsx";
 
 import { parseActorId } from "../../utils.js";
 import AccountMenu from "./AccountMenu.jsx";
+import NotificationMenu from "./NotificationMenu.jsx";
 
 import { selectAccountIsLoading } from "../../reducers/accountReducer";
 
@@ -43,21 +44,6 @@ export default function UserMenu() {
   const dispatch = useDispatch();
 
   const queryClient = useQueryClient();
-
-  const {
-    isLoading: unreadCountLoading,
-    isFetching: unreadCountFetching,
-    error: unreadCountError,
-    data: unreadCountData,
-  } = useLemmyHttp("getUnreadCount");
-
-  const headerUnreadCount = React.useMemo(() => {
-    if (!unreadCountData) return null;
-
-    console.log("unreadCountData", unreadCountData);
-    // return unreadCountData.replies + unreadCountData.mentions + unreadCountData.private_messages;
-    return unreadCountData.private_messages; // TODO we only show pms for now
-  }, [unreadCountData]);
 
   // const users = useSelector(selectUsers);
   const accountIsLoading = useSelector(selectAccountIsLoading);
@@ -99,49 +85,7 @@ export default function UserMenu() {
 
   return (
     <>
-      <Badge
-        invisible={headerUnreadCount == 0}
-        size="sm"
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-        color="danger"
-      >
-        <BasicInfoTooltip
-          title={`Notifications (${headerUnreadCount} unread)`}
-          placement="bottom"
-          variant="soft"
-        >
-          <IconButton
-            size="sm"
-            color={location.pathname == "/messages" ? "primary" : "neutral"}
-            variant={location.pathname == "/messages" ? "solid" : "soft"}
-            onClick={() => {
-              navigate("/messages");
-            }}
-            // endDecorator={
-            //   siteData && (
-            //     <Chip
-            //       startDecorator={unreadCountLoading ? <CircularProgress size="sm" /> : null}
-            //       color={!unreadCountLoading && headerUnreadCount > 0 ? "danger" : "success"}
-            //       sx={{
-            //         borderRadius: 6,
-            //       }}
-            //     >
-            //       {headerUnreadCount !== null ? headerUnreadCount : "0"}
-            //     </Chip>
-            //   )
-            // }
-            sx={{
-              mr: 1,
-              borderRadius: 4,
-            }}
-          >
-            <NotificationsIcon />
-          </IconButton>
-        </BasicInfoTooltip>
-      </Badge>
+      <NotificationMenu />
 
       <BasicInfoTooltip title="Reload all data" placement="bottom" variant="soft">
         <IconButton

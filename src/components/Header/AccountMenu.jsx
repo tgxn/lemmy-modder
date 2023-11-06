@@ -125,7 +125,7 @@ export default function AccountMenu() {
           startDecorator={<UserAvatar size="20px" source={localPerson?.avatar} />}
           endDecorator={<ArrowDropDown />}
           sx={{
-            mx: 1,
+            mx: 1, // margin on both sides of the button
             borderRadius: 4,
             display: "flex",
             alignItems: "center",
