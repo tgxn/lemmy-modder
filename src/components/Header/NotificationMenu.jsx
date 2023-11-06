@@ -39,14 +39,199 @@ import ReplyIcon from "@mui/icons-material/Reply";
 import ChatIcon from "@mui/icons-material/Chat";
 import EmailIcon from "@mui/icons-material/Email";
 
+import useLemmyInfinite from "../../hooks/useLemmyInfinite";
 import { useLemmyHttp } from "../../hooks/useLemmyHttp";
 import { getSiteData } from "../../hooks/getSiteData";
+
+import { PersonMetaTitle } from "../Shared/ActorMeta.jsx";
 
 import { BasicInfoTooltip } from "../Tooltip.jsx";
 
 const Popup = styled(Popper)({
   zIndex: 1000,
 });
+
+import { useMessagesHook, useMentionsHook, useRepliesHook } from "../../hooks/useNotifyHooks";
+
+function MessagesTab({ setOpen }) {
+  const navigate = useNavigate();
+  const {
+    isLoading: privateMessagesLoading,
+    isFetching: privateMessagesFetching,
+    isFetchingNextPage: privateMessagesFetchingNextPage,
+    hasNextPage: privateMessagesHasNextPage,
+    fetchNextPage: privateMessagesFetchNextPage,
+    refetch: privateMessagesRefetch,
+    error: privateMessagesError,
+    data: privateMessagesData,
+  } = useMessagesHook({
+    unread_only: true,
+  });
+
+  const setSelectedChatUser = (person) => {
+    navigate(`/messages/${person.name}@${person.actor_id.split("/")[2]}`);
+    setOpen(false);
+  };
+
+  return (
+    <List aria-labelledby="ellipsis-list-demo" sx={{ "--ListItemDecorator-size": "56px" }}>
+      {privateMessagesLoading && <div>Loading...</div>}
+      {privateMessagesData &&
+        privateMessagesData.map((conversation, index) => (
+          <ListItemButton key={index} onClick={() => setSelectedChatUser(conversation.person)}>
+            <ListItemDecorator>
+              <Avatar src={conversation.person.avatar} />
+            </ListItemDecorator>
+            <ListItemContent>
+              <Typography level="title-sm" component="div" noWrap>
+                <PersonMetaTitle noAvatar noLink display="outline" creator={conversation.person} />
+              </Typography>
+              <Typography level="body-sm" component="div" noWrap>
+                {conversation.lastMessage.content}
+              </Typography>
+            </ListItemContent>
+          </ListItemButton>
+        ))}
+
+      <ListItemButton
+        onClick={() => {
+          navigate("/messages");
+          setOpen(false);
+        }}
+      >
+        <ListItemContent
+          sx={{
+            //cenmter
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Link level="title-sm">View All</Link>
+        </ListItemContent>
+      </ListItemButton>
+    </List>
+  );
+}
+
+function MentionsTab({ setOpen }) {
+  const navigate = useNavigate();
+  const {
+    isLoading: privateMessagesLoading,
+    isFetching: privateMessagesFetching,
+    isFetchingNextPage: privateMessagesFetchingNextPage,
+    hasNextPage: privateMessagesHasNextPage,
+    fetchNextPage: privateMessagesFetchNextPage,
+    refetch: privateMessagesRefetch,
+    error: privateMessagesError,
+    data: privateMessagesData,
+  } = useMentionsHook({
+    unread_only: true,
+  });
+
+  const setSelectedChatUser = (person) => {
+    navigate(`/messages/${person.name}@${person.actor_id.split("/")[2]}`);
+    setOpen(false);
+  };
+
+  return (
+    <List aria-labelledby="ellipsis-list-demo" sx={{ "--ListItemDecorator-size": "56px" }}>
+      {privateMessagesData &&
+        privateMessagesData.map((conversation, index) => (
+          <ListItemButton key={index} onClick={() => setSelectedChatUser(conversation.person)}>
+            <ListItemDecorator>
+              <Avatar src={conversation.person.avatar} />
+            </ListItemDecorator>
+            <ListItemContent>
+              <Typography level="title-sm" component="div" noWrap>
+                <PersonMetaTitle noAvatar noLink display="outline" creator={conversation.person} />
+              </Typography>
+              <Typography level="body-sm" component="div" noWrap>
+                {conversation.lastMessage.content}
+              </Typography>
+            </ListItemContent>
+          </ListItemButton>
+        ))}
+
+      <ListItemButton
+        onClick={() => {
+          navigate("/messages");
+          setOpen(false);
+        }}
+      >
+        <ListItemContent
+          sx={{
+            //cenmter
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Link level="title-sm">View All</Link>
+        </ListItemContent>
+      </ListItemButton>
+    </List>
+  );
+}
+function RepliesTab({ setOpen }) {
+  const navigate = useNavigate();
+  const {
+    isLoading: privateMessagesLoading,
+    isFetching: privateMessagesFetching,
+    isFetchingNextPage: privateMessagesFetchingNextPage,
+    hasNextPage: privateMessagesHasNextPage,
+    fetchNextPage: privateMessagesFetchNextPage,
+    refetch: privateMessagesRefetch,
+    error: privateMessagesError,
+    data: privateMessagesData,
+  } = useRepliesHook({
+    unread_only: true,
+  });
+
+  const setSelectedChatUser = (person) => {
+    navigate(`/messages/${person.name}@${person.actor_id.split("/")[2]}`);
+    setOpen(false);
+  };
+
+  return (
+    <List aria-labelledby="ellipsis-list-demo" sx={{ "--ListItemDecorator-size": "56px" }}>
+      {privateMessagesData &&
+        privateMessagesData.map((conversation, index) => (
+          <ListItemButton key={index} onClick={() => setSelectedChatUser(conversation.person)}>
+            <ListItemDecorator>
+              <Avatar src={conversation.person.avatar} />
+            </ListItemDecorator>
+            <ListItemContent>
+              <Typography level="title-sm" component="div" noWrap>
+                <PersonMetaTitle noAvatar noLink display="outline" creator={conversation.person} />
+              </Typography>
+              <Typography level="body-sm" component="div" noWrap>
+                {conversation.lastMessage.content}
+              </Typography>
+            </ListItemContent>
+          </ListItemButton>
+        ))}
+
+      <ListItemButton
+        onClick={() => {
+          navigate("/messages");
+          setOpen(false);
+        }}
+      >
+        <ListItemContent
+          sx={{
+            //cenmter
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Link level="title-sm">View All</Link>
+        </ListItemContent>
+      </ListItemButton>
+    </List>
+  );
+}
 
 export default function NotificationMenu() {
   const location = useLocation();
@@ -189,73 +374,13 @@ export default function NotificationMenu() {
               </Tab>
             </TabList>
             <TabPanel value={0} sx={{ p: 0 }}>
-              <List aria-labelledby="ellipsis-list-demo" sx={{ "--ListItemDecorator-size": "56px" }}>
-                <ListItemButton>
-                  <ListItemDecorator>
-                    <Avatar src="/static/images/avatar/1.jpg" />
-                  </ListItemDecorator>
-                  <ListItemContent>
-                    <Typography level="title-sm">Brunch this weekend?</Typography>
-                    <Typography level="body-sm" noWrap>
-                      I&apos;ll be in your neighborhood doing errands this Tuesday.
-                    </Typography>
-                  </ListItemContent>
-                </ListItemButton>
-                <ListItemButton
-                  onClick={() => {
-                    navigate("/messages");
-                    handleClose();
-                  }}
-                >
-                  <ListItemContent
-                    sx={{
-                      //cenmter
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Link level="title-sm">View All</Link>
-                  </ListItemContent>
-                </ListItemButton>
-              </List>
+              <MessagesTab setOpen={setOpen} />
             </TabPanel>
             <TabPanel value={1}>
-              <Typography level="inherit">
-                Best for professional developers building enterprise or data-rich applications.
-              </Typography>
-              <Typography textColor="primary.400" fontSize="xl3" fontWeight="xl" mt={1}>
-                $15{" "}
-                <Typography fontSize="sm" textColor="text.secondary" fontWeight="md">
-                  / dev / month
-                </Typography>
-              </Typography>
+              <MentionsTab setOpen={setOpen} />
             </TabPanel>
             <TabPanel value={2}>
-              <Typography level="inherit">
-                The most advanced features for data-rich applications, as well as the highest priority for
-                support.
-              </Typography>
-              <Typography textColor="primary.400" fontSize="xl3" fontWeight="xl" mt={1}>
-                <Typography
-                  fontSize="xl"
-                  borderRadius="sm"
-                  px={0.5}
-                  mr={0.5}
-                  sx={(theme) => ({
-                    ...theme.variants.soft.danger,
-                    color: "danger.400",
-                    verticalAlign: "text-top",
-                    textDecoration: "line-through",
-                  })}
-                >
-                  $49
-                </Typography>
-                $37*{" "}
-                <Typography fontSize="sm" textColor="text.secondary" fontWeight="md">
-                  / dev / month
-                </Typography>
-              </Typography>
+              <MentionsTab setOpen={setOpen} />
             </TabPanel>
           </Tabs>
         </ClickAwayListener>
