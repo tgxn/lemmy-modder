@@ -9,7 +9,7 @@ import { useLemmyHttpAction } from "../../hooks/useLemmyHttp.js";
 
 import { BaseActionButton, ActionConfirmButton, InputElement, ConfirmDialog } from "./BaseElements.jsx";
 import { getSiteData } from "../../hooks/getSiteData";
-import { selectShowResolved, selectMandatoryModComment } from "../../reducers/configReducer.js";
+import { selectShowResolved, selectMandatoryModComment } from "../../redux/reducer/configReducer.js";
 
 export const ResolveCommentReportButton = ({ report, ...props }) => {
   const queryClient = useQueryClient();

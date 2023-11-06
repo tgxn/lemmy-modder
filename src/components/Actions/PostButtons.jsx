@@ -11,9 +11,9 @@ import { useLemmyHttpAction } from "../../hooks/useLemmyHttp.js";
 
 import { BaseActionButton, ActionConfirmButton, InputElement, ConfirmDialog } from "./BaseElements.jsx";
 import { getSiteData } from "../../hooks/getSiteData";
-import { selectShowResolved } from "../../reducers/configReducer.js";
+import { selectShowResolved } from "../../redux/reducer/configReducer.js";
 
-import { selectMandatoryModComment } from "../../reducers/configReducer";
+import { selectMandatoryModComment } from "../../redux/reducer/configReducer";
 
 // allow resolving / unresolving a post report
 export const ResolvePostReportButton = ({ report, ...props }) => {

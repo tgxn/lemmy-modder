@@ -22,7 +22,7 @@ import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 
-import { logoutCurrent, selectUsers } from "../../reducers/accountReducer";
+import { logoutCurrent, selectUsers } from "../../redux/reducer/accountReducer";
 
 import { getSiteData } from "../../hooks/getSiteData";
 
@@ -31,7 +31,7 @@ import { BasicInfoTooltip } from "../Tooltip.jsx";
 
 import { parseActorId, getUserRole } from "../../utils.js";
 
-import { setAccountIsLoading, setCurrentUser } from "../../reducers/accountReducer";
+import { setAccountIsLoading, setCurrentUser } from "../../redux/reducer/accountReducer";
 
 import { RoleIcons } from "../Shared/Icons.jsx";
 import { Typography } from "@mui/material";
@@ -78,7 +78,7 @@ function UserListItem({ user }) {
           }
 
           // TODO we need to update the user's details in the saved accounts array too, if this is a saved session
-          dispatch(setCurrentUser(user.base, user.jwt, getSite));
+          dispatch(setCurrentUser({base: user.base, jwt: user.jwt, site: getSite}));
         } catch (e) {
           toast(typeof e == "string" ? e : e.message);
         } finally {

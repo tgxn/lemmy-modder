@@ -17,7 +17,7 @@ import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 
-import { logoutCurrent, selectUsers } from "../../reducers/accountReducer";
+import { logoutCurrent, selectUsers } from "../../redux/reducer/accountReducer";
 
 import { useLemmyHttp, refreshAllData } from "../../hooks/useLemmyHttp";
 import { getSiteData } from "../../hooks/getSiteData";
@@ -27,7 +27,7 @@ import { BasicInfoTooltip } from "../Tooltip.jsx";
 import { parseActorId } from "../../utils.js";
 import AccountMenu from "./AccountMenu.jsx";
 
-import { selectAccountIsLoading } from "../../reducers/accountReducer";
+import { selectAccountIsLoading } from "../../redux/reducer/accountReducer";
 
 export default function UserMenu() {
   const dispatch = useDispatch();

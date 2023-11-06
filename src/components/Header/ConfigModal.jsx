@@ -21,7 +21,7 @@ import {
   selectBlurNsfw,
   selectShowAvatars,
   selectNsfwWords,
-} from "../../reducers/configReducer";
+} from "../../redux/reducer/configReducer";
 
 function BooleanSetting({ label, subtext, value, onChange }) {
   return (
