@@ -2,6 +2,15 @@ import React from "react";
 
 import { useNavigate, useLocation } from "react-router-dom";
 
+import { Popper } from "@mui/base/Popper";
+import { styled } from "@mui/joy/styles";
+
+import { ClickAwayListener } from "@mui/base/ClickAwayListener";
+
+import Button from "@mui/joy/Button";
+import MenuList from "@mui/joy/MenuList";
+
+import Link from "@mui/joy/Link";
 import IconButton from "@mui/joy/IconButton";
 import Chip from "@mui/joy/Chip";
 import Menu from "@mui/joy/Menu";
@@ -10,15 +19,34 @@ import Dropdown from "@mui/joy/Dropdown";
 import MenuItem from "@mui/joy/MenuItem";
 import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import ListItemContent from "@mui/joy/ListItemContent";
+import ListItemButton from "@mui/joy/ListItemButton";
 import Badge from "@mui/joy/Badge";
 
+import Avatar from "@mui/joy/Avatar";
+import Box from "@mui/joy/Box";
+import List from "@mui/joy/List";
+import ListItem from "@mui/joy/ListItem";
+
+import Tabs from "@mui/joy/Tabs";
+import TabList from "@mui/joy/TabList";
+import Tab, { tabClasses } from "@mui/joy/Tab";
+import TabPanel from "@mui/joy/TabPanel";
+import Typography from "@mui/joy/Typography";
+
 import NotificationsIcon from "@mui/icons-material/Notifications";
+
+import ReplyIcon from "@mui/icons-material/Reply";
 import ChatIcon from "@mui/icons-material/Chat";
+import EmailIcon from "@mui/icons-material/Email";
 
 import { useLemmyHttp } from "../../hooks/useLemmyHttp";
 import { getSiteData } from "../../hooks/getSiteData";
 
 import { BasicInfoTooltip } from "../Tooltip.jsx";
+
+const Popup = styled(Popper)({
+  zIndex: 1000,
+});
 
 export default function NotificationMenu() {
   const location = useLocation();
@@ -37,12 +65,27 @@ export default function NotificationMenu() {
     if (!unreadCountData) return null;
 
     console.log("unreadCountData", unreadCountData);
-    // return unreadCountData.replies + unreadCountData.mentions + unreadCountData.private_messages;
-    return unreadCountData.private_messages; // TODO we only show pms for now
+    return unreadCountData.replies + unreadCountData.mentions + unreadCountData.private_messages;
   }, [unreadCountData]);
 
+  const buttonRef = React.useRef(null);
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleListKeyDown = (event) => {
+    if (event.key === "Tab") {
+      setOpen(false);
+    } else if (event.key === "Escape") {
+      buttonRef.current.focus();
+      setOpen(false);
+    }
+  };
+
   return (
-    <Dropdown>
+    <div>
       <Badge
         invisible={headerUnreadCount == 0}
         size="sm"
@@ -58,13 +101,17 @@ export default function NotificationMenu() {
           variant="soft"
         >
           <IconButton
-            component={MenuButton}
+            ref={buttonRef}
+            id="composition-button"
+            aria-controls={"composition-menu"}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
             size="sm"
-            variant="outlined"
-            color="neutral"
-            // onClick={() => {
-            //   navigate("/messages");
-            // }}
+            variant={open ? "soft" : "outlined"}
+            color={open ? "primary" : "neutral"}
+            onClick={() => {
+              setOpen(!open);
+            }}
             sx={{
               mr: 1,
               // p: "2px",
@@ -79,7 +126,142 @@ export default function NotificationMenu() {
         </BasicInfoTooltip>
       </Badge>
 
-      <Menu
+      <Popup
+        role={undefined}
+        id="composition-menu"
+        open={open}
+        anchorEl={buttonRef.current}
+        placement="bottom-end"
+        disablePortal
+        modifiers={[
+          {
+            name: "offset",
+            options: {
+              offset: [0, 4],
+            },
+          },
+        ]}
+      >
+        <ClickAwayListener
+          onClickAway={(event) => {
+            if (event.target !== buttonRef.current) {
+              handleClose();
+            }
+          }}
+        >
+          <Tabs
+            variant="outlined"
+            aria-label="Pricing plan"
+            defaultValue={0}
+            sx={{
+              width: 343,
+              // borderRadius: "lg",
+              borderRadius: 4,
+              boxShadow: "sm",
+              overflow: "auto",
+            }}
+          >
+            <TabList
+              disableUnderline
+              tabFlex={1}
+              sx={{
+                [`& .${tabClasses.root}`]: {
+                  fontSize: "sm",
+                  fontWeight: "lg",
+                  [`&[aria-selected="true"]`]: {
+                    color: "primary.500",
+                    bgcolor: "background.surface",
+                  },
+                  [`&.${tabClasses.focusVisible}`]: {
+                    outlineOffset: "-4px",
+                  },
+                },
+              }}
+            >
+              <Tab disableIndicator variant="soft" sx={{ flexGrow: 1 }}>
+                Messages
+              </Tab>
+              <Tab disableIndicator variant="soft" sx={{ flexGrow: 1 }}>
+                Replies
+              </Tab>
+              <Tab disableIndicator variant="soft" sx={{ flexGrow: 1 }}>
+                Mentions
+              </Tab>
+            </TabList>
+            <TabPanel value={0} sx={{ p: 0 }}>
+              <List aria-labelledby="ellipsis-list-demo" sx={{ "--ListItemDecorator-size": "56px" }}>
+                <ListItemButton>
+                  <ListItemDecorator>
+                    <Avatar src="/static/images/avatar/1.jpg" />
+                  </ListItemDecorator>
+                  <ListItemContent>
+                    <Typography level="title-sm">Brunch this weekend?</Typography>
+                    <Typography level="body-sm" noWrap>
+                      I&apos;ll be in your neighborhood doing errands this Tuesday.
+                    </Typography>
+                  </ListItemContent>
+                </ListItemButton>
+                <ListItemButton
+                  onClick={() => {
+                    navigate("/messages");
+                    handleClose();
+                  }}
+                >
+                  <ListItemContent
+                    sx={{
+                      //cenmter
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Link level="title-sm">View All</Link>
+                  </ListItemContent>
+                </ListItemButton>
+              </List>
+            </TabPanel>
+            <TabPanel value={1}>
+              <Typography level="inherit">
+                Best for professional developers building enterprise or data-rich applications.
+              </Typography>
+              <Typography textColor="primary.400" fontSize="xl3" fontWeight="xl" mt={1}>
+                $15{" "}
+                <Typography fontSize="sm" textColor="text.secondary" fontWeight="md">
+                  / dev / month
+                </Typography>
+              </Typography>
+            </TabPanel>
+            <TabPanel value={2}>
+              <Typography level="inherit">
+                The most advanced features for data-rich applications, as well as the highest priority for
+                support.
+              </Typography>
+              <Typography textColor="primary.400" fontSize="xl3" fontWeight="xl" mt={1}>
+                <Typography
+                  fontSize="xl"
+                  borderRadius="sm"
+                  px={0.5}
+                  mr={0.5}
+                  sx={(theme) => ({
+                    ...theme.variants.soft.danger,
+                    color: "danger.400",
+                    verticalAlign: "text-top",
+                    textDecoration: "line-through",
+                  })}
+                >
+                  $49
+                </Typography>
+                $37*{" "}
+                <Typography fontSize="sm" textColor="text.secondary" fontWeight="md">
+                  / dev / month
+                </Typography>
+              </Typography>
+            </TabPanel>
+          </Tabs>
+        </ClickAwayListener>
+      </Popup>
+
+      {/* <Menu
       //  placement="bottom-end"
       >
         <MenuItem
@@ -128,7 +310,7 @@ export default function NotificationMenu() {
             {unreadCountData && unreadCountData.mentions}
           </Chip>
         </MenuItem> */}
-      </Menu>
-    </Dropdown>
+      {/* </Menu> */}
+    </div>
   );
 }
