@@ -2,18 +2,9 @@ import React from "react";
 
 import { useNavigate, useLocation } from "react-router-dom";
 
-import { useDispatch, useSelector } from "react-redux";
-
-import { useQueryClient, useIsFetching } from "@tanstack/react-query";
-
-import { LemmyHttp } from "lemmy-js-client";
-import { Toaster, toast } from "sonner";
-
 import IconButton from "@mui/joy/IconButton";
 import Chip from "@mui/joy/Chip";
-import Button from "@mui/joy/Button";
 import Menu from "@mui/joy/Menu";
-import MenuList from "@mui/joy/MenuList";
 import MenuButton from "@mui/joy/MenuButton";
 import Dropdown from "@mui/joy/Dropdown";
 import MenuItem from "@mui/joy/MenuItem";
@@ -21,31 +12,13 @@ import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import ListItemContent from "@mui/joy/ListItemContent";
 import Badge from "@mui/joy/Badge";
 
-// user role icons
-import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
-import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-
-import ReplyIcon from "@mui/icons-material/Reply";
 import ChatIcon from "@mui/icons-material/Chat";
-import EmailIcon from "@mui/icons-material/Email";
 
-import { logoutCurrent, selectUsers } from "../../reducers/accountReducer";
-
-import { useLemmyHttp, refreshAllData } from "../../hooks/useLemmyHttp";
+import { useLemmyHttp } from "../../hooks/useLemmyHttp";
 import { getSiteData } from "../../hooks/getSiteData";
 
-import { UserAvatar } from "../Display.jsx";
 import { BasicInfoTooltip } from "../Tooltip.jsx";
-
-import { parseActorId, getUserRole } from "../../utils.js";
-
-import { setAccountIsLoading, setCurrentUser } from "../../reducers/accountReducer";
-
-// import { NotificationIcons } from "../Shared/Icons.jsx";
-import { Typography } from "@mui/material";
 
 export default function NotificationMenu() {
   const location = useLocation();

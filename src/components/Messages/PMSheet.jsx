@@ -23,7 +23,7 @@ export default function PMSheet({ selectedChat }) {
   const queryClient = useQueryClient();
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
-  const messagesEndRef = useRef(null);
+  const messagesListRef = useRef(null);
 
   const [message, setMessage] = useState("");
   const [userId, setUserId] = useState(null);
@@ -56,25 +56,36 @@ export default function PMSheet({ selectedChat }) {
   // invalidate pms on send success
   React.useEffect(() => {
     if (sendPMIsSuccess) {
+      setUserId(null); // force scroll to bottom
       queryClient.invalidateQueries({ queryKey: ["lemmyHttp", localPerson.id, "getPrivateMessages"] });
     }
   }, [sendPMData]);
 
   // scroll to bottom when a new user is loaded
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    // messagesListRef.current?.scrollIntoView({
+    //   block: "nearest",
+    //   inline: "center",
+    //   behavior: "smooth",
+    //   alignToTop: false,
+    // });
+    messagesListRef.current?.scrollIntoView(false);
   };
 
-  // load the chat data when one is selected
+  // TODO this seems a bit hacky, but it works to scroll the chat down to the bottom
   useEffect(() => {
-    if (selectedChat !== null) {
-      // if the user is not the currently loaded one
-      if (selectedChat?.person?.id !== userId) {
-        console.log("selectedChat changed userid", userId, selectedChat?.person?.id);
-        scrollToBottom();
-        setUserId(selectedChat?.person?.id);
+    const timer = setTimeout(() => {
+      if (selectedChat !== null) {
+        // if the user is not the currently loaded one
+        if (selectedChat?.person?.id !== userId) {
+          console.log("selectedChat changed userid", userId, selectedChat?.person?.id);
+          scrollToBottom();
+          setUserId(selectedChat?.person?.id);
+        }
       }
-    }
+    }, 1);
+
+    return () => clearTimeout(timer);
   }, [selectedChat]);
 
   if (!selectedChat) {
@@ -124,6 +135,7 @@ export default function PMSheet({ selectedChat }) {
       <Divider />
 
       <List
+        // ref={messagesListRef}
         sx={{
           width: "100%",
           height: "100%",
@@ -133,12 +145,13 @@ export default function PMSheet({ selectedChat }) {
           overflow: "auto",
           p: 0,
           m: 0,
+          gap: 0.5,
         }}
       >
         {selectedChat.messages.map((message, index) => (
           <ChatMessage key={index} message={message} />
         ))}
-        <div ref={messagesEndRef} />
+        <div ref={messagesListRef} />
       </List>
 
       <Divider />
