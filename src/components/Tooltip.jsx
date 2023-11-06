@@ -97,6 +97,7 @@ export const UserTooltip = ({ user, ...props }) => {
               (action) =>
                 userModActionsData[action].length > 0 && (
                   <ListItem
+                    key={action}
                     fontSize="sm"
                     endAction={<Chip color="danger">{userModActionsData[action].length}</Chip>}
                   >
