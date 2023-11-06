@@ -66,13 +66,7 @@ export function PersonMetaLine({ creator, by = false, sx }) {
         {creator.display_name && (
           <Typography sx={{ fontSize: "15px", px: 1 }}>{creator.display_name}</Typography>
         )}
-        <Tooltip
-          placement="top-start"
-          variant="outlined"
-          title={<UserTooltip user={creator} />}
-          arrow
-          // disableInteractive
-        >
+        <Tooltip placement="top-start" variant="outlined" title={<UserTooltip user={creator} />} arrow>
           <Link href={creator.actor_id} target="_blank" rel="noopener noreferrer" sx={{ pb: 0.7, pl: 1 }}>
             <Typography component="span" sx={{ mr: 0.25 }}>
               {creator.name}
@@ -86,33 +80,6 @@ export function PersonMetaLine({ creator, by = false, sx }) {
 
       {/* Post Author Meta */}
       <PersonMetaChips person={creator} />
-      {/* <Box sx={{ display: "flex", gap: 1 }}>
-        {baseUrl != actorInstanceBaseUrl && <FediverseChipLink href={fediverseUserLink} size="sm" />}
-
-        {creator.admin && (
-          <SquareChip
-            color={"primary"}
-            tooltip="User is site admin"
-            iconOnly={<SecurityIcon fontSize="small" />}
-          />
-        )}
-
-        {creator.banned && (
-          <SquareChip color={"danger"} tooltip="User is banned" iconOnly={<BlockIcon fontSize="small" />} />
-        )}
-
-        {creator.bot_account && (
-          <SquareChip
-            color={"warning"}
-            tooltip="User is bot account"
-            iconOnly={<SmartToyIcon fontSize="small" />}
-          />
-        )}
-
-        {creator.deleted && (
-          <SquareChip color={"danger"} tooltip="User is deleted" iconOnly={<DeleteIcon fontSize="small" />} />
-        )}
-      </Box> */}
     </Box>
   );
 }
@@ -163,33 +130,6 @@ export function PersonMetaTitle({ creator, sx }) {
 
       {/* Post Author Meta */}
       <PersonMetaChips person={creator} />
-      {/* <Box sx={{ display: "flex", gap: 1 }}>
-        {baseUrl != actorInstanceBaseUrl && <FediverseChipLink href={fediverseUserLink} size="sm" />}
-
-        {creator.admin && (
-          <SquareChip
-            color={"primary"}
-            tooltip="User is site admin"
-            iconOnly={<SecurityIcon fontSize="small" />}
-          />
-        )}
-
-        {creator.banned && (
-          <SquareChip color={"danger"} tooltip="User is banned" iconOnly={<BlockIcon fontSize="small" />} />
-        )}
-
-        {creator.bot_account && (
-          <SquareChip
-            color={"warning"}
-            tooltip="User is bot account"
-            iconOnly={<SmartToyIcon fontSize="small" />}
-          />
-        )}
-
-        {creator.deleted && (
-          <SquareChip color={"danger"} tooltip="User is deleted" iconOnly={<DeleteIcon fontSize="small" />} />
-        )}
-      </Box> */}
     </Box>
   );
 }

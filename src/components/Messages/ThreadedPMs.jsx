@@ -12,6 +12,8 @@ import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import Typography from "@mui/joy/Typography";
 import Badge from "@mui/joy/Badge";
 
+import SoapIcon from "@mui/icons-material/Soap";
+
 import { getSiteData } from "../../hooks/getSiteData";
 import useLemmyInfinite from "../../hooks/useLemmyInfinite";
 
@@ -24,10 +26,11 @@ function ConversationList({ flatConversations, selectedChat, setSelectedChatUser
     <List aria-labelledby="ellipsis-list-demo" sx={{ "--ListItemDecorator-size": "56px", p: 0, gap: 0.5 }}>
       {flatConversations &&
         flatConversations.length != 0 &&
-        flatConversations.map((conversation) => {
+        flatConversations.map((conversation, index) => {
           console.log("conversation", conversation);
           return (
             <ListItemButton
+              key={index}
               onClick={() => setSelectedChatUser(conversation.person)}
               // variant="outlined"
               variant={selectedChat && selectedChat.personFQUN == conversation.personFQUN ? "solid" : "soft"}
@@ -49,10 +52,10 @@ function ConversationList({ flatConversations, selectedChat, setSelectedChatUser
                 </ListItemDecorator>
               </Badge>
               <ListItemContent>
-                <Typography level="title-sm">
+                <Typography level="title-sm" component="div" noWrap>
                   <PersonMetaTitle noAvatar noLink display="outline" creator={conversation.person} />
                 </Typography>
-                <Typography level="body-sm" noWrap>
+                <Typography level="body-sm" component="div" noWrap>
                   {conversation.lastMessage.content}
                 </Typography>
               </ListItemContent>
@@ -173,6 +176,27 @@ export default function ThreadedPMs({ pms }) {
 
     return flatConversations.find((pm) => pm.personFQUN == routeParams.user);
   }, [flatConversations, routeParams.user]);
+
+  if (!flatConversations || flatConversations?.length == 0) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 4,
+          p: 2,
+          mt: 8,
+          borderRadius: 4,
+          // border: "1px solid",
+          // borderColor: "grey.500",
+        }}
+      >
+        <SoapIcon sx={{ fontSize: 64 }} />
+        <Box sx={{ fontWeight: "bold" }}>You have no PMs!</Box>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ width: "100%", display: "flex", flexDirection: "row", overflow: "hidden" }}>

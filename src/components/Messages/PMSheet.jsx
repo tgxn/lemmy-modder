@@ -3,26 +3,15 @@ import React, { useState, useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import Box from "@mui/joy/Box";
-import FormLabel from "@mui/joy/FormLabel";
-import IconButton from "@mui/joy/IconButton";
-import Menu from "@mui/joy/Menu";
-import MenuItem from "@mui/joy/MenuItem";
-import ListItemDecorator from "@mui/joy/ListItemDecorator";
-import FormatBold from "@mui/icons-material/FormatBold";
-import FormatItalic from "@mui/icons-material/FormatItalic";
-import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
-import Check from "@mui/icons-material/Check";
-
 import Sheet from "@mui/joy/Sheet";
 import Divider from "@mui/joy/Divider";
 import List from "@mui/joy/List";
 import Button from "@mui/joy/Button";
 import Textarea from "@mui/joy/Textarea";
-import DialogActions from "@mui/joy/DialogActions";
 import Typography from "@mui/joy/Typography";
-import FormControl from "@mui/joy/FormControl";
 
-import SendIcon from "@mui/icons-material/Send";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import SoapIcon from "@mui/icons-material/Soap";
 
 import { getSiteData } from "../../hooks/getSiteData";
 import { useLemmyHttpAction } from "../../hooks/useLemmyHttp";
@@ -51,13 +40,13 @@ export default function PMSheet({ selectedChat }) {
   };
 
   const handleSendMessage = async () => {
-    // const response = await apiService.chat.sendMessage(selectedChat, message);
     console.log("response", selectedChat, message);
 
     sendPMCallAction({
       recipient_id: selectedChat.person.id,
       content: message,
     });
+
     setMessage("");
   };
 
@@ -68,6 +57,8 @@ export default function PMSheet({ selectedChat }) {
     }
   }, [sendPMData]);
 
+  // scroll to bottom when a new user is loaded
+  const [userId, setUserId] = useState(null);
   const messagesEndRef = useRef(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ block: "nearest", inline: "nearest" });
@@ -76,10 +67,34 @@ export default function PMSheet({ selectedChat }) {
   // load the chat data when one is selected
   useEffect(() => {
     if (selectedChat !== null) {
-      //   refetch();
-      scrollToBottom();
+      // if the user is not the currently loaded one
+      if (selectedChat?.person?.id !== userId) {
+        scrollToBottom();
+        setUserId(selectedChat?.person?.id);
+      }
     }
   }, [selectedChat]);
+
+  if (!selectedChat) {
+    return (
+      <Sheet
+        sx={{
+          p: 1,
+          ml: 1,
+          borderRadius: 6,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 1,
+          maxHeight: "650px",
+          flexGrow: 1,
+        }}
+      >
+        <ArrowBackIcon sx={{ fontSize: 64 }} />
+        <Typography sx={{ fontWeight: "bold" }}>No conversation selected, phoose select one</Typography>
+      </Sheet>
+    );
+  }
 
   return (
     <Sheet
@@ -94,37 +109,34 @@ export default function PMSheet({ selectedChat }) {
         flexGrow: 1,
       }}
     >
-      {!selectedChat && <Typography>Select a chat to view</Typography>}
-      {selectedChat && (
-        <>
-          <Typography
-            sx={{
-              p: 1,
-            }}
-          >
-            <PersonMetaLine display="outline" creator={selectedChat.person} />
-          </Typography>
+      <Typography
+        sx={{
+          p: 1,
+        }}
+        component="div"
+      >
+        <PersonMetaLine display="outline" creator={selectedChat.person} />
+      </Typography>
 
-          <Divider />
+      <Divider />
 
-          <List
-            sx={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              minHeight: "200px",
-              //   maxHeight: "600px",
-              overflow: "auto",
-            }}
-          >
-            {selectedChat.messages.map((message) => (
-              <ChatMessage message={message} />
-            ))}
-            <div ref={messagesEndRef} />
-          </List>
-        </>
-      )}
+      <List
+        sx={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "200px",
+          overflow: "auto",
+          p: 0,
+          m: 0,
+        }}
+      >
+        {selectedChat.messages.map((message, index) => (
+          <ChatMessage key={index} message={message} />
+        ))}
+        <div ref={messagesEndRef} />
+      </List>
 
       <Divider />
 
