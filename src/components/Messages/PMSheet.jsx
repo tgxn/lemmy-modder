@@ -9,6 +9,7 @@ import List from "@mui/joy/List";
 import Button from "@mui/joy/Button";
 import Textarea from "@mui/joy/Textarea";
 import Typography from "@mui/joy/Typography";
+import IconButton from "@mui/joy/IconButton";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
@@ -123,14 +124,18 @@ export default function PMSheet({ selectedChat }) {
         flexGrow: 1,
       }}
     >
-      <Typography
+      <Box
         sx={{
           p: 1,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "space-between",
+          justifyContent: "space-between",
         }}
-        component="div"
       >
         <PersonMetaLine display="outline" creator={selectedChat.person} />
-      </Typography>
+        <ConversationActions selectedChat={selectedChat} />
+      </Box>
 
       <Divider />
 
@@ -195,5 +200,65 @@ export default function PMSheet({ selectedChat }) {
         />
       </Box>
     </Sheet>
+  );
+}
+
+import MarkChatReadIcon from "@mui/icons-material/MarkChatRead";
+function ConversationActions({ selectedChat }) {
+  const queryClient = useQueryClient();
+  // currently, the api only supports `mark_all_as_read` and not a specific conversation or PM
+  // we have to run thru the ones for this conversation and mark them as read
+
+  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+
+  // mark as read
+  const {
+    isLoading: pmReadIsLoading,
+    isSuccess: pmReadIsSuccess,
+    data: pmReadData,
+    error: pmReadError,
+    callAction: pmReadCallAction,
+  } = useLemmyHttpAction("markPrivateMessageAsRead");
+
+  // mark all messages in this conversation as read
+  const markAllRead = async () => {
+    for (const message of selectedChat.messages) {
+      if (!message.private_message.read) {
+        console.log("marking as read", message);
+        pmReadCallAction({
+          private_message_id: message.private_message.id,
+          read: true,
+        });
+      }
+    }
+  };
+
+  // refresh when returned ok
+  React.useEffect(() => {
+    if (pmReadIsSuccess) {
+      queryClient.invalidateQueries({ queryKey: ["lemmyHttp", localPerson.id, "getPrivateMessages"] });
+      queryClient.invalidateQueries({ queryKey: ["lemmyHttp", localPerson.id, "getUnreadCount"] });
+    }
+  }, [pmReadData]);
+
+  const hasUnread = React.useMemo(() => {
+    return selectedChat.messages.some((message) => !message.private_message.read);
+  }, [selectedChat]);
+
+  return (
+    <Box>
+      {/* <IconButton size="small" tooltip="Report Conversation">
+        <DeleteIcon fontSize="small" />
+      </IconButton> */}
+      <Button
+        disabled={!hasUnread}
+        size="sm"
+        tooltip="Mark All Read"
+        startDecorator={<MarkChatReadIcon />}
+        onClick={markAllRead}
+      >
+        Mark All Read
+      </Button>
+    </Box>
   );
 }
