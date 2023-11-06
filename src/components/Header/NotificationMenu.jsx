@@ -67,6 +67,7 @@ function MessagesTab({ setOpen }) {
   } = useMessagesHook({
     unread_only: true,
   });
+  console.log("MessagesTabprivateMessagesData", privateMessagesData);
 
   const setSelectedChatUser = (person) => {
     navigate(`/messages/${person.name}@${person.actor_id.split("/")[2]}`);
@@ -153,7 +154,7 @@ function MentionsTab({ setOpen }) {
           </ListItemButton>
         ))}
 
-      <ListItemButton
+      {/* <ListItemButton
         onClick={() => {
           navigate("/messages");
           setOpen(false);
@@ -169,10 +170,11 @@ function MentionsTab({ setOpen }) {
         >
           <Link level="title-sm">View All</Link>
         </ListItemContent>
-      </ListItemButton>
+      </ListItemButton> */}
     </List>
   );
 }
+
 function RepliesTab({ setOpen }) {
   const navigate = useNavigate();
   const {
@@ -212,7 +214,7 @@ function RepliesTab({ setOpen }) {
           </ListItemButton>
         ))}
 
-      <ListItemButton
+      {/* <ListItemButton
         onClick={() => {
           navigate("/messages");
           setOpen(false);
@@ -228,7 +230,7 @@ function RepliesTab({ setOpen }) {
         >
           <Link level="title-sm">View All</Link>
         </ListItemContent>
-      </ListItemButton>
+      </ListItemButton> */}
     </List>
   );
 }
@@ -377,7 +379,7 @@ export default function NotificationMenu() {
               <MessagesTab setOpen={setOpen} />
             </TabPanel>
             <TabPanel value={1}>
-              <MentionsTab setOpen={setOpen} />
+              <RepliesTab setOpen={setOpen} />
             </TabPanel>
             <TabPanel value={2}>
               <MentionsTab setOpen={setOpen} />
