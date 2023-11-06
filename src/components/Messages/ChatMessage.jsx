@@ -9,6 +9,16 @@ import ListItemContent from "@mui/joy/ListItemContent";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
 
+import Avatar from "@mui/joy/Avatar";
+import Button from "@mui/joy/Button";
+import List from "@mui/joy/List";
+import IconButton from "@mui/joy/IconButton";
+import Menu from "@mui/joy/Menu";
+import MenuItem from "@mui/joy/MenuItem";
+import MenuButton from "@mui/joy/MenuButton";
+import Apps from "@mui/icons-material/Apps";
+import Dropdown from "@mui/joy/Dropdown";
+
 import { getSiteData } from "../../hooks/getSiteData";
 import { useLemmyHttpAction } from "../../hooks/useLemmyHttp";
 
@@ -87,26 +97,45 @@ export default function ChatMessage({ message, showTime = true }) {
         <Card
           variant="soft"
           color={private_message.read !== true ? "primary" : "neutral"}
-          onClick={
-            messageIsMine
-              ? null
-              : () => {
-                  pmReadCallAction({
-                    private_message_id: private_message.id,
-                    read: !private_message.read,
-                  });
-                }
-          }
+          // onClick={
+          //   messageIsMine
+          //     ? null
+          //     : () => {
+          //         pmReadCallAction({
+          //           private_message_id: private_message.id,
+          //           read: !private_message.read,
+          //         });
+          //       }
+          // }
           sx={{
             position: "relative",
-            cursor: messageIsMine ? "default" : "pointer",
+            // cursor: messageIsMine ? "default" : "pointer",
             p: 1,
             m: 0,
           }}
         >
           <Tooltip
-            title={!messageIsMine && (private_message.read === true ? "Mark Unread" : "Mark Read")}
-            placement="top"
+            // open={true}
+            // title={!messageIsMine && (private_message.read === true ? "Mark Unread" : "Mark Read")}
+            title={
+              <Box>
+                {!messageIsMine && (
+                  <Button
+                    variant="soft"
+                    size="md"
+                    onClick={() => {
+                      pmReadCallAction({
+                        private_message_id: private_message.id,
+                        read: !private_message.read,
+                      });
+                    }}
+                  >
+                    {private_message.read === true ? "Mark Unread" : "Mark Read"}
+                  </Button>
+                )}
+              </Box>
+            }
+            placement={messageIsMine ? "top-start" : "top-end"}
             variant="soft"
           >
             <CardContent
