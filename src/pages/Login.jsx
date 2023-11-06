@@ -29,10 +29,10 @@ import {
   setCurrentUser,
   selectAccountIsLoading,
   selectUsers,
-} from "../reducers/accountReducer";
+} from "../redux/reducer/accountReducer";
 
 import { BasicInfoTooltip } from "../components/Tooltip.jsx";
-import { selectIsInElectron } from "../reducers/configReducer";
+import { selectIsInElectron } from "../redux/reducer/configReducer";
 
 export default function LoginForm() {
   const domainLock = window?.RuntimeConfig?.DomainLock != "" ? window?.RuntimeConfig?.DomainLock : false;
@@ -99,9 +99,9 @@ export default function LoginForm() {
         });
 
         if (saveSession) {
-          dispatch(addUser(instanceBase, auth.jwt, getSite));
+          dispatch(addUser({instance: instanceBase, jwt: auth.jwt, site: getSite}));
         } else {
-          dispatch(setCurrentUser(instanceBase, auth.jwt, getSite));
+          dispatch(setCurrentUser({base: instanceBase, jwt: auth.jwt, site: getSite}));
         }
       } else {
         setLoginError(auth);
@@ -334,7 +334,7 @@ export default function LoginForm() {
                           //   dispatch(addUser(user.base, auth.jwt, getSite));
                           // } else {
                           // dispatch(setCurrentUser(user.base, auth.jwt, getSite));
-                          dispatch(setCurrentUser(user.base, user.jwt, getSite));
+                          dispatch(setCurrentUser({base: instanceBase, jwt: user.jwt, site: getSite}));
                           // }
                         } catch (e) {
                           setLoginError(typeof e == "string" ? e : e.message);

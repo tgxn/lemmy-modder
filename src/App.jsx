@@ -23,9 +23,9 @@ import Approvals from "./pages/Approvals";
 import Reports from "./pages/Reports";
 import Login from "./pages/Login";
 
-import AppStore from "./store";
-import { selectIsInElectron } from "./reducers/configReducer";
-import { selectCurrentUser } from "./reducers/accountReducer";
+import { store } from "./redux/store";
+import { selectIsInElectron } from "./redux/reducer/configReducer";
+import { selectCurrentUser } from "./redux/reducer/accountReducer";
 
 function PageRouter() {
   const theme = useTheme();
@@ -195,7 +195,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
 
-      <Provider store={AppStore}>
+      <Provider store={store}>
         <PageRouter />
       </Provider>
     </QueryClientProvider>

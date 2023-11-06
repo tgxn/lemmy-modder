@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../reducers/accountReducer";
+import { selectCurrentUser } from "../redux/reducer/accountReducer";
 
 // accessor for the site data returned at the time of login
 export function getSiteData() {

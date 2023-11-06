@@ -7,7 +7,7 @@ import { getSiteData } from "../hooks/getSiteData";
 import { useSelector } from "react-redux";
 
 import { LemmyHttp } from "lemmy-js-client";
-import { selectCurrentUser } from "../reducers/accountReducer";
+import { selectCurrentUser } from "../redux/reducer/accountReducer";
 
 export default function useLemmyInfinite({
   callLemmyMethod,

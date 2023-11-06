@@ -1,17 +1,4 @@
-export function setConfigItem(configKey, configValue) {
-  console.log("setConfigItem", configKey, configValue);
-  return {
-    type: "setConfigItem",
-    payload: { configKey, configValue },
-  };
-}
-export function setConfigItemJson(configKey, configValue) {
-  console.log("setConfigItemJson", configKey, configValue);
-  return {
-    type: "setConfigItemJson",
-    payload: { configKey, configValue },
-  };
-}
+import { createSlice } from "@reduxjs/toolkit";
 
 function loadWithDefault(key, defaultValue = null, parseJson = true) {
   const storedValue = localStorage.getItem(key);
@@ -56,30 +43,36 @@ const initialState = {
   nsfwWords: loadWithDefault("config.nsfwWords", []),
 };
 
-const configReducer = (state = initialState, action = {}) => {
-  switch (action.type) {
-    case "setConfigItem":
+
+const configReducer = createSlice({
+  name: "configReducer",
+  initialState,
+  reducers: {
+    setConfigItem: (state, action) => {
       const newConfig = {
         ...state,
         [action.payload.configKey]: action.payload.configValue,
       };
       localStorage.setItem(`config.${action.payload.configKey}`, action.payload.configValue);
       return newConfig;
-
-    case "setConfigItemJson":
+    },
+    setConfigItemJson: (state, action) => {
       const newConfigJson = {
         ...state,
         [action.payload.configKey]: action.payload.configValue,
       };
       localStorage.setItem(`config.${action.payload.configKey}`, JSON.stringify(action.payload.configValue));
       return newConfigJson;
+    },
 
-    default:
-      return state;
   }
-};
+})
 
-export default configReducer;
+
+
+export default configReducer.reducer;
+
+export const { setConfigItem, setConfigItemJson } = configReducer.actions;
 
 export const selectIsInElectron = (state) => state.configReducer.isInElectron;
 export const selectFilterCommunity = (state) => state.configReducer.filterCommunity;

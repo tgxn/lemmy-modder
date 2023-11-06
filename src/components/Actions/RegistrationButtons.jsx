@@ -13,7 +13,7 @@ import { useLemmyHttpAction } from "../../hooks/useLemmyHttp.js";
 import { getSiteData } from "../../hooks/getSiteData";
 
 import { BaseActionButton, ActionConfirmButton, InputElement, ConfirmDialog } from "./BaseElements.jsx";
-import { selectHideReadApprovals } from "../../reducers/configReducer.js";
+import { selectHideReadApprovals } from "../../redux/reducer/configReducer.js";
 
 export const ApproveButton = ({ registration, ...props }) => {
   const queryClient = useQueryClient();
