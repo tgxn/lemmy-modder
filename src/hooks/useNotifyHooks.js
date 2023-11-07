@@ -27,7 +27,7 @@ export function useMessagesHook({ unread_only = true }) {
     useLemmyInfinite({
       callLemmyMethod: "getPrivateMessages",
       formData: {
-        unread_only: unread_only, // we still need to display other messages in conversation which might not be read
+        unread_only: unread_only,
       },
       countResultElement: "private_messages",
     });
