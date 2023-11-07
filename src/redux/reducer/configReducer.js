@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-function loadWithDefault(key, defaultValue = null, parseJson = true) {
+// load json stored values from localStorage with a default
+function loadWithDefault(key, defaultValue = null) {
   const storedValue = localStorage.getItem(key);
 
   if (storedValue) {
@@ -43,36 +44,40 @@ const initialState = {
   nsfwWords: loadWithDefault("config.nsfwWords", []),
 };
 
-
 const configReducer = createSlice({
   name: "configReducer",
   initialState,
   reducers: {
-    setConfigItem: (state, action) => {
-      const newConfig = {
-        ...state,
-        [action.payload.configKey]: action.payload.configValue,
-      };
-      localStorage.setItem(`config.${action.payload.configKey}`, action.payload.configValue);
-      return newConfig;
+    setConfigItem: {
+      reducer(state, action) {
+        console.log("setConfigItem", action.payload);
+
+        const newConfig = {
+          ...state,
+          [action.payload.configKey]: action.payload.configValue,
+        };
+        localStorage.setItem(
+          `config.${action.payload.configKey}`,
+          JSON.stringify(action.payload.configValue),
+        );
+        return newConfig;
+      },
+      // extract the arguments from the action
+      prepare(...args) {
+        return {
+          payload: {
+            configKey: args[0],
+            configValue: args[1],
+          },
+        };
+      },
     },
-    setConfigItemJson: (state, action) => {
-      const newConfigJson = {
-        ...state,
-        [action.payload.configKey]: action.payload.configValue,
-      };
-      localStorage.setItem(`config.${action.payload.configKey}`, JSON.stringify(action.payload.configValue));
-      return newConfigJson;
-    },
-
-  }
-})
-
-
+  },
+});
 
 export default configReducer.reducer;
 
-export const { setConfigItem, setConfigItemJson } = configReducer.actions;
+export const { setConfigItem } = configReducer.actions;
 
 export const selectIsInElectron = (state) => state.configReducer.isInElectron;
 export const selectFilterCommunity = (state) => state.configReducer.filterCommunity;

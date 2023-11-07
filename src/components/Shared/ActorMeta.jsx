@@ -23,7 +23,6 @@ import { PersonMetaChips } from "./UserChips.jsx";
 
 import {
   setConfigItem,
-  setConfigItemJson,
   selectBlurNsfw,
   selectShowAvatars,
   selectNsfwWords,
