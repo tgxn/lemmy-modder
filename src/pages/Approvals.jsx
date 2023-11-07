@@ -19,7 +19,7 @@ import useLemmyInfinite from "../hooks/useLemmyInfinite";
 import ApprovalsList from "../components/ApprovalsList.jsx";
 
 import { getSiteData } from "../hooks/getSiteData";
-import { selectHideReadApprovals } from "../reducers/configReducer";
+import { selectHideReadApprovals } from "../redux/reducer/configReducer";
 
 export default function Approvals() {
   const hideReadApprovals = useSelector(selectHideReadApprovals);

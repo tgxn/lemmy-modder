@@ -24,11 +24,10 @@ import { PersonMetaChips } from "./Shared/UserChips.jsx";
 
 import {
   setConfigItem,
-  setConfigItemJson,
   selectBlurNsfw,
   selectShowAvatars,
   selectNsfwWords,
-} from "../reducers/configReducer";
+} from "../redux/reducer/configReducer";
 
 export const UserTooltip = ({ user, ...props }) => {
   console.log("user", user);

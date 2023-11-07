@@ -23,11 +23,10 @@ import { PersonMetaChips } from "./UserChips.jsx";
 
 import {
   setConfigItem,
-  setConfigItemJson,
   selectBlurNsfw,
   selectShowAvatars,
   selectNsfwWords,
-} from "../../reducers/configReducer";
+} from "../../redux/reducer/configReducer";
 
 export function PersonMetaLine({ creator, by = false, sx }) {
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();

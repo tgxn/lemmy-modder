@@ -12,7 +12,7 @@ import LaunchIcon from "@mui/icons-material/Launch";
 import { SanitizedLink } from "../Display.jsx";
 import { Image, Video } from "./Image.jsx";
 
-import { selectBlurNsfw, selectNsfwWords } from "../../reducers/configReducer";
+import { selectBlurNsfw, selectNsfwWords } from "../../redux/reducer/configReducer";
 
 function ThumbWrapper({ width = 200, tooltip, modal = null, children }) {
   return (

@@ -10,7 +10,7 @@ import { LemmyHttp } from "lemmy-js-client";
 
 import useLemmyInfinite from "./useLemmyInfinite";
 import { getModLogTypeNames } from "../utils";
-import { selectModLogCommunityId, selectModLogType } from "../reducers/configReducer";
+import { selectModLogCommunityId, selectModLogType } from "../redux/reducer/configReducer";
 
 // gets paginated / infinite list of reports from lemmy
 export default function useLemmyModLog() {

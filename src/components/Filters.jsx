@@ -10,7 +10,7 @@ import Checkbox from "@mui/joy/Checkbox";
 
 import Chip from "@mui/joy/Chip";
 
-import { selectFilterCommunity, selectFilterType, selectHideReadApprovals, selectModLogType, selectShowRemoved, selectShowResolved, setConfigItem } from "../reducers/configReducer";
+import { selectFilterCommunity, selectFilterType, selectHideReadApprovals, selectModLogType, selectShowRemoved, selectShowResolved, setConfigItem } from "../redux/reducer/configReducer";
 
 import { getSiteData } from "../hooks/getSiteData";
 import { getModLogTypeNames } from "../utils";

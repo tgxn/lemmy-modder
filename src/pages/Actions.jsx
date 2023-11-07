@@ -19,7 +19,7 @@ import { getSiteData } from "../hooks/getSiteData";
 import { parseActorId } from "../utils";
 
 import ModLogAccordians from "../components/Activity/ModLogAccordians";
-import { selectModLogType } from "../reducers/configReducer";
+import { selectModLogType } from "../redux/reducer/configReducer";
 
 export default function Actions() {
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();

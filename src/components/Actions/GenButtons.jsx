@@ -16,7 +16,7 @@ import {
   ConfirmDialog,
 } from "./BaseElements.jsx";
 
-import { selectMandatoryModComment } from "../../reducers/configReducer";
+import { selectMandatoryModComment } from "../../redux/reducer/configReducer";
 
 // banFromCommunity
 export const BanUserCommunityButton = ({ person, community, isBanned, ...props }) => {
