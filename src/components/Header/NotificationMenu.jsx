@@ -55,19 +55,11 @@ import { useMessagesHook, useMentionsHook, useRepliesHook } from "../../hooks/us
 
 function MessagesTab({ setOpen }) {
   const navigate = useNavigate();
-  const {
-    isLoading: privateMessagesLoading,
-    isFetching: privateMessagesFetching,
-    isFetchingNextPage: privateMessagesFetchingNextPage,
-    hasNextPage: privateMessagesHasNextPage,
-    fetchNextPage: privateMessagesFetchNextPage,
-    refetch: privateMessagesRefetch,
-    error: privateMessagesError,
-    data: privateMessagesData,
-  } = useMessagesHook({
-    unread_only: true,
-  });
-  console.log("MessagesTabprivateMessagesData", privateMessagesData);
+  const { isLoading, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage, refetch, error, data } =
+    useMessagesHook({
+      unread_only: true,
+    });
+  console.log("MessagesTabprivateMessagesData", data);
 
   const setSelectedChatUser = (person) => {
     navigate(`/messages/${person.name}@${person.actor_id.split("/")[2]}`);
@@ -76,9 +68,9 @@ function MessagesTab({ setOpen }) {
 
   return (
     <List aria-labelledby="ellipsis-list-demo" sx={{ "--ListItemDecorator-size": "56px" }}>
-      {privateMessagesLoading && <div>Loading...</div>}
-      {privateMessagesData &&
-        privateMessagesData.map((conversation, index) => (
+      {isLoading && <div>Loading...</div>}
+      {data &&
+        data.map((conversation, index) => (
           <ListItemButton key={index} onClick={() => setSelectedChatUser(conversation.person)}>
             <ListItemDecorator>
               <Avatar src={conversation.person.avatar} />
@@ -117,120 +109,76 @@ function MessagesTab({ setOpen }) {
 
 function MentionsTab({ setOpen }) {
   const navigate = useNavigate();
-  const {
-    isLoading: privateMessagesLoading,
-    isFetching: privateMessagesFetching,
-    isFetchingNextPage: privateMessagesFetchingNextPage,
-    hasNextPage: privateMessagesHasNextPage,
-    fetchNextPage: privateMessagesFetchNextPage,
-    refetch: privateMessagesRefetch,
-    error: privateMessagesError,
-    data: privateMessagesData,
-  } = useMentionsHook({
-    unread_only: true,
-  });
+
+  const { isLoading, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage, refetch, error, data } =
+    useMentionsHook({
+      unread_only: true,
+    });
 
   const setSelectedChatUser = (person) => {
     navigate(`/messages/${person.name}@${person.actor_id.split("/")[2]}`);
     setOpen(false);
   };
 
+  console.log("MentionsTab data", data);
+
   return (
     <List aria-labelledby="ellipsis-list-demo" sx={{ "--ListItemDecorator-size": "56px" }}>
-      {privateMessagesData &&
-        privateMessagesData.map((conversation, index) => (
-          <ListItemButton key={index} onClick={() => setSelectedChatUser(conversation.person)}>
+      {isLoading && <div>Loading...</div>}
+      {data &&
+        data.map((conversation, index) => (
+          <ListItemButton key={index}>
             <ListItemDecorator>
-              <Avatar src={conversation.person.avatar} />
+              <Avatar src={conversation.creator.avatar} />
             </ListItemDecorator>
             <ListItemContent>
               <Typography level="title-sm" component="div" noWrap>
-                <PersonMetaTitle noAvatar noLink display="outline" creator={conversation.person} />
+                <PersonMetaTitle noAvatar noLink display="outline" creator={conversation.creator} />
               </Typography>
               <Typography level="body-sm" component="div" noWrap>
-                {conversation.lastMessage.content}
+                {conversation.comment.content}
               </Typography>
             </ListItemContent>
           </ListItemButton>
         ))}
-
-      {/* <ListItemButton
-        onClick={() => {
-          navigate("/messages");
-          setOpen(false);
-        }}
-      >
-        <ListItemContent
-          sx={{
-            //cenmter
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Link level="title-sm">View All</Link>
-        </ListItemContent>
-      </ListItemButton> */}
     </List>
   );
 }
 
 function RepliesTab({ setOpen }) {
   const navigate = useNavigate();
-  const {
-    isLoading: privateMessagesLoading,
-    isFetching: privateMessagesFetching,
-    isFetchingNextPage: privateMessagesFetchingNextPage,
-    hasNextPage: privateMessagesHasNextPage,
-    fetchNextPage: privateMessagesFetchNextPage,
-    refetch: privateMessagesRefetch,
-    error: privateMessagesError,
-    data: privateMessagesData,
-  } = useRepliesHook({
-    unread_only: true,
-  });
+
+  const { isLoading, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage, refetch, error, data } =
+    useRepliesHook({
+      unread_only: true,
+    });
 
   const setSelectedChatUser = (person) => {
     navigate(`/messages/${person.name}@${person.actor_id.split("/")[2]}`);
     setOpen(false);
   };
 
+  console.log("RepliesTab data", data);
+
   return (
     <List aria-labelledby="ellipsis-list-demo" sx={{ "--ListItemDecorator-size": "56px" }}>
-      {privateMessagesData &&
-        privateMessagesData.map((conversation, index) => (
-          <ListItemButton key={index} onClick={() => setSelectedChatUser(conversation.person)}>
+      {isLoading && <div>Loading...</div>}
+      {data &&
+        data.map((conversation, index) => (
+          <ListItemButton key={index} onClick={() => setSelectedChatUser(conversation.creator)}>
             <ListItemDecorator>
-              <Avatar src={conversation.person.avatar} />
+              <Avatar src={conversation.creator.avatar} />
             </ListItemDecorator>
             <ListItemContent>
               <Typography level="title-sm" component="div" noWrap>
-                <PersonMetaTitle noAvatar noLink display="outline" creator={conversation.person} />
+                <PersonMetaTitle noAvatar noLink display="outline" creator={conversation.creator} />
               </Typography>
               <Typography level="body-sm" component="div" noWrap>
-                {conversation.lastMessage.content}
+                {conversation.comment.content}
               </Typography>
             </ListItemContent>
           </ListItemButton>
         ))}
-
-      {/* <ListItemButton
-        onClick={() => {
-          navigate("/messages");
-          setOpen(false);
-        }}
-      >
-        <ListItemContent
-          sx={{
-            //cenmter
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Link level="title-sm">View All</Link>
-        </ListItemContent>
-      </ListItemButton> */}
     </List>
   );
 }
@@ -378,66 +326,15 @@ export default function NotificationMenu() {
             <TabPanel value={0} sx={{ p: 0 }}>
               <MessagesTab setOpen={setOpen} />
             </TabPanel>
-            <TabPanel value={1}>
+            <TabPanel value={1} sx={{ p: 0 }}>
               <RepliesTab setOpen={setOpen} />
             </TabPanel>
-            <TabPanel value={2}>
+            <TabPanel value={2} sx={{ p: 0 }}>
               <MentionsTab setOpen={setOpen} />
             </TabPanel>
           </Tabs>
         </ClickAwayListener>
       </Popup>
-
-      {/* <Menu
-      //  placement="bottom-end"
-      >
-        <MenuItem
-          sx={{
-            color: "text.body",
-          }}
-          onClick={() => {
-            navigate("/messages");
-          }}
-        >
-          <ListItemDecorator>
-            <ChatIcon />
-          </ListItemDecorator>
-          <ListItemContent>Messages</ListItemContent>
-          <Chip size="sm" variant="soft" color="primary">
-            {unreadCountData && unreadCountData.private_messages}
-          </Chip>
-        </MenuItem>
-        {/* <MenuItem
-          disabled
-          sx={{
-            color: "text.body",
-          }}
-        >
-          <ListItemDecorator>
-            <ReplyIcon />
-          </ListItemDecorator>
-
-          <ListItemContent>Replies</ListItemContent>
-          <Chip size="sm" variant="soft" color="primary">
-            {unreadCountData && unreadCountData.replies}
-          </Chip>
-        </MenuItem>
-        <MenuItem
-          disabled
-          sx={{
-            color: "text.body",
-          }}
-        >
-          <ListItemDecorator>
-            <EmailIcon />
-          </ListItemDecorator>
-
-          <ListItemContent>Mentions</ListItemContent>
-          <Chip size="sm" variant="soft" color="primary">
-            {unreadCountData && unreadCountData.mentions}
-          </Chip>
-        </MenuItem> */}
-      {/* </Menu> */}
     </div>
   );
 }
