@@ -7,188 +7,29 @@ import { styled } from "@mui/joy/styles";
 
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 
-import Button from "@mui/joy/Button";
-import MenuList from "@mui/joy/MenuList";
-
-import Link from "@mui/joy/Link";
 import IconButton from "@mui/joy/IconButton";
-import Chip from "@mui/joy/Chip";
-import Menu from "@mui/joy/Menu";
-import MenuButton from "@mui/joy/MenuButton";
-import Dropdown from "@mui/joy/Dropdown";
-import MenuItem from "@mui/joy/MenuItem";
-import ListItemDecorator from "@mui/joy/ListItemDecorator";
-import ListItemContent from "@mui/joy/ListItemContent";
-import ListItemButton from "@mui/joy/ListItemButton";
 import Badge from "@mui/joy/Badge";
-
-import Avatar from "@mui/joy/Avatar";
-import Box from "@mui/joy/Box";
-import List from "@mui/joy/List";
-import ListItem from "@mui/joy/ListItem";
-
 import Tabs from "@mui/joy/Tabs";
 import TabList from "@mui/joy/TabList";
 import Tab, { tabClasses } from "@mui/joy/Tab";
 import TabPanel from "@mui/joy/TabPanel";
-import Typography from "@mui/joy/Typography";
+import Divider from "@mui/joy/Divider";
 
 import NotificationsIcon from "@mui/icons-material/Notifications";
 
-import ReplyIcon from "@mui/icons-material/Reply";
-import ChatIcon from "@mui/icons-material/Chat";
-import EmailIcon from "@mui/icons-material/Email";
-
-import useLemmyInfinite from "../../hooks/useLemmyInfinite";
 import { useLemmyHttp } from "../../hooks/useLemmyHttp";
 import { getSiteData } from "../../hooks/getSiteData";
-
-import { PersonMetaTitle } from "../Shared/ActorMeta.jsx";
 
 import { BasicInfoTooltip } from "../Tooltip.jsx";
 
 const Popup = styled(Popper)({
   zIndex: 1000,
+  borderRadius: 4,
 });
 
-import { useMessagesHook, useMentionsHook, useRepliesHook } from "../../hooks/useNotifyHooks";
-
-function MessagesTab({ setOpen }) {
-  const navigate = useNavigate();
-  const { isLoading, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage, refetch, error, data } =
-    useMessagesHook({
-      unread_only: true,
-    });
-  console.log("MessagesTabprivateMessagesData", data);
-
-  const setSelectedChatUser = (person) => {
-    navigate(`/messages/${person.name}@${person.actor_id.split("/")[2]}`);
-    setOpen(false);
-  };
-
-  return (
-    <List aria-labelledby="ellipsis-list-demo" sx={{ "--ListItemDecorator-size": "56px" }}>
-      {isLoading && <div>Loading...</div>}
-      {data &&
-        data.map((conversation, index) => (
-          <ListItemButton key={index} onClick={() => setSelectedChatUser(conversation.person)}>
-            <ListItemDecorator>
-              <Avatar src={conversation.person.avatar} />
-            </ListItemDecorator>
-            <ListItemContent>
-              <Typography level="title-sm" component="div" noWrap>
-                <PersonMetaTitle noAvatar noLink display="outline" creator={conversation.person} />
-              </Typography>
-              <Typography level="body-sm" component="div" noWrap>
-                {conversation.lastMessage.content}
-              </Typography>
-            </ListItemContent>
-          </ListItemButton>
-        ))}
-
-      <ListItemButton
-        onClick={() => {
-          navigate("/messages");
-          setOpen(false);
-        }}
-      >
-        <ListItemContent
-          sx={{
-            //cenmter
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Link level="title-sm">View All</Link>
-        </ListItemContent>
-      </ListItemButton>
-    </List>
-  );
-}
-
-function MentionsTab({ setOpen }) {
-  const navigate = useNavigate();
-
-  const { isLoading, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage, refetch, error, data } =
-    useMentionsHook({
-      unread_only: true,
-    });
-
-  const setSelectedChatUser = (person) => {
-    navigate(`/messages/${person.name}@${person.actor_id.split("/")[2]}`);
-    setOpen(false);
-  };
-
-  console.log("MentionsTab data", data);
-
-  return (
-    <List aria-labelledby="ellipsis-list-demo" sx={{ "--ListItemDecorator-size": "56px" }}>
-      {isLoading && <div>Loading...</div>}
-      {data &&
-        data.map((conversation, index) => (
-          <ListItemButton key={index}>
-            <ListItemDecorator>
-              <Avatar src={conversation.creator.avatar} />
-            </ListItemDecorator>
-            <ListItemContent>
-              <Typography level="title-sm" component="div" noWrap>
-                <PersonMetaTitle noAvatar noLink display="outline" creator={conversation.creator} />
-              </Typography>
-              <Typography level="body-sm" component="div" noWrap>
-                {conversation.comment.content}
-              </Typography>
-            </ListItemContent>
-          </ListItemButton>
-        ))}
-    </List>
-  );
-}
-
-function RepliesTab({ setOpen }) {
-  const navigate = useNavigate();
-
-  const { isLoading, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage, refetch, error, data } =
-    useRepliesHook({
-      unread_only: true,
-    });
-
-  const setSelectedChatUser = (person) => {
-    navigate(`/messages/${person.name}@${person.actor_id.split("/")[2]}`);
-    setOpen(false);
-  };
-
-  console.log("RepliesTab data", data);
-
-  return (
-    <List aria-labelledby="ellipsis-list-demo" sx={{ "--ListItemDecorator-size": "56px" }}>
-      {isLoading && <div>Loading...</div>}
-      {data &&
-        data.map((conversation, index) => (
-          <ListItemButton key={index} onClick={() => setSelectedChatUser(conversation.creator)}>
-            <ListItemDecorator>
-              <Avatar src={conversation.creator.avatar} />
-            </ListItemDecorator>
-            <ListItemContent>
-              <Typography level="title-sm" component="div" noWrap>
-                <PersonMetaTitle noAvatar noLink display="outline" creator={conversation.creator} />
-              </Typography>
-              <Typography level="body-sm" component="div" noWrap>
-                {conversation.comment.content}
-              </Typography>
-            </ListItemContent>
-          </ListItemButton>
-        ))}
-    </List>
-  );
-}
+import { MessagesTab, RepliesTab, MentionsTab } from "./NotificationMenuTabs";
 
 export default function NotificationMenu() {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const { localUser, localPerson, userRole } = getSiteData();
-
   const {
     isLoading: unreadCountLoading,
     isFetching: unreadCountFetching,
@@ -208,15 +49,6 @@ export default function NotificationMenu() {
 
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const handleListKeyDown = (event) => {
-    if (event.key === "Tab") {
-      setOpen(false);
-    } else if (event.key === "Escape") {
-      buttonRef.current.focus();
-      setOpen(false);
-    }
   };
 
   return (
@@ -249,7 +81,6 @@ export default function NotificationMenu() {
             }}
             sx={{
               mr: 1,
-              // p: "2px",
               borderRadius: 4,
               display: "flex",
               alignItems: "center",
@@ -267,7 +98,10 @@ export default function NotificationMenu() {
         open={open}
         anchorEl={buttonRef.current}
         placement="bottom-end"
-        disablePortal
+        // disablePortal
+        // sx={{
+        //   borderRadius: 4,
+        // }}
         modifiers={[
           {
             name: "offset",
@@ -289,11 +123,10 @@ export default function NotificationMenu() {
             aria-label="Pricing plan"
             defaultValue={0}
             sx={{
-              width: 343,
-              // borderRadius: "lg",
+              width: 350,
               borderRadius: 4,
               boxShadow: "sm",
-              overflow: "auto",
+              // overflow: "visible",
             }}
           >
             <TabList
@@ -313,23 +146,49 @@ export default function NotificationMenu() {
                 },
               }}
             >
-              <Tab disableIndicator variant="soft" sx={{ flexGrow: 1 }}>
-                Messages
-              </Tab>
-              <Tab disableIndicator variant="soft" sx={{ flexGrow: 1 }}>
-                Replies
-              </Tab>
-              <Tab disableIndicator variant="soft" sx={{ flexGrow: 1 }}>
-                Mentions
-              </Tab>
+              <Badge
+                badgeContent={unreadCountData?.private_messages}
+                invisible={unreadCountLoading || unreadCountData?.private_messages == 0}
+                color="warning"
+                sx={{ flexGrow: 1 }}
+              >
+                <Tab disableIndicator variant="soft">
+                  Messages
+                </Tab>
+              </Badge>
+
+              <Badge
+                badgeContent={unreadCountData?.replies}
+                invisible={unreadCountLoading || unreadCountData?.replies == 0}
+                color="warning"
+                sx={{ flexGrow: 1 }}
+              >
+                <Tab disableIndicator variant="soft">
+                  Replies
+                </Tab>
+              </Badge>
+
+              <Badge
+                badgeContent={unreadCountData?.mentions}
+                invisible={unreadCountLoading || unreadCountData?.mentions == 0}
+                color="warning"
+                sx={{ flexGrow: 1 }}
+              >
+                <Tab disableIndicator variant="soft">
+                  Mentions
+                </Tab>
+              </Badge>
             </TabList>
-            <TabPanel value={0} sx={{ p: 0 }}>
+
+            <Divider />
+
+            <TabPanel value={0} sx={{ p: 0, maxHeight: "500px", overflowY: "auto" }}>
               <MessagesTab setOpen={setOpen} />
             </TabPanel>
-            <TabPanel value={1} sx={{ p: 0 }}>
+            <TabPanel value={1} sx={{ p: 0, maxHeight: "500px", overflowY: "auto" }}>
               <RepliesTab setOpen={setOpen} />
             </TabPanel>
-            <TabPanel value={2} sx={{ p: 0 }}>
+            <TabPanel value={2} sx={{ p: 0, maxHeight: "500px", overflowY: "auto" }}>
               <MentionsTab setOpen={setOpen} />
             </TabPanel>
           </Tabs>

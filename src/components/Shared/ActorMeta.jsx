@@ -112,10 +112,6 @@ export function PersonMetaTitle({ creator, sx }) {
           alignItems: "center",
         }}
       >
-        {creator.display_name && (
-          <Typography sx={{ fontSize: "14px", px: 1 }}>{creator.display_name}</Typography>
-        )}
-
         {/* <Link href={creator.actor_id} target="_blank" rel="noopener noreferrer" sx={{ pb: 0.7, pl: 1 }}> */}
         <Typography component="span" sx={{ mr: 0.25 }}>
           {creator.name}
@@ -128,7 +124,7 @@ export function PersonMetaTitle({ creator, sx }) {
       </Box>
 
       {/* Post Author Meta */}
-      <PersonMetaChips person={creator} />
+      {/* <PersonMetaChips person={creator} /> */}
     </Box>
   );
 }

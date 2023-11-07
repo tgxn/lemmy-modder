@@ -108,8 +108,8 @@ export function useMessagesHook({ unread_only = true }) {
   }, [data]);
 
   return {
-    isLoading,
-    isFetching,
+    isLoading: isLoading || isFetching,
+    // isFetching,
     isError: error,
     error: error,
     hasNextPage,
