@@ -11,13 +11,14 @@ import { useSelector } from "react-redux";
 import { LemmyHttp } from "lemmy-js-client";
 
 import useLemmyInfinite from "./useLemmyInfinite";
+
 import {
   selectFilterCommunity,
   selectFilterType,
   selectOrderBy,
   selectShowRemoved,
   selectShowResolved,
-} from "../reducers/configReducer";
+} from "../redux/reducer/configReducer";
 
 // gets paginated / infinite list of reports from lemmy
 export function useMessagesHook({ unread_only = true }) {
