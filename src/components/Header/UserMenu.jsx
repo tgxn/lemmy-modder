@@ -1,16 +1,23 @@
 import React from "react";
 
+import { useNavigate, useLocation } from "react-router-dom";
+
 import { useDispatch, useSelector } from "react-redux";
 
 import { useQueryClient, useIsFetching } from "@tanstack/react-query";
 
+import Chip from "@mui/joy/Chip";
 import Button from "@mui/joy/Button";
 import IconButton from "@mui/joy/IconButton";
 import CircularProgress from "@mui/joy/CircularProgress";
+import Badge from "@mui/joy/Badge";
 
 import CachedIcon from "@mui/icons-material/Cached";
 import LogoutIcon from "@mui/icons-material/Logout";
-import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import FlagIcon from "@mui/icons-material/Flag";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 // user role icons
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
@@ -26,10 +33,14 @@ import { BasicInfoTooltip } from "../Tooltip.jsx";
 
 import { parseActorId } from "../../utils.js";
 import AccountMenu from "./AccountMenu.jsx";
+import NotificationMenu from "./NotificationMenu.jsx";
 
 import { selectAccountIsLoading } from "../../redux/reducer/accountReducer";
 
 export default function UserMenu() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const dispatch = useDispatch();
 
   const queryClient = useQueryClient();
@@ -74,6 +85,8 @@ export default function UserMenu() {
 
   return (
     <>
+      <NotificationMenu />
+
       <BasicInfoTooltip title="Reload all data" placement="bottom" variant="soft">
         <IconButton
           disabled={anythingLoading}

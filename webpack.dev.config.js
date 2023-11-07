@@ -3,6 +3,10 @@ const { merge } = require("webpack-merge");
 
 const common = require("./webpack.common.js");
 
+// get git branch and short commit
+const gitBranch = require("child_process").execSync("git rev-parse --abbrev-ref HEAD").toString().trim();
+const gitCommit = require("child_process").execSync("git rev-parse --short HEAD").toString().trim();
+
 module.exports = merge(common, {
   mode: "development",
   devtool: "inline-source-map",
@@ -23,6 +27,7 @@ module.exports = merge(common, {
   plugins: [
     new webpack.EnvironmentPlugin({
       NODE_ENV: "development",
+      PACKAGE_VERSION: `git-${gitBranch}-${gitCommit}`,
     }),
   ],
 });

@@ -8,7 +8,7 @@ function loadWithDefault(key, defaultValue = null) {
     try {
       return JSON.parse(storedValue);
     } catch (e) {
-      console.error("Error parsiong json config", e);
+      console.warn("no saved json config", key);
       return storedValue;
     }
   } else {
