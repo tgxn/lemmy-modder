@@ -15,11 +15,27 @@ import { getSiteData } from "../../hooks/getSiteData";
 
 import { BasicInfoTooltip } from "../Tooltip.jsx";
 
+import { ContentIcons } from "../Shared/Icons.jsx";
+
 export default function SiteMenu() {
   const location = useLocation();
   const navigate = useNavigate();
 
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+
+  const {
+    isLoading: unreadCountLoading,
+    isFetching: unreadCountFetching,
+    error: unreadCountError,
+    data: unreadCountData,
+  } = useLemmyHttp("getUnreadCount");
+
+  const headerUnreadCount = React.useMemo(() => {
+    if (!unreadCountData) return null;
+
+    console.log("unreadCountData", unreadCountData);
+    return unreadCountData.replies + unreadCountData.mentions + unreadCountData.private_messages;
+  }, [unreadCountData]);
 
   const {
     isLoading: reportCountsLoading,
@@ -75,6 +91,36 @@ export default function SiteMenu() {
           <DashboardIcon />
         </Button>
       </BasicInfoTooltip>
+      {/* 
+      <BasicInfoTooltip title="PMs" placement="bottom" variant="soft">
+        <Button
+          size="sm"
+          color={location.pathname == "/messages" ? "primary" : "neutral"}
+          variant={location.pathname == "/messages" ? "solid" : "soft"}
+          onClick={() => {
+            navigate("/messages");
+          }}
+          endDecorator={
+            siteData && (
+              <Chip
+                startDecorator={unreadCountLoading ? <CircularProgress size="sm" /> : <HowToRegIcon />}
+                color={!unreadCountLoading && headerUnreadCount > 0 ? "danger" : "success"}
+                sx={{
+                  borderRadius: 6,
+                }}
+              >
+                {headerUnreadCount !== null ? headerUnreadCount : "0"}
+              </Chip>
+            )
+          }
+          sx={{
+            mr: 1,
+            borderRadius: 4,
+          }}
+        >
+          Messages
+        </Button>
+      </BasicInfoTooltip> */}
 
       {userRole != "user" && (
         <BasicInfoTooltip title="Reports" placement="bottom" variant="soft">

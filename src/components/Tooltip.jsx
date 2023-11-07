@@ -24,11 +24,10 @@ import { PersonMetaChips } from "./Shared/UserChips.jsx";
 
 import {
   setConfigItem,
-  setConfigItemJson,
   selectBlurNsfw,
   selectShowAvatars,
   selectNsfwWords,
-} from "../reducers/configReducer";
+} from "../redux/reducer/configReducer";
 
 export const UserTooltip = ({ user, ...props }) => {
   console.log("user", user);
@@ -97,6 +96,7 @@ export const UserTooltip = ({ user, ...props }) => {
               (action) =>
                 userModActionsData[action].length > 0 && (
                   <ListItem
+                    key={action}
                     fontSize="sm"
                     endAction={<Chip color="danger">{userModActionsData[action].length}</Chip>}
                   >

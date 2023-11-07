@@ -7,9 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { LemmyHttp } from "lemmy-js-client";
 import { Toaster, toast } from "sonner";
 
-import Button from "@mui/joy/Button";
 import Menu from "@mui/joy/Menu";
-import MenuList from "@mui/joy/MenuList";
 import MenuButton from "@mui/joy/MenuButton";
 import Dropdown from "@mui/joy/Dropdown";
 import MenuItem from "@mui/joy/MenuItem";
@@ -19,10 +17,9 @@ import ListItemContent from "@mui/joy/ListItemContent";
 // user role icons
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 
-import { logoutCurrent, selectUsers } from "../../reducers/accountReducer";
+import { logoutCurrent, selectUsers } from "../../redux/reducer/accountReducer";
 
 import { getSiteData } from "../../hooks/getSiteData";
 
@@ -31,7 +28,7 @@ import { BasicInfoTooltip } from "../Tooltip.jsx";
 
 import { parseActorId, getUserRole } from "../../utils.js";
 
-import { setAccountIsLoading, setCurrentUser } from "../../reducers/accountReducer";
+import { setAccountIsLoading, setCurrentUser } from "../../redux/reducer/accountReducer";
 
 import { RoleIcons } from "../Shared/Icons.jsx";
 import { Typography } from "@mui/material";
@@ -78,7 +75,7 @@ function UserListItem({ user }) {
           }
 
           // TODO we need to update the user's details in the saved accounts array too, if this is a saved session
-          dispatch(setCurrentUser(user.base, user.jwt, getSite));
+          dispatch(setCurrentUser({base: user.base, jwt: user.jwt, site: getSite}));
         } catch (e) {
           toast(typeof e == "string" ? e : e.message);
         } finally {
@@ -125,16 +122,11 @@ export default function AccountMenu() {
           startDecorator={<UserAvatar size="20px" source={localPerson?.avatar} />}
           endDecorator={<ArrowDropDown />}
           sx={{
-            mx: 1,
+            mx: 1, // margin on both sides of the button
             borderRadius: 4,
-
-            // fontSize: "14px",
-            // overflow: "hidden",
             display: "flex",
-            // flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
-            // gap: 1,
           }}
         >
           <Typography sx={{ pr: 1 }}>

@@ -49,7 +49,7 @@ export function SiteAdminChip({ person }) {
     <SquareChip
       variant="outlined"
       color={"danger"}
-      tooltip="User is site admin"
+      tooltip="Site Admin"
       iconOnly={<SecurityIcon fontSize="small" />}
     />
   );
@@ -58,22 +58,16 @@ export function SiteAdminChip({ person }) {
 export function BannedUserChip({ person }) {
   if (!person.banned) return null;
 
-  return <SquareChip color={"danger"} tooltip="User is banned" iconOnly={<BlockIcon fontSize="small" />} />;
+  return <SquareChip color={"danger"} tooltip="Banned" iconOnly={<BlockIcon fontSize="small" />} />;
 }
 
 export function BotAccountChip({ person }) {
   if (!person.bot_account) return null;
 
-  return (
-    <SquareChip
-      color={"warning"}
-      tooltip="User is bot account"
-      iconOnly={<SmartToyIcon fontSize="small" />}
-    />
-  );
+  return <SquareChip color={"warning"} tooltip="Bot Account" iconOnly={<SmartToyIcon fontSize="small" />} />;
 }
 export function DeletedUserChip({ person }) {
   if (!person.deleted) return null;
 
-  return <SquareChip color={"danger"} tooltip="User is deleted" iconOnly={<DeleteIcon fontSize="small" />} />;
+  return <SquareChip color={"danger"} tooltip="Deleted User" iconOnly={<DeleteIcon fontSize="small" />} />;
 }

@@ -7,7 +7,11 @@ import { getSiteData } from "../hooks/getSiteData";
 
 import { LemmyHttp } from "lemmy-js-client";
 
-import { selectCurrentUser, updateCurrentUserData, setAccountIsLoading } from "../reducers/accountReducer";
+import {
+  selectCurrentUser,
+  updateCurrentUserData,
+  setAccountIsLoading,
+} from "../redux/reducer/accountReducer";
 
 export function useLemmyHttp(callLemmyMethod, formData = {}) {
   const currentUser = useSelector(selectCurrentUser);
@@ -20,7 +24,6 @@ export function useLemmyHttp(callLemmyMethod, formData = {}) {
     }
     return formDataArray;
   }, [formData]);
-
 
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 

@@ -21,11 +21,12 @@ import Dashboard from "./pages/Dashboard";
 import Actions from "./pages/Actions";
 import Approvals from "./pages/Approvals";
 import Reports from "./pages/Reports";
+import Messages from "./pages/Messages";
 import Login from "./pages/Login";
 
-import AppStore from "./store";
-import { selectIsInElectron } from "./reducers/configReducer";
-import { selectCurrentUser } from "./reducers/accountReducer";
+import { store } from "./redux/store";
+import { selectIsInElectron } from "./redux/reducer/configReducer";
+import { selectCurrentUser } from "./redux/reducer/accountReducer";
 
 function PageRouter() {
   const theme = useTheme();
@@ -182,6 +183,48 @@ function PageRouter() {
                 </Box>
               }
             />
+            <Route
+              path="/messages"
+              element={
+                <Box
+                  sx={{
+                    overflow: "auto",
+                    height: "calc(100% - 50px)",
+                    width: "100%",
+                  }}
+                >
+                  <Container
+                    maxWidth={"lg"}
+                    sx={{
+                      py: 2,
+                    }}
+                  >
+                    <Messages />
+                  </Container>
+                </Box>
+              }
+            />
+            <Route
+              path="/messages/:user"
+              element={
+                <Box
+                  sx={{
+                    overflow: "auto",
+                    height: "calc(100% - 50px)",
+                    width: "100%",
+                  }}
+                >
+                  <Container
+                    maxWidth={"lg"}
+                    sx={{
+                      py: 2,
+                    }}
+                  >
+                    <Messages />
+                  </Container>
+                </Box>
+              }
+            />
           </Routes>
         </Box>
       </HashRouter>
@@ -195,7 +238,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
 
-      <Provider store={AppStore}>
+      <Provider store={store}>
         <PageRouter />
       </Provider>
     </QueryClientProvider>
