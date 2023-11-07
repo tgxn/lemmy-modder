@@ -145,7 +145,7 @@ export default function PostThumb({ width = 200, post, report }) {
       >
         <Video
           imageSrc={url}
-          nsfw={nsfw}
+          blurPreview={shouldBlurPreview}
           onClick={() => {
             setOpen(true);
           }}
