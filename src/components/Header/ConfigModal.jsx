@@ -17,7 +17,6 @@ import Divider from "@mui/joy/Divider";
 import {
   selectMandatoryModComment,
   setConfigItem,
-  setConfigItemJson,
   selectBlurNsfw,
   selectShowAvatars,
   selectNsfwWords,
@@ -133,7 +132,7 @@ export default function ConfigModal({ open, onClose }) {
               label="NSFW Words List"
               subtext="list of words to also mark as NSFW"
               value={nsfwWords}
-              onChange={(e) => dispatch(setConfigItemJson("nsfwWords", e))}
+              onChange={(e) => dispatch(setConfigItem("nsfwWords", e))}
             />
           )}
         </Box>
