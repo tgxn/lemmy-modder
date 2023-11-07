@@ -10,21 +10,21 @@ const initialState = {
   users: storedUsers ? JSON.parse(storedUsers) : [], // { base, jwt, site }
   currentUser: storedCurrentUser ? JSON.parse(storedCurrentUser) : null, // { base, jwt, site }
 };
+
 const accountReducer = createSlice({
   name: "accountReducer",
   initialState,
   reducers: {
     setAccountIsLoading: (state, action) => {
-      state.accountIsLoading = action.payload.isLoading;
+      state.accountIsLoading = action.payload;
     },
     setUsers: (state, action) => {
       if (action.payload) {
-        localStorage.setItem("users", JSON.stringify(action.payload.users));
+        localStorage.setItem("users", JSON.stringify(action.payload));
       }
-
       return {
         ...state,
-        users: action.payload.users,
+        users: action.payload,
       };
     },
     addUser: (state, action) => {
@@ -37,7 +37,6 @@ const accountReducer = createSlice({
               action.payload.site.my_user.local_user_view.person.name
           ),
       );
-
       // add new, save to local storage
       const newUsers = [...cleanUsers, action.payload];
       if (action.payload == null) {
@@ -53,7 +52,7 @@ const accountReducer = createSlice({
       };
     },
     setCurrentUser: (state, action) => {
-      console.log(action)
+      console.log("setCurrentUser", action);
       if (action.payload === null) {
         localStorage.removeItem("currentUser");
       } else {
@@ -67,7 +66,7 @@ const accountReducer = createSlice({
     updateCurrentUserData: (state, action) => {
       const newCurrentUser = {
         ...state.currentUser,
-        site: action.payload.site,
+        site: action.payload,
       };
       localStorage.setItem("currentUser", JSON.stringify(newCurrentUser));
       return {
@@ -75,26 +74,29 @@ const accountReducer = createSlice({
         currentUser: newCurrentUser,
       };
     },
-    logoutCurrent: (state, action) => {
+    logoutCurrent: (state) => {
       localStorage.removeItem("currentUser");
       return {
         ...state,
         currentUser: null,
       };
     },
-  }
-})
+  },
+});
 
 export default accountReducer.reducer;
 
-export const { setAccountIsLoading, addUser, updateCurrentUserData, logoutCurrent, setCurrentUser, setUsers } = accountReducer.actions;
+export const {
+  setAccountIsLoading,
+  addUser,
+  updateCurrentUserData,
+  logoutCurrent,
+  setCurrentUser,
+  setUsers,
+} = accountReducer.actions;
 
 export const selectIsLoading = (state) => state.accountReducer.isLoading;
 export const selectAccountIsLoading = (state) => state.accountReducer.accountIsLoading;
 
-export const selectCurrentUser = (state) =>  {
-  console.log(state)
-  return state.accountReducer.currentUser
-
-};
+export const selectCurrentUser = (state) => state.accountReducer.currentUser;
 export const selectUsers = (state) => state.accountReducer.users;
