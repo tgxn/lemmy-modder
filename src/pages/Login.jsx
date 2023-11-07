@@ -29,10 +29,10 @@ import {
   setCurrentUser,
   selectAccountIsLoading,
   selectUsers,
-} from "../reducers/accountReducer";
+} from "../redux/reducer/accountReducer";
 
 import { BasicInfoTooltip } from "../components/Tooltip.jsx";
-import { selectIsInElectron } from "../reducers/configReducer";
+import { selectIsInElectron } from "../redux/reducer/configReducer";
 
 export default function LoginForm() {
   const domainLock = window?.RuntimeConfig?.DomainLock != "" ? window?.RuntimeConfig?.DomainLock : false;
@@ -98,11 +98,13 @@ export default function LoginForm() {
           auth: auth.jwt,
         });
 
+        // save if they chose to
         if (saveSession) {
-          dispatch(addUser(instanceBase, auth.jwt, getSite));
-        } else {
-          dispatch(setCurrentUser(instanceBase, auth.jwt, getSite));
+          dispatch(addUser({ base: instanceBase, jwt: auth.jwt, site: getSite }));
         }
+
+        // always set the current user on login
+        dispatch(setCurrentUser({ base: instanceBase, jwt: auth.jwt, site: getSite }));
       } else {
         setLoginError(auth);
       }
@@ -311,8 +313,6 @@ export default function LoginForm() {
                       variant="outlined"
                       color="neutral"
                       onClick={async () => {
-                        // setIsLoading(true);
-
                         dispatch(setAccountIsLoading(true));
 
                         try {
@@ -322,36 +322,22 @@ export default function LoginForm() {
                             auth: user.jwt,
                           });
 
-                          if (!getSite.my_user) {
-                            // set instance base to the current instance
+                          if (!getSite || !getSite.my_user) {
+                            // set instance base to the current instance for easy login
                             setInstanceBase(user.base);
                             setUsername(user.site.my_user.local_user_view?.person.name);
 
                             throw new Error("jwt does not provide auth, re-authenticate");
                           }
 
-                          // if (saveSession) {
-                          //   dispatch(addUser(user.base, auth.jwt, getSite));
-                          // } else {
-                          // dispatch(setCurrentUser(user.base, auth.jwt, getSite));
-                          dispatch(setCurrentUser(user.base, user.jwt, getSite));
-                          // }
+                          // session is already saved
+                          dispatch(setCurrentUser({ base: user.base, jwt: user.jwt, site: getSite }));
                         } catch (e) {
                           setLoginError(typeof e == "string" ? e : e.message);
                         } finally {
                           // setIsLoading(false);
                           dispatch(setAccountIsLoading(false));
                         }
-
-                        // if (!expired) {
-
-                        // dispatch(setCurrentUser(user.base, user.jwt, user.site));
-                        // } else {
-                        //   // set the form values
-                        //   setInstanceBase(jwt.iss);
-                        //   setUsername(user.site.my_user?.local_user_view?.person.name);
-                        //   setPassword("");
-                        // }
                       }}
                     >
                       <ListItemContent

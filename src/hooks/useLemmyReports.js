@@ -15,7 +15,7 @@ import {
   selectOrderBy,
   selectShowRemoved,
   selectShowResolved,
-} from "../reducers/configReducer";
+} from "../redux/reducer/configReducer";
 
 // gets paginated / infinite list of reports from lemmy
 export default function useLemmyReports() {

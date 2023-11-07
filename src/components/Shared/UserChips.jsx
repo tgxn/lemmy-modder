@@ -69,5 +69,5 @@ export function BotAccountChip({ person }) {
 export function DeletedUserChip({ person }) {
   if (!person.deleted) return null;
 
-  return <SquareChip color={"danger"} tooltip="Beleted User" iconOnly={<DeleteIcon fontSize="small" />} />;
+  return <SquareChip color={"danger"} tooltip="Deleted User" iconOnly={<DeleteIcon fontSize="small" />} />;
 }
