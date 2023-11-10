@@ -6,6 +6,9 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 const common = require("./webpack.common.js");
 
+const package = require("./package.json");
+const packageVersion = package.version;
+
 module.exports = merge(common, {
   mode: "production",
   devtool: false,
@@ -19,6 +22,7 @@ module.exports = merge(common, {
   plugins: [
     new webpack.EnvironmentPlugin({
       NODE_ENV: "production",
+      PACKAGE_VERSION: packageVersion,
     }),
   ],
   performance: {
