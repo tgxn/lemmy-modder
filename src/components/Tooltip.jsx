@@ -29,11 +29,12 @@ import {
   selectShowAvatars,
   selectNsfwWords,
 } from "../redux/reducer/configReducer";
+import { useNavigate } from "react-router-dom";
 
 export const UserTooltip = ({ user, ...props }) => {
   console.log("user", user);
   const showAvatars = useSelector(selectShowAvatars);
-
+  const navigate = useNavigate();
   // get user modlog entries
   const {
     isLoading: userModActionsLoading,
@@ -43,6 +44,10 @@ export const UserTooltip = ({ user, ...props }) => {
   } = useLemmyHttp("getModlog", {
     other_person_id: user.id,
   });
+
+  const redirectToModlogActedOn = (user) => {
+    navigate(`/actions?acted_on__id=${user.id}`);
+  }
 
   const fullUserString = `${user.name}@${user.actor_id.split("/")[2]}`;
 
@@ -85,10 +90,14 @@ export const UserTooltip = ({ user, ...props }) => {
         )}
       </Box>
 
-      <Divider sx={{ "--Divider-childPosition": `10%` }}>User Mod Activity</Divider>
+      <Divider sx={{ "--Divider-childPosition": `10%`, cursor: "pointer" }} onClick={() => {
+        redirectToModlogActedOn(user);
+      }}>User Mod Activity</Divider>
 
       {/* List of actions taken on this user */}
-      <Box sx={{ display: "flex", flexDirection: "column", maxWidth: 500, justifyContent: "center", p: 1 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", maxWidth: 500, justifyContent: "center", p: 1, cursor: "pointer"  }} onClick={() => {
+        redirectToModlogActedOn(user);
+      }}>
         {(userModActionsLoading || userModActionsFetching) && <Typography>Loading...</Typography>}
         {userModActionsError && <Typography>Error: {userModActionsError.message}</Typography>}
         {userModActionsData && (
@@ -97,6 +106,7 @@ export const UserTooltip = ({ user, ...props }) => {
               (action) =>
                 userModActionsData[action].length > 0 && (
                   <ListItem
+                    key={action}
                     fontSize="sm"
                     endAction={<Chip color="danger">{userModActionsData[action].length}</Chip>}
                   >
