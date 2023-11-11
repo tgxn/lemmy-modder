@@ -149,7 +149,7 @@ export default function NotificationMenu() {
               <Badge
                 badgeContent={unreadCountData?.private_messages}
                 invisible={unreadCountLoading || unreadCountData?.private_messages == 0}
-                color="warning"
+                color="danger"
                 sx={{ flexGrow: 1 }}
               >
                 <Tab disableIndicator variant="soft">
@@ -160,7 +160,7 @@ export default function NotificationMenu() {
               <Badge
                 badgeContent={unreadCountData?.replies}
                 invisible={unreadCountLoading || unreadCountData?.replies == 0}
-                color="warning"
+                color="danger"
                 sx={{ flexGrow: 1 }}
               >
                 <Tab disableIndicator variant="soft">
@@ -171,7 +171,7 @@ export default function NotificationMenu() {
               <Badge
                 badgeContent={unreadCountData?.mentions}
                 invisible={unreadCountLoading || unreadCountData?.mentions == 0}
-                color="warning"
+                color="danger"
                 sx={{ flexGrow: 1 }}
               >
                 <Tab disableIndicator variant="soft">
