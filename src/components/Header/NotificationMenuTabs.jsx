@@ -17,6 +17,7 @@ import Badge from "@mui/joy/Badge";
 import Divider from "@mui/joy/Divider";
 import ListDivider from "@mui/joy/ListDivider";
 import Typography from "@mui/joy/Typography";
+import CircularProgress from "@mui/joy/CircularProgress";
 
 import { PersonMetaTitle } from "../Shared/ActorMeta.jsx";
 import { MomentAdjustedTimeAgo, SquareChip } from "../Display.jsx";
@@ -45,6 +46,7 @@ function ListItemActions({
   badgeNumber = null,
   decorator = null,
   actions = null,
+  isLoading = false,
   children,
   ...props
 }) {
@@ -57,7 +59,7 @@ function ListItemActions({
   return (
     <>
       {divider && <ListDivider />}
-      <ListItemButton onClick={clickItem}>
+      <ListItemButton onClick={clickItem} disabled={isLoading}>
         {!badgeNumber && decorator && <ListItemDecorator>{decorator}</ListItemDecorator>}
         {badgeNumber && decorator && (
           <Badge
@@ -303,6 +305,8 @@ export function RepliesTab({ setOpen }) {
 
   console.log("RepliesTab data", data);
 
+  const isLoadingOrFetching = isMarkReadLoading || isLoading || isFetching;
+
   return (
     <List aria-labelledby="ellipsis-list-demo" sx={{ "--ListItemDecorator-size": "56px" }}>
       {isLoading && <NonClickableItem>Loading...</NonClickableItem>}
@@ -319,6 +323,7 @@ export function RepliesTab({ setOpen }) {
             divider={index !== 0}
             // onClick={() => triggerSelectedReply(reply)}
             decorator={<Avatar src={reply.creator.avatar} />}
+            isLoading={isLoadingOrFetching}
             actions={[
               {
                 title: "Show Comment",
@@ -433,6 +438,8 @@ export function MentionsTab({ setOpen }) {
     }
   }, [markReadData]);
 
+  const isLoadingOrFetching = isMarkReadLoading || isLoading || isFetching;
+
   return (
     <List aria-labelledby="ellipsis-list-demo" sx={{ "--ListItemDecorator-size": "56px" }}>
       {isLoading && <NonClickableItem>Loading Mentions...</NonClickableItem>}
@@ -449,6 +456,7 @@ export function MentionsTab({ setOpen }) {
             divider={index !== 0}
             // onClick={() => setSelectedChatUser(conversation.person)}
             decorator={<Avatar src={mention.recipient.avatar} />}
+            isLoading={isLoadingOrFetching}
             actions={[
               {
                 title: "Show Comment",
