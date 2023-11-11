@@ -54,7 +54,7 @@ export default function NotificationMenu() {
   return (
     <div>
       <Badge
-        invisible={headerUnreadCount == 0}
+        invisible={unreadCountLoading || headerUnreadCount == 0}
         size="sm"
         anchorOrigin={{
           vertical: "top",

@@ -91,6 +91,7 @@ function ListItemActions({
             variant="soft"
             sx={{
               p: 0,
+              pt: 0.5,
               width: 500,
               borderRadius: 0,
 
@@ -136,11 +137,10 @@ function LinkButton({ onClick, children, ...props }) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          p: 0,
         }}
       >
-        <Link level="title-sm" onClick={onClick}>
-          View All
-        </Link>
+        <Link level="title-sm">View All</Link>
       </ListItemContent>
     </ListItemButton>
   );
