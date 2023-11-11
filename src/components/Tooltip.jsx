@@ -45,8 +45,8 @@ export const UserTooltip = ({ user, ...props }) => {
   });
 
   const redirectToModlogActedOn = (user) => {
-    navigate(`/actions?acted_on__id=${user.id}`);
-  }
+    navigate(`/actions?acted_on_id=${user.id}`);
+  };
 
   const fullUserString = `${user.name}@${user.actor_id.split("/")[2]}`;
 
@@ -89,14 +89,29 @@ export const UserTooltip = ({ user, ...props }) => {
         )}
       </Box>
 
-      <Divider sx={{ "--Divider-childPosition": `10%`, cursor: "pointer" }} onClick={() => {
-        redirectToModlogActedOn(user);
-      }}>User Mod Activity</Divider>
+      <Divider
+        sx={{ "--Divider-childPosition": `10%`, cursor: "pointer" }}
+        onClick={() => {
+          redirectToModlogActedOn(user);
+        }}
+      >
+        User Mod Activity
+      </Divider>
 
       {/* List of actions taken on this user */}
-      <Box sx={{ display: "flex", flexDirection: "column", maxWidth: 500, justifyContent: "center", p: 1, cursor: "pointer"  }} onClick={() => {
-        redirectToModlogActedOn(user);
-      }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          maxWidth: 500,
+          justifyContent: "center",
+          p: 1,
+          cursor: "pointer",
+        }}
+        onClick={() => {
+          redirectToModlogActedOn(user);
+        }}
+      >
         {(userModActionsLoading || userModActionsFetching) && <Typography>Loading...</Typography>}
         {userModActionsError && <Typography>Error: {userModActionsError.message}</Typography>}
         {userModActionsData && (
