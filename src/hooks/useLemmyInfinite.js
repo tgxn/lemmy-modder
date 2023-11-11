@@ -84,8 +84,8 @@ export default function useLemmyInfinite({
     keepPreviousData: true,
 
     retry: 0,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
     staleTime: Infinity,
     cacheTime: Infinity,
     enabled: !!currentUser && enabled,
