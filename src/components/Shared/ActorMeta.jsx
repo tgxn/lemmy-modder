@@ -27,6 +27,7 @@ import {
   selectShowAvatars,
   selectNsfwWords,
 } from "../../redux/reducer/configReducer";
+import { useNavigate } from "react-router-dom";
 
 export function PersonMetaLine({ creator, by = false, sx }) {
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
@@ -131,11 +132,15 @@ export function PersonMetaTitle({ creator, sx }) {
 
 export function CommunityMetaLine({ community, showIn = false, sx }) {
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
-
+  const navigate = useNavigate();
   const actorInstanceBaseUrl = community.actor_id.split("/")[2];
   const fediverseCommunityLink = community.actor_id;
 
   console.log("community", actorInstanceBaseUrl, fediverseCommunityLink);
+
+  const redirectToModlogCommunity = (community) => {
+    navigate(`/actions?community_id=${community.id}`);
+  }
 
   let localCommunityLink = `https://${baseUrl}/c/${community.name}`;
   if (baseUrl != actorInstanceBaseUrl) localCommunityLink = `${localCommunityLink}@${actorInstanceBaseUrl}`;
@@ -163,8 +168,13 @@ export function CommunityMetaLine({ community, showIn = false, sx }) {
           placement="top"
           variant="outlined"
           title={baseUrl == actorInstanceBaseUrl ? "Local Community" : "Remote Community"}
+          sx={{
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            redirectToModlogCommunity(community)
+          }}
           arrow
-          disableInteractive
         >
           <Link href={localCommunityLink} target="_blank" rel="noopener noreferrer" sx={{ pb: 0.7, pl: 1 }}>
             <Typography component="span" sx={{ fontSize: "16px", mr: 0.25 }}>

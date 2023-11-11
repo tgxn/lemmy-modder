@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { useSelector } from "react-redux";
 import { useInView } from "react-intersection-observer";
@@ -20,9 +20,11 @@ import { parseActorId } from "../utils";
 
 import ModLogAccordians from "../components/Activity/ModLogAccordians";
 import { selectModLogType } from "../redux/reducer/configReducer";
+import { useSearchParams } from "react-router-dom";
 
 export default function Actions() {
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const locaUserParsedActor = parseActorId(localPerson.actor_id);
 
@@ -31,6 +33,22 @@ export default function Actions() {
   const [limitLocalInstance, setLimitLocalInstance] = React.useState(true);
   const [limitCommunityId, setLimitCommunityId] = React.useState(null);
   const [limitModId, setLimitModId] = React.useState(null);
+  const [actedOnId, setActedOnID] = React.useState(null);
+
+  useEffect(() => {
+    if (searchParams.get("community_id")) {
+      setLimitCommunityId(searchParams.get("community_id"));
+    }
+
+    if (searchParams.get("mod_id")) {
+      setLimitModId(searchParams.get("mod_id"));
+    }
+
+    if (searchParams.get("acted_on_id")) {
+      setActedOnID(searchParams.get("acted_on_id"));
+    }
+  }, [searchParams]);
+  
 
   const { ref, inView, entry } = useInView({
     threshold: 0,
@@ -50,6 +68,8 @@ export default function Actions() {
     callLemmyMethod: "getModlog",
     formData: {
       community_id: limitCommunityId ? limitCommunityId : null,
+      mod_person_id: limitModId ? limitModId : null,
+      other_person_id: actedOnId ? actedOnId : null,
     },
     // if any of the pages have 50 results, there is another page
     hasNextPageFunction: (data, perPage) => {
@@ -134,7 +154,6 @@ export default function Actions() {
           actionTime = modLogItem.mod_ban.when_;
           affectedActorId = modLogItem.banned_person.actor_id;
           break;
-
         case "admin_purged_persons":
           actionTime = modLogItem.admin_purge_person.when_;
           // affectedActorId = modLogItem.admin_purge_person.local_community;
