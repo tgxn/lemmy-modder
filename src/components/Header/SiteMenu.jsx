@@ -15,8 +15,6 @@ import { getSiteData } from "../../hooks/getSiteData";
 
 import { BasicInfoTooltip } from "../Tooltip.jsx";
 
-import { ContentIcons } from "../Shared/Icons.jsx";
-
 export default function SiteMenu() {
   const location = useLocation();
   const navigate = useNavigate();

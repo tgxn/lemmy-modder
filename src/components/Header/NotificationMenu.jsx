@@ -2,30 +2,34 @@ import React from "react";
 
 import { useNavigate, useLocation } from "react-router-dom";
 
+import { Popper } from "@mui/base/Popper";
+import { styled } from "@mui/joy/styles";
+
+import { ClickAwayListener } from "@mui/base/ClickAwayListener";
+
 import IconButton from "@mui/joy/IconButton";
-import Chip from "@mui/joy/Chip";
-import Menu from "@mui/joy/Menu";
-import MenuButton from "@mui/joy/MenuButton";
-import Dropdown from "@mui/joy/Dropdown";
-import MenuItem from "@mui/joy/MenuItem";
-import ListItemDecorator from "@mui/joy/ListItemDecorator";
-import ListItemContent from "@mui/joy/ListItemContent";
 import Badge from "@mui/joy/Badge";
+import Tabs from "@mui/joy/Tabs";
+import TabList from "@mui/joy/TabList";
+import Tab, { tabClasses } from "@mui/joy/Tab";
+import TabPanel from "@mui/joy/TabPanel";
+import Divider from "@mui/joy/Divider";
 
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import ChatIcon from "@mui/icons-material/Chat";
 
 import { useLemmyHttp } from "../../hooks/useLemmyHttp";
 import { getSiteData } from "../../hooks/getSiteData";
 
 import { BasicInfoTooltip } from "../Tooltip.jsx";
 
+const Popup = styled(Popper)({
+  zIndex: 1000,
+  borderRadius: 4,
+});
+
+import { MessagesTab, RepliesTab, MentionsTab } from "./NotificationMenuTabs";
+
 export default function NotificationMenu() {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const { localUser, localPerson, userRole } = getSiteData();
-
   const {
     isLoading: unreadCountLoading,
     isFetching: unreadCountFetching,
@@ -37,12 +41,18 @@ export default function NotificationMenu() {
     if (!unreadCountData) return null;
 
     console.log("unreadCountData", unreadCountData);
-    // return unreadCountData.replies + unreadCountData.mentions + unreadCountData.private_messages;
-    return unreadCountData.private_messages; // TODO we only show pms for now
+    return unreadCountData.replies + unreadCountData.mentions + unreadCountData.private_messages;
   }, [unreadCountData]);
 
+  const buttonRef = React.useRef(null);
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
-    <Dropdown>
+    <div>
       <Badge
         invisible={headerUnreadCount == 0}
         size="sm"
@@ -58,16 +68,19 @@ export default function NotificationMenu() {
           variant="soft"
         >
           <IconButton
-            component={MenuButton}
+            ref={buttonRef}
+            id="composition-button"
+            aria-controls={"composition-menu"}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
             size="sm"
-            variant="outlined"
-            color="neutral"
-            // onClick={() => {
-            //   navigate("/messages");
-            // }}
+            variant={open ? "soft" : "outlined"}
+            color={open ? "primary" : "neutral"}
+            onClick={() => {
+              setOpen(!open);
+            }}
             sx={{
               mr: 1,
-              // p: "2px",
               borderRadius: 4,
               display: "flex",
               alignItems: "center",
@@ -79,56 +92,108 @@ export default function NotificationMenu() {
         </BasicInfoTooltip>
       </Badge>
 
-      <Menu
-      //  placement="bottom-end"
+      <Popup
+        role={undefined}
+        id="composition-menu"
+        open={open}
+        anchorEl={buttonRef.current}
+        placement="bottom-end"
+        // disablePortal
+        // sx={{
+        //   borderRadius: 4,
+        // }}
+        modifiers={[
+          {
+            name: "offset",
+            options: {
+              offset: [0, 4],
+            },
+          },
+        ]}
       >
-        <MenuItem
-          sx={{
-            color: "text.body",
-          }}
-          onClick={() => {
-            navigate("/messages");
-          }}
-        >
-          <ListItemDecorator>
-            <ChatIcon />
-          </ListItemDecorator>
-          <ListItemContent>Messages</ListItemContent>
-          <Chip size="sm" variant="soft" color="primary">
-            {unreadCountData && unreadCountData.private_messages}
-          </Chip>
-        </MenuItem>
-        {/* <MenuItem
-          disabled
-          sx={{
-            color: "text.body",
+        <ClickAwayListener
+          onClickAway={(event) => {
+            if (event.target !== buttonRef.current) {
+              handleClose();
+            }
           }}
         >
-          <ListItemDecorator>
-            <ReplyIcon />
-          </ListItemDecorator>
+          <Tabs
+            variant="outlined"
+            aria-label="Pricing plan"
+            defaultValue={0}
+            sx={{
+              width: 350,
+              borderRadius: 4,
+              boxShadow: "sm",
+              // overflow: "visible",
+            }}
+          >
+            <TabList
+              disableUnderline
+              tabFlex={1}
+              sx={{
+                [`& .${tabClasses.root}`]: {
+                  fontSize: "sm",
+                  fontWeight: "lg",
+                  [`&[aria-selected="true"]`]: {
+                    color: "primary.500",
+                    bgcolor: "background.surface",
+                  },
+                  [`&.${tabClasses.focusVisible}`]: {
+                    outlineOffset: "-4px",
+                  },
+                },
+              }}
+            >
+              <Badge
+                badgeContent={unreadCountData?.private_messages}
+                invisible={unreadCountLoading || unreadCountData?.private_messages == 0}
+                color="danger"
+                sx={{ flexGrow: 1 }}
+              >
+                <Tab disableIndicator variant="soft">
+                  Messages
+                </Tab>
+              </Badge>
 
-          <ListItemContent>Replies</ListItemContent>
-          <Chip size="sm" variant="soft" color="primary">
-            {unreadCountData && unreadCountData.replies}
-          </Chip>
-        </MenuItem>
-        <MenuItem
-          disabled
-          sx={{
-            color: "text.body",
-          }}
-        >
-          <ListItemDecorator>
-            <EmailIcon />
-          </ListItemDecorator>
+              <Badge
+                badgeContent={unreadCountData?.replies}
+                invisible={unreadCountLoading || unreadCountData?.replies == 0}
+                color="danger"
+                sx={{ flexGrow: 1 }}
+              >
+                <Tab disableIndicator variant="soft">
+                  Replies
+                </Tab>
+              </Badge>
 
-          <ListItemContent>Mentions</ListItemContent>
-          <Chip size="sm" variant="soft" color="primary">
-            {unreadCountData && unreadCountData.mentions}
-          </Chip>
-        </MenuItem> */}
-      </Menu>
-    </Dropdown>
+              <Badge
+                badgeContent={unreadCountData?.mentions}
+                invisible={unreadCountLoading || unreadCountData?.mentions == 0}
+                color="danger"
+                sx={{ flexGrow: 1 }}
+              >
+                <Tab disableIndicator variant="soft">
+                  Mentions
+                </Tab>
+              </Badge>
+            </TabList>
+
+            <Divider />
+
+            <TabPanel value={0} sx={{ p: 0, maxHeight: "500px", overflowY: "auto" }}>
+              <MessagesTab setOpen={setOpen} />
+            </TabPanel>
+            <TabPanel value={1} sx={{ p: 0, maxHeight: "500px", overflowY: "auto" }}>
+              <RepliesTab setOpen={setOpen} />
+            </TabPanel>
+            <TabPanel value={2} sx={{ p: 0, maxHeight: "500px", overflowY: "auto" }}>
+              <MentionsTab setOpen={setOpen} />
+            </TabPanel>
+          </Tabs>
+        </ClickAwayListener>
+      </Popup>
+    </div>
   );
 }
