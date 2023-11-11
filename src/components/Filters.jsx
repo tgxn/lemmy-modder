@@ -351,20 +351,43 @@ export function FilterCommunityAutocomplete({ value, onChange }) {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const [selected, setSelected] = React.useState(null);
+  const [managedInputValue, setManagedInputValue] = React.useState(null);
 
   const {
-    data: localUserData,
-    callAction: getLocalUserData,
-    isSuccess: localUserIsSuccess,
-    isLoading: localUserIsLoading,
-  } = useLemmyHttpAction("getPersonDetails");
+    data: communityData,
+    callAction: getCommunityData,
+    isSuccess: getCommunityIsSuccess,
+    isLoading: getCommunityIsLoading,
+  } = useLemmyHttpAction("getCommunity");
 
-  // lookup the users data if we are loading a value
+  // lookup the Community data if we are loading a value
   React.useEffect(() => {
     if (value) {
-      getLocalUserData({ person_id: value });
+      getCommunityData({ id: value });
     }
   }, [value]);
+
+  // if the pre-load Community is loaded
+  React.useEffect(() => {
+    if (getCommunityIsSuccess) {
+      console.log("getCommunityIsSuccess", communityData);
+
+      const theCommunity = communityData.community_view;
+      const communityFQUN = theCommunity.community.name + "@" + theCommunity.community.actor_id.split("/")[2];
+
+      setSelected(communityData.community_view);
+      setOptions([
+        {
+          id: theCommunity.community.id,
+          title: communityFQUN,
+          community: theCommunity.community,
+        },
+      ]);
+      setManagedInputValue({
+        title: communityFQUN,
+      });
+    }
+  }, [getCommunityIsSuccess, communityData]);
 
   // need to show an autocomplete, and then call the search api for results
   const { data, callAction, isSuccess, isLoading } = useLemmyHttpAction("search");
@@ -408,6 +431,7 @@ export function FilterCommunityAutocomplete({ value, onChange }) {
 
   return (
     <Autocomplete
+      value={managedInputValue}
       sx={{ width: 300 }}
       placeholder="Community Filter"
       open={open}
@@ -424,7 +448,7 @@ export function FilterCommunityAutocomplete({ value, onChange }) {
       startDecorator={
         selected ? <UserAvatar source={selected.community.avatar} /> : <SupervisedUserCircleIcon />
       }
-      loading={localUserIsLoading || isLoading}
+      loading={getCommunityIsLoading || isLoading}
       noOptionsText={data ? "Nothing Found" : "Search Communities"}
       onInputChange={(e, newValue) => {
         searchUsers(newValue);
