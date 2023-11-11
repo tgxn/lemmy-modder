@@ -2,14 +2,23 @@ import React from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
+import Autocomplete from "@mui/joy/Autocomplete";
+import CircularProgress from "@mui/joy/CircularProgress";
+import AutocompleteOption from "@mui/joy/AutocompleteOption";
+import ListItemDecorator from "@mui/joy/ListItemDecorator";
+import ListItemContent from "@mui/joy/ListItemContent";
 import Box from "@mui/joy/Box";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import Typography from "@mui/joy/Typography";
 import Checkbox from "@mui/joy/Checkbox";
-
 import Chip from "@mui/joy/Chip";
 
+import PersonSearchIcon from "@mui/icons-material/PersonSearch";
+
+import { useLemmyHttpAction } from "../hooks/useLemmyHttp.js";
+
+import { UserAvatar } from "./Display.jsx";
 import {
   selectFilterCommunity,
   selectFilterType,
@@ -202,18 +211,20 @@ export function FilterRemoved() {
   );
 }
 
-import { useLemmyHttpAction } from "../hooks/useLemmyHttp.js";
-
-import Autocomplete from "@mui/joy/Autocomplete";
-import CircularProgress from "@mui/joy/CircularProgress";
-export function FilterUserAutocomplete({}) {
-  const dispatch = useDispatch();
+export function FilterUserAutocomplete({ value, onChange }) {
+  const [open, setOpen] = React.useState(false);
+  const [options, setOptions] = React.useState([]);
+  const [userSelected, setUserSelected] = React.useState(null);
 
   // need to show an autocomplete, and then call the search api for results
   const { data, callAction, isSuccess, isLoading } = useLemmyHttpAction("search");
 
   const searchUsers = (searchTerm) => {
     console.log("searchUsers", searchTerm);
+
+    if (!searchTerm || isLoading) {
+      return;
+    }
 
     if (searchTerm.length < 3) {
       return;
@@ -222,41 +233,28 @@ export function FilterUserAutocomplete({}) {
     callAction({ q: searchTerm, listing_type: "Local", type_: "Users" });
   };
 
-  const [open, setOpen] = React.useState(false);
-  // const [options, setOptions] = React.useState([]);
-  // const loading = open && options.length === 0;
+  const onUserSelected = (user) => {
+    console.log("onUserSelected", user);
+    setUserSelected(user);
+    onChange && onChange(user);
+  };
 
-  const options = React.useMemo(() => {
+  React.useEffect(() => {
     if (isLoading) {
-      return [];
+      return;
     }
 
-    console.log("options", data);
-
     if (data) {
-      return data.users.map((user) => {
+      const opts = data.users.map((user) => {
         return {
           id: user.person.id,
-          title:
-            user.person.display_name +
-            " (" +
-            user.person.name +
-            "@" +
-            user.person.actor_id.split("/")[2] +
-            ")",
+          title: user.person.name + "@" + user.person.actor_id.split("/")[2],
           person: user.person,
         };
       });
+      setOptions(opts);
     }
-    return [];
-  }, [data]);
-
-  // on close, clear options
-  // React.useEffect(() => {
-  //   if (!open) {
-  //     setOptions([]);
-  //   }
-  // }, [open]);
+  }, [isLoading, data]);
 
   return (
     <Autocomplete
@@ -267,23 +265,36 @@ export function FilterUserAutocomplete({}) {
         setOpen(true);
       }}
       onClose={() => {
+        setOptions([]);
         setOpen(false);
       }}
       isOptionEqualToValue={(option, value) => option.title === value.title}
       getOptionLabel={(option) => option.title}
       options={options}
+      startDecorator={
+        userSelected ? <UserAvatar source={userSelected.person.avatar} /> : <PersonSearchIcon />
+      }
       loading={isLoading}
-      freeSolo={true}
+      noOptionsText={data ? "No Users Found" : "Search for Users"}
       onInputChange={(e, newValue) => {
         searchUsers(newValue);
       }}
+      onChange={(e, newValue) => {
+        console.log("onChange", newValue);
+        onUserSelected(newValue);
+      }}
+      renderOption={(props, option) => (
+        <AutocompleteOption {...props}>
+          <ListItemDecorator>
+            <UserAvatar source={option.person.avatar} />
+          </ListItemDecorator>
+          <ListItemContent sx={{ fontSize: "sm" }}>
+            {option.person.display_name ? option.person.display_name : option.person.name}
+            <Typography level="body-xs">{option.person.actor_id}</Typography>
+          </ListItemContent>
+        </AutocompleteOption>
+      )}
       endDecorator={isLoading ? <CircularProgress size="sm" sx={{ bgcolor: "background.surface" }} /> : null}
-      // options={[]}
-      // value={filterUser}
-      // onChange={(e, newValue) => {
-      //   dispatch(setConfigItem("filterUser", newValue));
-      // }}
-      // renderInput={(params) => <TextField {...params} label="Filter User" />}
     />
   );
 }
