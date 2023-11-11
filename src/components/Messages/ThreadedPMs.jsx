@@ -73,6 +73,7 @@ export default function ThreadedPMs({ pms }) {
 
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
 
+  // TODO use useMessagesHook
   const {
     isLoading: privateMessagesLoading,
     isFetching: privateMessagesFetching,

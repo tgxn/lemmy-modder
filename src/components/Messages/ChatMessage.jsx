@@ -8,16 +8,7 @@ import ListItem from "@mui/joy/ListItem";
 import ListItemContent from "@mui/joy/ListItemContent";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
-
-import Avatar from "@mui/joy/Avatar";
 import Button from "@mui/joy/Button";
-import List from "@mui/joy/List";
-import IconButton from "@mui/joy/IconButton";
-import Menu from "@mui/joy/Menu";
-import MenuItem from "@mui/joy/MenuItem";
-import MenuButton from "@mui/joy/MenuButton";
-import Apps from "@mui/icons-material/Apps";
-import Dropdown from "@mui/joy/Dropdown";
 
 import { getSiteData } from "../../hooks/getSiteData";
 import { useLemmyHttpAction } from "../../hooks/useLemmyHttp";
