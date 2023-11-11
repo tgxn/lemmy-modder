@@ -66,7 +66,7 @@ export function PersonMetaLine({ creator, by = false, sx }) {
           <Typography sx={{ fontSize: "15px", px: 1 }}>{creator.display_name}</Typography>
         )}
         <Tooltip placement="top-start" variant="outlined" title={<UserTooltip user={creator} />} arrow>
-          <Link href={creator.actor_id} target="_blank" rel="noopener noreferrer" sx={{ pb: 0.7, pl: 1 }}>
+          <Link href={localUserLink} target="_blank" rel="noopener noreferrer" sx={{ pb: 0.7, pl: 1 }}>
             <Typography component="span" sx={{ mr: 0.25 }}>
               {creator.name}
             </Typography>
