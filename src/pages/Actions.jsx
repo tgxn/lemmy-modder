@@ -11,7 +11,7 @@ import AccordionGroup from "@mui/joy/AccordionGroup";
 import { accordionSummaryClasses } from "@mui/joy/AccordionSummary";
 import Checkbox from "@mui/joy/Checkbox";
 
-import { FilterModLogType, FilterUserAutocomplete } from "../components/Filters";
+import { FilterModLogType, FilterUserAutocomplete, FilterCommunityAutocomplete } from "../components/Filters";
 
 import useLemmyInfinite from "../hooks/useLemmyInfinite";
 import { getSiteData } from "../hooks/getSiteData";
@@ -289,7 +289,17 @@ export default function Actions() {
         }}
       >
         <FilterModLogType />
-        <FilterUserAutocomplete />
+
+        <FilterUserAutocomplete
+          value={actedOnId}
+          onChange={(newPerson) => (newPerson ? setActedOnID(newPerson.id) : setActedOnID(null))}
+        />
+        <FilterCommunityAutocomplete
+          value={limitCommunityId}
+          onChange={(newCommunity) =>
+            newCommunity ? setLimitCommunityId(newCommunity.id) : setLimitCommunityId(null)
+          }
+        />
 
         <Checkbox
           label="Show Local Instance Only"
