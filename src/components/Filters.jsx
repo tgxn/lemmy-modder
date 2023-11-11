@@ -10,7 +10,15 @@ import Checkbox from "@mui/joy/Checkbox";
 
 import Chip from "@mui/joy/Chip";
 
-import { selectFilterCommunity, selectFilterType, selectHideReadApprovals, selectModLogType, selectShowRemoved, selectShowResolved, setConfigItem } from "../redux/reducer/configReducer";
+import {
+  selectFilterCommunity,
+  selectFilterType,
+  selectHideReadApprovals,
+  selectModLogType,
+  selectShowRemoved,
+  selectShowResolved,
+  setConfigItem,
+} from "../redux/reducer/configReducer";
 
 import { getSiteData } from "../hooks/getSiteData";
 import { getModLogTypeNames } from "../utils";
@@ -190,6 +198,92 @@ export function FilterRemoved() {
       onChange={() => {
         dispatch(setConfigItem("showRemoved", !showRemoved));
       }}
+    />
+  );
+}
+
+import { useLemmyHttpAction } from "../hooks/useLemmyHttp.js";
+
+import Autocomplete from "@mui/joy/Autocomplete";
+import CircularProgress from "@mui/joy/CircularProgress";
+export function FilterUserAutocomplete({}) {
+  const dispatch = useDispatch();
+
+  // need to show an autocomplete, and then call the search api for results
+  const { data, callAction, isSuccess, isLoading } = useLemmyHttpAction("search");
+
+  const searchUsers = (searchTerm) => {
+    console.log("searchUsers", searchTerm);
+
+    if (searchTerm.length < 3) {
+      return;
+    }
+
+    callAction({ q: searchTerm, listing_type: "Local", type_: "Users" });
+  };
+
+  const [open, setOpen] = React.useState(false);
+  // const [options, setOptions] = React.useState([]);
+  // const loading = open && options.length === 0;
+
+  const options = React.useMemo(() => {
+    if (isLoading) {
+      return [];
+    }
+
+    console.log("options", data);
+
+    if (data) {
+      return data.users.map((user) => {
+        return {
+          id: user.person.id,
+          title:
+            user.person.display_name +
+            " (" +
+            user.person.name +
+            "@" +
+            user.person.actor_id.split("/")[2] +
+            ")",
+          person: user.person,
+        };
+      });
+    }
+    return [];
+  }, [data]);
+
+  // on close, clear options
+  // React.useEffect(() => {
+  //   if (!open) {
+  //     setOptions([]);
+  //   }
+  // }, [open]);
+
+  return (
+    <Autocomplete
+      sx={{ width: 300 }}
+      placeholder="User Filter"
+      open={open}
+      onOpen={() => {
+        setOpen(true);
+      }}
+      onClose={() => {
+        setOpen(false);
+      }}
+      isOptionEqualToValue={(option, value) => option.title === value.title}
+      getOptionLabel={(option) => option.title}
+      options={options}
+      loading={isLoading}
+      freeSolo={true}
+      onInputChange={(e, newValue) => {
+        searchUsers(newValue);
+      }}
+      endDecorator={isLoading ? <CircularProgress size="sm" sx={{ bgcolor: "background.surface" }} /> : null}
+      // options={[]}
+      // value={filterUser}
+      // onChange={(e, newValue) => {
+      //   dispatch(setConfigItem("filterUser", newValue));
+      // }}
+      // renderInput={(params) => <TextField {...params} label="Filter User" />}
     />
   );
 }
