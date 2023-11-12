@@ -1,26 +1,16 @@
-import React, { useEffect } from "react";
-
-import { useSelector } from "react-redux";
-import { useInView } from "react-intersection-observer";
+import React from "react";
 
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
-import Sheet from "@mui/joy/Sheet";
-import CircularProgress from "@mui/joy/CircularProgress";
-import AccordionGroup from "@mui/joy/AccordionGroup";
-import { accordionSummaryClasses } from "@mui/joy/AccordionSummary";
-import Checkbox from "@mui/joy/Checkbox";
+import Card from "@mui/joy/Card";
+import FormControl from "@mui/joy/FormControl";
+import FormLabel from "@mui/joy/FormLabel";
+import Typography from "@mui/joy/Typography";
+import Stack from "@mui/joy/Stack";
 
-import { FilterModLogType, FilterUserAutocomplete, FilterCommunityAutocomplete } from "../components/Filters";
-
-import useLemmyInfinite from "../hooks/useLemmyInfinite";
 import { getSiteData } from "../hooks/getSiteData";
 
-import { parseActorId } from "../utils";
-
-import ModLogAccordians from "../components/Activity/ModLogAccordians";
-import { selectModLogType } from "../redux/reducer/configReducer";
-import { useSearchParams } from "react-router-dom";
+import { useLemmyHttp } from "../hooks/useLemmyHttp.js";
 
 /**
  *
@@ -33,18 +23,48 @@ import { useSearchParams } from "react-router-dom";
  * we can also see list of existing mods, and their activity in the community
  */
 
+function CommunityCard({ community, moderator }) {
+  console.log("community", community, moderator);
+
+  // need to lookup community info on load
+
+  const {
+    isLoading: unreadCountLoading,
+    isFetching: unreadCountFetching,
+    error: unreadCountError,
+    data: unreadCountData,
+  } = useLemmyHttp("getCommunity", { id: community.id });
+
+  return (
+    <Card variant={"plain"}>
+      <pre>{JSON.stringify(community, null, 2)}</pre>
+      <pre>{JSON.stringify(unreadCountData, null, 2)}</pre>
+
+      {/* <Stack spacing={2}>
+        <Box>
+          <Typography variant="h6">{community.name}</Typography>
+          <Typography variant="body2">{community.description}</Typography>
+        </Box>
+        <Box>
+          <Typography variant="body2">Moderators:</Typography>
+          <Typography variant="body2">{community.moderators}</Typography>
+        </Box>
+        <Box>
+          <Typography variant="body2">Latest actions:</Typography>
+          <Typography variant="body2">{community.latestActions}</Typography>
+        </Box>
+      </Stack> */}
+    </Card>
+  );
+}
+
 export default function Communities() {
-  const { baseUrl, siteData, localPerson, userRole } = getSiteData();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { baseUrl, siteData, localPerson, modCommms, userRole } = getSiteData();
+  // const [searchParams, setSearchParams] = useSearchParams();
 
-  const locaUserParsedActor = parseActorId(localPerson.actor_id);
+  // const locaUserParsedActor = parseActorId(localPerson.actor_id);
 
-  const modLogType = useSelector(selectModLogType);
-
-  const [limitLocalInstance, setLimitLocalInstance] = React.useState(true);
-  const [limitCommunityId, setLimitCommunityId] = React.useState(null);
-  const [limitModId, setLimitModId] = React.useState(null);
-  const [actedOnId, setActedOnID] = React.useState(null);
+  // const modLogType = useSelector(selectModLogType);
 
   return (
     <Box
@@ -54,7 +74,9 @@ export default function Communities() {
         gap: 2,
       }}
     >
-      test
+      {modCommms.map((community) => {
+        return <CommunityCard community={community.community} moderator={community.moderator} />;
+      })}
     </Box>
   );
 }

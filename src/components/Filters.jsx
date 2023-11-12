@@ -23,6 +23,8 @@ import {
 import { getSiteData } from "../hooks/getSiteData";
 import { getModLogTypeNames } from "../utils";
 
+import { useLemmyHttpAction } from "../hooks/useLemmyHttp.js";
+
 export function FilterCommunity() {
   const dispatch = useDispatch();
   const filterCommunity = useSelector(selectFilterCommunity);
