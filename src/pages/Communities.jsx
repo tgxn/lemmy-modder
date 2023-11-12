@@ -22,6 +22,8 @@ import { useLemmyHttp } from "../hooks/useLemmyHttp.js";
  * for each communtity, we should show a overview pane that can be expanded to show moderator list and latest actions in that community
  * when it's expnaded, we can ad-hoc: ban user by search, promote to mod by search
  * we can also see list of existing mods, and their activity in the community
+ *
+ * we also expect to see a list of community-level bans for each community
  */
 
 function CommunityCard({ community, moderator }) {
