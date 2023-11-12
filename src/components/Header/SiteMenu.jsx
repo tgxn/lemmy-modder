@@ -249,6 +249,38 @@ export default function SiteMenu() {
           Site ModLog
         </Button>
       </BasicInfoTooltip>
+
+      <BasicInfoTooltip title="Communities" placement="bottom" variant="soft">
+        <Button
+          size="sm"
+          color={location.pathname == "/communities" ? "primary" : "neutral"}
+          variant={location.pathname == "/communities" ? "soft" : "outlined"}
+          onClick={() => {
+            navigate("/communities");
+          }}
+          // endDecorator={
+          //   siteData && (
+          //     <Chip
+          //       startDecorator={regAppCountIsLoading ? <CircularProgress size="sm" /> : <HowToRegIcon />}
+          //       color={siteData && regCountAppData?.registration_applications > 0 ? "danger" : "success"}
+          //       sx={{
+          //         borderRadius: 6,
+          //       }}
+          //     >
+          //       {regCountAppData?.registration_applications !== undefined
+          //         ? regCountAppData.registration_applications
+          //         : "0"}
+          //     </Chip>
+          //   )
+          // }
+          sx={{
+            mr: 1,
+            borderRadius: 4,
+          }}
+        >
+          Communities
+        </Button>
+      </BasicInfoTooltip>
     </>
   );
 }
