@@ -55,7 +55,7 @@ export default function Approvals() {
   });
 
   const [searchParams, setSearchParams] = useSearchParams();
-  
+
   React.useEffect(() => {
     if(searchParams.has("unread_only")) {
         dispatch(setConfigItem("hideReadApprovals", searchParams.get("unread_only") == "true"));
@@ -64,7 +64,12 @@ export default function Approvals() {
 
 
   React.useEffect(() => {
+    if(hideReadApprovals){
       setSearchParams({ unread_only: hideReadApprovals });
+    } else {
+      searchParams.delete("unread_only");
+      setSearchParams(searchParams);
+    }
   }, [hideReadApprovals]);
 
 

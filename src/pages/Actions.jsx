@@ -65,8 +65,11 @@ export default function Actions() {
       setSearchParams({ mod_log_type: modLogType });
     }
     
-    if (limitLocalInstance !== null) {
-      setSearchParams({ local_instance: limitCommunityId });
+    if (limitLocalInstance !== null && limitLocalInstance !== true) {
+      setSearchParams({ local_instance: limitLocalInstance });
+    } else {
+      searchParams.delete("local_instance");
+      setSearchParams(searchParams);
     }
   }, [modLogType, limitLocalInstance]);
   
