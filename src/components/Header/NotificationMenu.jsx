@@ -18,6 +18,7 @@ import Divider from "@mui/joy/Divider";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 
 import { useLemmyHttp } from "../../hooks/useLemmyHttp";
+
 import { getSiteData } from "../../hooks/getSiteData";
 
 import { BasicInfoTooltip } from "../Tooltip.jsx";

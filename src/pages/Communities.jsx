@@ -1,6 +1,7 @@
 import React from "react";
 
 import Box from "@mui/joy/Box";
+import Sheet from "@mui/joy/Sheet";
 import Button from "@mui/joy/Button";
 import Card from "@mui/joy/Card";
 import FormControl from "@mui/joy/FormControl";
@@ -26,34 +27,73 @@ import { useLemmyHttp } from "../hooks/useLemmyHttp.js";
 function CommunityCard({ community, moderator }) {
   console.log("community", community, moderator);
 
-  // need to lookup community info on load
+  // need to lookup communit  y info on load
 
   const {
-    isLoading: unreadCountLoading,
-    isFetching: unreadCountFetching,
-    error: unreadCountError,
-    data: unreadCountData,
+    isLoading: communityDataIsLoading,
+    isFetching: communityDataIsFetching,
+    error: communityDataError,
+    data: rawCommunityData,
   } = useLemmyHttp("getCommunity", { id: community.id });
 
-  return (
-    <Card variant={"plain"}>
-      <pre>{JSON.stringify(community, null, 2)}</pre>
-      <pre>{JSON.stringify(unreadCountData, null, 2)}</pre>
+  const communityData = React.useMemo(() => {
+    if (!rawCommunityData) return null;
 
-      {/* <Stack spacing={2}>
-        <Box>
-          <Typography variant="h6">{community.name}</Typography>
-          <Typography variant="body2">{community.description}</Typography>
-        </Box>
-        <Box>
-          <Typography variant="body2">Moderators:</Typography>
-          <Typography variant="body2">{community.moderators}</Typography>
-        </Box>
-        <Box>
-          <Typography variant="body2">Latest actions:</Typography>
-          <Typography variant="body2">{community.latestActions}</Typography>
-        </Box>
-      </Stack> */}
+    return rawCommunityData.community_view;
+  }, [rawCommunityData]);
+
+  const moderatorList = React.useMemo(() => {
+    if (!rawCommunityData) return null;
+
+    return rawCommunityData.moderators;
+  }, [rawCommunityData]);
+
+  if (communityDataIsLoading || communityDataIsFetching)
+    return (
+      <Card variant={"plain"} sx={{ p: 2, display: "flex", flexDirection: "column", gap: 2 }}>
+        <Typography variant="h4">Loading...</Typography>
+      </Card>
+    );
+
+  return (
+    <Card
+      variant={"plain"}
+      sx={{
+        p: 2,
+        display: "flex",
+        flexDirection: "row",
+        gap: 2,
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+        }}
+      >
+        <Typography variant="h4">{community.name}</Typography>
+        <Typography variant="h5">{community.title}</Typography>
+      </Box>
+      <Typography variant="body1">{community.description}</Typography>
+
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        {moderatorList &&
+          moderatorList.map((mod) => {
+            console.log("mod", mod);
+            return (
+              <Typography variant="body1">
+                {mod.moderator.name} ({mod.moderator.display_name})
+              </Typography>
+            );
+          })}
+      </Box>
+
+      {/* 
+      <pre>{JSON.stringify(moderator, null, 2)}</pre>
+
+      <pre>{JSON.stringify(community, null, 2)}</pre>
+      <pre>{JSON.stringify(communityData, null, 2)}</pre> */}
     </Card>
   );
 }
