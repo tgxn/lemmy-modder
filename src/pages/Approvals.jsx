@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
@@ -19,7 +19,8 @@ import useLemmyInfinite from "../hooks/useLemmyInfinite";
 import ApprovalsList from "../components/ApprovalsList.jsx";
 
 import { getSiteData } from "../hooks/getSiteData";
-import { selectHideReadApprovals } from "../redux/reducer/configReducer";
+import { selectHideReadApprovals, setConfigItem } from "../redux/reducer/configReducer";
+import { useSearchParams } from "react-router-dom";
 
 export default function Approvals() {
   const hideReadApprovals = useSelector(selectHideReadApprovals);
@@ -31,6 +32,8 @@ export default function Approvals() {
   const { ref, inView, entry } = useInView({
     threshold: 0,
   });
+
+  const dispatch = useDispatch();
 
   const {
     isLoading: registrationsLoading,
@@ -50,6 +53,20 @@ export default function Approvals() {
     enabled: userRole === "admin",
     perPage: 10,
   });
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  React.useEffect(() => {
+    if(searchParams.has("unread_only")) {
+        dispatch(setConfigItem("hideReadApprovals", searchParams.get("unread_only") == "true"));
+    }
+}, []);
+
+
+  React.useEffect(() => {
+      setSearchParams({ unread_only: hideReadApprovals });
+  }, [hideReadApprovals]);
+
 
   const fullData = React.useMemo(() => {
     if (!registrationsData) return [];
