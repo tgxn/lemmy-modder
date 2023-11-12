@@ -80,7 +80,7 @@ export default function NotificationMenu() {
               setOpen(!open);
             }}
             sx={{
-              mr: 1,
+              ml: 1,
               borderRadius: 4,
               display: "flex",
               alignItems: "center",
