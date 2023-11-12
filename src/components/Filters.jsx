@@ -2,14 +2,22 @@ import React from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
+import Autocomplete from "@mui/joy/Autocomplete";
+import CircularProgress from "@mui/joy/CircularProgress";
+import AutocompleteOption from "@mui/joy/AutocompleteOption";
+import ListItemDecorator from "@mui/joy/ListItemDecorator";
+import ListItemContent from "@mui/joy/ListItemContent";
 import Box from "@mui/joy/Box";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import Typography from "@mui/joy/Typography";
 import Checkbox from "@mui/joy/Checkbox";
-
 import Chip from "@mui/joy/Chip";
 
+import PersonSearchIcon from "@mui/icons-material/PersonSearch";
+import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
+
+import { UserAvatar } from "./Display.jsx";
 import {
   selectFilterCommunity,
   selectFilterType,
