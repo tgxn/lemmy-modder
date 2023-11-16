@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useInView } from "react-intersection-observer";
 
 import Box from "@mui/joy/Box";
@@ -19,12 +19,14 @@ import { getSiteData } from "../hooks/getSiteData";
 import { parseActorId } from "../utils";
 
 import ModLogAccordians from "../components/Activity/ModLogAccordians";
-import { selectModLogType } from "../redux/reducer/configReducer";
+import { selectModLogType, setConfigItem } from "../redux/reducer/configReducer";
 import { useSearchParams } from "react-router-dom";
 
 export default function Actions() {
   const { baseUrl, siteData, localPerson, userRole } = getSiteData();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const dispatch = useDispatch();
 
   const locaUserParsedActor = parseActorId(localPerson.actor_id);
 
@@ -35,9 +37,14 @@ export default function Actions() {
   const [limitModId, setLimitModId] = React.useState(null);
   const [actedOnId, setActedOnID] = React.useState(null);
 
+  // when search params changes
   useEffect(() => {
     if (searchParams.get("community_id")) {
       setLimitCommunityId(searchParams.get("community_id"));
+    }
+
+    if (searchParams.get("mod_log_type")) {
+      dispatch(setConfigItem("modLogType", searchParams.get("mod_log_type")));
     }
 
     if (searchParams.get("mod_id")) {
@@ -47,7 +54,25 @@ export default function Actions() {
     if (searchParams.get("acted_on_id")) {
       setActedOnID(searchParams.get("acted_on_id"));
     }
+
+    if (searchParams.get("local_instance")) {
+      setLimitLocalInstance(searchParams.get("local_instance") == "true");
+    }
   }, [searchParams]);
+
+  // when type changes
+  useEffect(() => {
+    if (modLogType !== null) {
+      setSearchParams({ mod_log_type: modLogType });
+    }
+
+    if (limitLocalInstance !== null && limitLocalInstance !== true) {
+      setSearchParams({ local_instance: limitLocalInstance });
+    } else {
+      searchParams.delete("local_instance");
+      setSearchParams(searchParams);
+    }
+  }, [modLogType, limitLocalInstance]);
 
   const { ref, inView, entry } = useInView({
     threshold: 0,
