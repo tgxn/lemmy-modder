@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
@@ -18,6 +18,9 @@ import useLemmyReports from "../hooks/useLemmyReports";
 import ReportsList from "../components/ReportsList.jsx";
 
 import { getSiteData } from "../hooks/getSiteData";
+import { selectFilterCommunity, selectFilterType, selectShowResolved, setConfigItem } from "../redux/reducer/configReducer.js";
+import { useSelector } from "react-redux";
+import { useSearchParams } from "react-router-dom";
 
 export default function Reports() {
   // const {
@@ -52,6 +55,53 @@ export default function Reports() {
 
   const isLoading = loadingReports;
   const isError = isReportsError;
+
+  const filterCommunity = useSelector(selectFilterCommunity);
+  const filterType = useSelector(selectFilterType);
+  const showResolved = useSelector(selectShowResolved);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.filter_community) {
+      dispatch(setConfigItem("filterCommunity", searchParams.filter_community));
+    }
+    if (searchParams.mod_log_type) {
+      dispatch(setConfigItem("filterType", searchParams.filter_type));
+    }
+    if (searchParams.show_resolved) {
+      dispatch(setConfigItem("showResolved", true));
+    }
+  }, [])
+
+  const [query, setQuery] = useState({});
+
+  useEffect(() => {
+    setSearchParams(query);
+  }, [query])
+
+  useEffect(() => {
+    if (filterCommunity) {
+
+      setQuery({ ...query, filter_community: filterCommunity });
+    }
+  }, [filterCommunity])
+
+  useEffect(() => {
+    if (filterType) {
+      setQuery({ ...query, filter_type: filterCommunity });
+    }
+  }, [filterType])
+
+  useEffect(() => {
+    if (showResolved) {
+      setQuery({ ...query, show_resolved: showResolved });
+    } else {
+      const { show_resolved, ...rest } = query;
+      setQuery({ ...rest });
+    }
+  }, [showResolved])
+
 
   if (userRole == "user") {
     return (
