@@ -50,10 +50,14 @@ export default function useLemmyInfinite({
     queryFn: async ({ pageParam = 1, ...rest }, optional) => {
       console.log("LemmyHttp inner infinite", callLemmyMethod, pageParam, rest, optional);
 
-      const lemmyClient = new LemmyHttp(`https://${currentUser.base}`);
+      const lemmyClient = new LemmyHttp(`https://${currentUser.base}`, {
+        headers: {
+          Authorization: `Bearer ${currentUser.jwt}`,
+        },
+      });
 
       const apiResultData = await lemmyClient[callLemmyMethod]({
-        auth: currentUser.jwt,
+        // auth: currentUser.jwt,
         page: pageParam,
         limit: perPage,
         ...formData,

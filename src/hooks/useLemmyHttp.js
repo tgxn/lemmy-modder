@@ -30,10 +30,14 @@ export function useLemmyHttp(callLemmyMethod, formData = {}) {
   const { isSuccess, isLoading, isError, error, data, isFetching, refetch } = useQuery({
     queryKey: ["lemmyHttp", localPerson.id, callLemmyMethod, formDataArray],
     queryFn: async () => {
-      const lemmyClient = new LemmyHttp(`https://${currentUser.base}`);
+      const lemmyClient = new LemmyHttp(`https://${currentUser.base}`, {
+        headers: {
+          Authorization: `Bearer ${currentUser.jwt}`,
+        },
+      });
 
       const siteData = await lemmyClient[callLemmyMethod]({
-        auth: currentUser.jwt,
+        // auth: currentUser.jwt,
         ...formData,
       });
 
@@ -62,10 +66,14 @@ export function useLemmyHttpAction(callLemmyMethod) {
 
   const mutation = useMutation({
     mutationFn: async (formData) => {
-      const lemmyClient = new LemmyHttp(`https://${currentUser.base}`);
+      const lemmyClient = new LemmyHttp(`https://${currentUser.base}`, {
+        headers: {
+          Authorization: `Bearer ${currentUser.jwt}`,
+        },
+      });
 
       const resultData = await lemmyClient[callLemmyMethod]({
-        auth: currentUser.jwt,
+        // auth: currentUser.jwt,
         ...formData,
       });
 
@@ -97,11 +105,13 @@ export function refreshAllData() {
     mutationFn: async () => {
       dispatch(setAccountIsLoading(true));
 
-      const lemmyClient = new LemmyHttp(`https://${currentUser.base}`);
-
-      const getSite = await lemmyClient.getSite({
-        auth: currentUser.jwt,
+      const lemmyClient = new LemmyHttp(`https://${currentUser.base}`, {
+        headers: {
+          Authorization: `Bearer ${currentUser.jwt}`,
+        },
       });
+
+      const getSite = await lemmyClient.getSite();
 
       dispatch(updateCurrentUserData(getSite));
 

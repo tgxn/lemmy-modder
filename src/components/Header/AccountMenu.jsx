@@ -63,11 +63,13 @@ function UserListItem({ user }) {
         dispatch(setAccountIsLoading(true));
 
         try {
-          const lemmyClient = new LemmyHttp(`https://${user.base}`);
-
-          const getSite = await lemmyClient.getSite({
-            auth: user.jwt,
+          const lemmyClient = new LemmyHttp(`https://${user.base}`, {
+            headers: {
+              Authorization: `Bearer ${user.jwt}`,
+            },
           });
+
+          const getSite = await lemmyClient.getSite();
 
           // there must be a user returned in this api call
           if (!getSite.my_user) {
@@ -75,7 +77,7 @@ function UserListItem({ user }) {
           }
 
           // TODO we need to update the user's details in the saved accounts array too, if this is a saved session
-          dispatch(setCurrentUser({base: user.base, jwt: user.jwt, site: getSite}));
+          dispatch(setCurrentUser({ base: user.base, jwt: user.jwt, site: getSite }));
         } catch (e) {
           toast(typeof e == "string" ? e : e.message);
         } finally {

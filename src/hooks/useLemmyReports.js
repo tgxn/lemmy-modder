@@ -6,8 +6,6 @@ import { getSiteData } from "../hooks/getSiteData";
 
 import { useSelector } from "react-redux";
 
-import { LemmyHttp } from "lemmy-js-client";
-
 import useLemmyInfinite from "./useLemmyInfinite";
 import {
   selectFilterCommunity,

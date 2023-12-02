@@ -20,8 +20,6 @@ import Delete from "@mui/icons-material/Delete";
 
 import { LemmyHttp } from "lemmy-js-client";
 
-import { useLemmyUserDataAction } from "../hooks/useLemmyHttp";
-
 import {
   addUser,
   setAccountIsLoading,
@@ -74,29 +72,17 @@ export default function LoginForm() {
 
       const auth = await lemmyClient.login(loginPayload);
 
-      /**
- * 0.19.x :/ hmm
-        // this shows the `jwt` is present 👍
-        console.log("auth", auth);
-
-        // cookie is called `auth` now.
-        lemmyClient.setHeaders({
-          "Cookie":	`auth=${auth.jwt}`
-        });
-
-        // this no longer has any params !
-        const getSite = await lemmyClient.getSite();
-
-        console.log("getSite", getSite);
-
- * 
- */
-
       // as long aws there is a JWT in the response from login, logged in!
       if (auth.jwt) {
-        const getSite = await lemmyClient.getSite({
-          auth: auth.jwt,
+        console.log("auth", auth);
+
+        const lemmyClientAuthed = new LemmyHttp(`https://${instanceBase}`, {
+          headers: {
+            Authorization: `Bearer ${auth.jwt}`,
+          },
         });
+
+        const getSite = await lemmyClientAuthed.getSite();
 
         // save if they chose to
         if (saveSession) {
@@ -316,11 +302,13 @@ export default function LoginForm() {
                         dispatch(setAccountIsLoading(true));
 
                         try {
-                          const lemmyClient = new LemmyHttp(`https://${user.base}`);
-
-                          const getSite = await lemmyClient.getSite({
-                            auth: user.jwt,
+                          const lemmyClientAuthed = new LemmyHttp(`https://${user.base}`, {
+                            headers: {
+                              Authorization: `Bearer ${user.jwt}`,
+                            },
                           });
+
+                          const getSite = await lemmyClientAuthed.getSite();
 
                           if (!getSite || !getSite.my_user) {
                             // set instance base to the current instance for easy login
