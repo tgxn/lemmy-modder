@@ -138,20 +138,20 @@ export default function ReportsList({ reportsList }) {
   return reportsList.map((report, index) => {
     if (report.type === "comment") {
       return (
-        <ReportListItem report={report} itemType="comment">
-          <CommentReportItem key={index} report={report} />
+        <ReportListItem key={index} report={report} itemType="comment">
+          <CommentReportItem report={report} />
         </ReportListItem>
       );
     } else if (report.type === "post") {
       return (
-        <ReportListItem report={report} itemType="post">
-          <PostReportItem key={index} report={report} />
+        <ReportListItem key={index} report={report} itemType="post">
+          <PostReportItem report={report} />
         </ReportListItem>
       );
     } else if (report.type === "pm") {
       return (
-        <ReportListItem report={report} itemType="pm">
-          <PMReportItem key={index} report={report} />
+        <ReportListItem key={index} report={report} itemType="pm">
+          <PMReportItem report={report} />
         </ReportListItem>
       );
     }
