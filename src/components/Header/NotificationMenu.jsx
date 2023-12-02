@@ -18,6 +18,7 @@ import Divider from "@mui/joy/Divider";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 
 import { useLemmyHttp } from "../../hooks/useLemmyHttp";
+
 import { getSiteData } from "../../hooks/getSiteData";
 
 import { BasicInfoTooltip } from "../Tooltip.jsx";
@@ -80,7 +81,7 @@ export default function NotificationMenu() {
               setOpen(!open);
             }}
             sx={{
-              mr: 1,
+              ml: 1,
               borderRadius: 4,
               display: "flex",
               alignItems: "center",

@@ -17,8 +17,6 @@ import Chip from "@mui/joy/Chip";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 
-import { useLemmyHttpAction } from "../hooks/useLemmyHttp.js";
-
 import { UserAvatar } from "./Display.jsx";
 import {
   selectFilterCommunity,
@@ -32,6 +30,8 @@ import {
 
 import { getSiteData } from "../hooks/getSiteData";
 import { getModLogTypeNames } from "../utils";
+
+import { useLemmyHttpAction } from "../hooks/useLemmyHttp.js";
 
 export function FilterCommunity() {
   const dispatch = useDispatch();
@@ -268,7 +268,11 @@ export function FilterUserAutocomplete({ value, onChange }) {
       return;
     }
 
-    callAction({ q: searchTerm, listing_type: "Local", type_: "Users" });
+    callAction({
+      q: searchTerm,
+      listing_type: "Local", // TODO this does nothing - https://github.com/LemmyNet/lemmy/issues/4146
+      type_: "Users",
+    });
   };
 
   const onUserSelected = (user) => {

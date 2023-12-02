@@ -85,8 +85,6 @@ export default function UserMenu() {
 
   return (
     <>
-      <NotificationMenu />
-
       <BasicInfoTooltip title="Reload all data" placement="bottom" variant="soft">
         <IconButton
           disabled={anythingLoading}
@@ -112,6 +110,8 @@ export default function UserMenu() {
           )}
         </IconButton>
       </BasicInfoTooltip>
+
+      <NotificationMenu />
 
       <AccountMenu />
 
