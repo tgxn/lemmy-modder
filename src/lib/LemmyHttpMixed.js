@@ -5,13 +5,28 @@ import { LemmyHttp as LemmyHttp19 } from "lemmy-js-client";
 
 export default class LemmyHttpMixed {
   constructor(baseUrl, options = {}) {
+    this.baseUrl = baseUrl;
+
     this.lemmyClient = new LemmyHttp(baseUrl, options);
     this.lemmyClient19 = new LemmyHttp19(baseUrl, options);
   }
 
   async getSiteVersion() {
+    // load cache
+    const cachedVersion = localStorage.getItem(this.baseUrl + ".version");
+    const cachedExpires = localStorage.getItem(this.baseUrl + ".expires");
+
+    // check if cache is valid
+    if (cachedVersion && cachedExpires && cachedExpires > Date.now()) {
+      return cachedVersion;
+    }
+
     // call getSite and store version
     const siteData = await this.lemmyClient.getSite();
+
+    // cache in cookies for 2 hours
+    localStorage.setItem(this.baseUrl + ".version", siteData.version);
+    localStorage.setItem(this.baseUrl + ".expires", Date.now() + 1000 * 60 * 60 * 2);
 
     return siteData.version;
   }
