@@ -4,7 +4,7 @@
 
 ⚡ A moderation tool for [Lemmy](https://github.com/LemmyNet/lemmy) community moderators and site admins. ⚡
 
- > Currently only compatible with 0.18.x instances _(and not 0.19.x)_, as the [Lemmy SDK is not backwards-compatible.](https://github.com/LemmyNet/lemmy-js-client/issues/194) ☹
+ > 🎉🎉 We now have cross-version support for 0.19! 🎉🙌 ~~Currently only compatible with 0.18.x instances _(and not 0.19.x)_, as the [Lemmy SDK is not backwards-compatible.](https://github.com/LemmyNet/lemmy-js-client/issues/194) ☹~~
 
 ## Screenshots
 | | | |
@@ -32,7 +32,6 @@
 There are 3 types of users in Lemmy Modder: user, mod and `admin`
 
 This is determined based on the amount of moderated communities you manage.
-
 
 
 ## Hosting Options
