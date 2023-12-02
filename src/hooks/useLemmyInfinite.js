@@ -6,7 +6,8 @@ import { getSiteData } from "../hooks/getSiteData";
 
 import { useSelector } from "react-redux";
 
-import { LemmyHttp } from "lemmy-js-client";
+import LemmyHttpMixed from "../lib/LemmyHttpMixed";
+// import { LemmyHttp } from "lemmy-js-client";
 import { selectCurrentUser } from "../redux/reducer/accountReducer";
 
 export default function useLemmyInfinite({
@@ -50,10 +51,18 @@ export default function useLemmyInfinite({
     queryFn: async ({ pageParam = 1, ...rest }, optional) => {
       console.log("LemmyHttp inner infinite", callLemmyMethod, pageParam, rest, optional);
 
-      const lemmyClient = new LemmyHttp(`https://${currentUser.base}`);
+      const lemmyClientAuthed = new LemmyHttpMixed(`https://${currentUser.base}`);
+      await lemmyClientAuthed.setupAuth(currentUser.jwt);
+      // const getSite = await lemmyClientAuthed.call("getSite");
 
-      const apiResultData = await lemmyClient[callLemmyMethod]({
-        auth: currentUser.jwt,
+      // const lemmyClient = new LemmyHttp(`https://${currentUser.base}`, {
+      //   headers: {
+      //     Authorization: `Bearer ${currentUser.jwt}`,
+      //   },
+      // });
+
+      const apiResultData = await lemmyClientAuthed.call(callLemmyMethod, {
+        // auth: currentUser.jwt,
         page: pageParam,
         limit: perPage,
         ...formData,

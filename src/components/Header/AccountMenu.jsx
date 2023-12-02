@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { useQueryClient } from "@tanstack/react-query";
 
-import { LemmyHttp } from "lemmy-js-client";
+import LemmyHttpMixed from "../../lib/LemmyHttpMixed.js";
+// import { LemmyHttp } from "lemmy-js-client";
 import { Toaster, toast } from "sonner";
 
 import Menu from "@mui/joy/Menu";
@@ -63,11 +64,17 @@ function UserListItem({ user }) {
         dispatch(setAccountIsLoading(true));
 
         try {
-          const lemmyClient = new LemmyHttp(`https://${user.base}`);
+          const lemmyClient = new LemmyHttpMixed(`https://${user.base}`);
+          await lemmyClient.setupAuth(user.jwt);
+          const getSite = await lemmyClient.call("getSite");
 
-          const getSite = await lemmyClient.getSite({
-            auth: user.jwt,
-          });
+          // const lemmyClient = new LemmyHttp(`https://${user.base}`, {
+          //   headers: {
+          //     Authorization: `Bearer ${user.jwt}`,
+          //   },
+          // });
+
+          // const getSite = await lemmyClient.getSite();
 
           // there must be a user returned in this api call
           if (!getSite.my_user) {
@@ -75,7 +82,7 @@ function UserListItem({ user }) {
           }
 
           // TODO we need to update the user's details in the saved accounts array too, if this is a saved session
-          dispatch(setCurrentUser({base: user.base, jwt: user.jwt, site: getSite}));
+          dispatch(setCurrentUser({ base: user.base, jwt: user.jwt, site: getSite }));
         } catch (e) {
           toast(typeof e == "string" ? e : e.message);
         } finally {

@@ -1,12 +1,8 @@
-import { useEffect, useMemo } from "react";
-
-import { useQuery, useMutation, useInfiniteQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 import { getSiteData } from "../hooks/getSiteData";
 
 import { useSelector } from "react-redux";
-
-import { LemmyHttp } from "lemmy-js-client";
 
 import useLemmyInfinite from "./useLemmyInfinite";
 import { getModLogTypeNames } from "../utils";

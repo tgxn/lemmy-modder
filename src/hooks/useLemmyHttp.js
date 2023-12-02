@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getSiteData } from "../hooks/getSiteData";
 
-import { LemmyHttp } from "lemmy-js-client";
+import LemmyHttpMixed from "../lib/LemmyHttpMixed";
+// import { LemmyHttp } from "lemmy-js-client";
 
 import {
   selectCurrentUser,
@@ -30,12 +31,9 @@ export function useLemmyHttp(callLemmyMethod, formData = {}) {
   const { isSuccess, isLoading, isError, error, data, isFetching, refetch } = useQuery({
     queryKey: ["lemmyHttp", localPerson.id, callLemmyMethod, formDataArray],
     queryFn: async () => {
-      const lemmyClient = new LemmyHttp(`https://${currentUser.base}`);
-
-      const siteData = await lemmyClient[callLemmyMethod]({
-        auth: currentUser.jwt,
-        ...formData,
-      });
+      const lemmyClient = new LemmyHttpMixed(`https://${currentUser.base}`);
+      await lemmyClient.setupAuth(currentUser.jwt);
+      const siteData = await lemmyClient.call(callLemmyMethod, formData);
 
       return siteData;
     },
@@ -62,10 +60,18 @@ export function useLemmyHttpAction(callLemmyMethod) {
 
   const mutation = useMutation({
     mutationFn: async (formData) => {
-      const lemmyClient = new LemmyHttp(`https://${currentUser.base}`);
+      const lemmyClientAuthed = new LemmyHttpMixed(`https://${currentUser.base}`);
+      await lemmyClientAuthed.setupAuth(currentUser.jwt);
+      // const getSite = await lemmyClientAuthed.call("getSite");
 
-      const resultData = await lemmyClient[callLemmyMethod]({
-        auth: currentUser.jwt,
+      // const lemmyClient = new LemmyHttp(`https://${currentUser.base}`, {
+      //   headers: {
+      //     Authorization: `Bearer ${currentUser.jwt}`,
+      //   },
+      // });
+
+      const resultData = await lemmyClientAuthed.call(callLemmyMethod, {
+        // auth: currentUser.jwt,
         ...formData,
       });
 
@@ -97,11 +103,17 @@ export function refreshAllData() {
     mutationFn: async () => {
       dispatch(setAccountIsLoading(true));
 
-      const lemmyClient = new LemmyHttp(`https://${currentUser.base}`);
+      const lemmyClientAuthed = new LemmyHttpMixed(`https://${currentUser.base}`);
+      await lemmyClientAuthed.setupAuth(currentUser.jwt);
+      const getSite = await lemmyClientAuthed.call("getSite");
 
-      const getSite = await lemmyClient.getSite({
-        auth: currentUser.jwt,
-      });
+      // const lemmyClient = new LemmyHttp(`https://${currentUser.base}`, {
+      //   headers: {
+      //     Authorization: `Bearer ${currentUser.jwt}`,
+      //   },
+      // });
+
+      // const getSite = await lemmyClient.getSite();
 
       dispatch(updateCurrentUserData(getSite));
 
