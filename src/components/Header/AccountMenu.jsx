@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { useQueryClient } from "@tanstack/react-query";
 
-import { LemmyHttp } from "lemmy-js-client";
+import LemmyHttpMixed from "../../lib/LemmyHttpMixed.js";
+// import { LemmyHttp } from "lemmy-js-client";
 import { Toaster, toast } from "sonner";
 
 import Menu from "@mui/joy/Menu";
@@ -63,13 +64,17 @@ function UserListItem({ user }) {
         dispatch(setAccountIsLoading(true));
 
         try {
-          const lemmyClient = new LemmyHttp(`https://${user.base}`, {
-            headers: {
-              Authorization: `Bearer ${user.jwt}`,
-            },
-          });
+          const lemmyClient = new LemmyHttpMixed(`https://${user.base}`);
+          await lemmyClient.setupAuth(user.jwt);
+          const getSite = await lemmyClient.call("getSite");
 
-          const getSite = await lemmyClient.getSite();
+          // const lemmyClient = new LemmyHttp(`https://${user.base}`, {
+          //   headers: {
+          //     Authorization: `Bearer ${user.jwt}`,
+          //   },
+          // });
+
+          // const getSite = await lemmyClient.getSite();
 
           // there must be a user returned in this api call
           if (!getSite.my_user) {

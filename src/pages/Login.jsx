@@ -18,6 +18,7 @@ import ListItemContent from "@mui/joy/ListItemContent";
 import IconButton from "@mui/joy/IconButton";
 import Delete from "@mui/icons-material/Delete";
 
+import LemmyHttpMixed from "../lib/LemmyHttpMixed";
 import { LemmyHttp } from "lemmy-js-client";
 
 import {
@@ -75,14 +76,17 @@ export default function LoginForm() {
       // as long aws there is a JWT in the response from login, logged in!
       if (auth.jwt) {
         console.log("auth", auth);
+        const lemmyClientAuthed = new LemmyHttpMixed(`https://${instanceBase}`);
+        await lemmyClientAuthed.setupAuth(auth.jwt);
+        const getSite = await lemmyClientAuthed.call("getSite");
 
-        const lemmyClientAuthed = new LemmyHttp(`https://${instanceBase}`, {
-          headers: {
-            Authorization: `Bearer ${auth.jwt}`,
-          },
-        });
+        // const lemmyClientAuthed = new LemmyHttp(`https://${instanceBase}`, {
+        //   headers: {
+        //     Authorization: `Bearer ${auth.jwt}`,
+        //   },
+        // });
 
-        const getSite = await lemmyClientAuthed.getSite();
+        // const getSite = await lemmyClientAuthed.getSite();
 
         // save if they chose to
         if (saveSession) {
@@ -302,13 +306,17 @@ export default function LoginForm() {
                         dispatch(setAccountIsLoading(true));
 
                         try {
-                          const lemmyClientAuthed = new LemmyHttp(`https://${user.base}`, {
-                            headers: {
-                              Authorization: `Bearer ${user.jwt}`,
-                            },
-                          });
+                          const lemmyClient = new LemmyHttpMixed(`https://${user.base}`);
+                          await lemmyClient.setupAuth(user.jwt);
+                          const getSite = await lemmyClient.call("getSite");
 
-                          const getSite = await lemmyClientAuthed.getSite();
+                          // const lemmyClientAuthed = new LemmyHttp(`https://${user.base}`, {
+                          //   headers: {
+                          //     Authorization: `Bearer ${user.jwt}`,
+                          //   },
+                          // });
+
+                          // const getSite = await lemmyClientAuthed.getSite();
 
                           if (!getSite || !getSite.my_user) {
                             // set instance base to the current instance for easy login
