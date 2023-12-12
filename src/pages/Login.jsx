@@ -18,6 +18,8 @@ import ListItemContent from "@mui/joy/ListItemContent";
 import IconButton from "@mui/joy/IconButton";
 import Delete from "@mui/icons-material/Delete";
 
+import InstanceSelect from "../components/InstanceSelect.jsx";
+
 import LemmyHttpMixed from "../lib/LemmyHttpMixed";
 import { LemmyHttp } from "lemmy-js-client";
 
@@ -154,7 +156,17 @@ export default function LoginForm() {
               width: "60%",
             }}
           >
-            <Input
+            <InstanceSelect
+              placeholder="Instance URL"
+              value={instanceBase}
+              onChange={(newValue) => (domainLock ? null : setInstanceBase(newValue))}
+              sx={{ mb: 1, width: "100%" }}
+              disabled={domainLock || accountIsLoading}
+              variant="outlined"
+              color="neutral"
+            />
+
+            {/* <Input
               placeholder="Instance URL"
               value={instanceBase}
               onChange={(e) => (domainLock ? null : setInstanceBase(e.target.value))}
@@ -162,7 +174,7 @@ export default function LoginForm() {
               color="neutral"
               sx={{ mb: 1, width: "100%" }}
               disabled={domainLock || accountIsLoading}
-            />
+            /> */}
             <Input
               placeholder="Username or Email"
               value={username}
