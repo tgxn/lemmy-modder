@@ -90,19 +90,22 @@ export default function useLemmyReports() {
     console.log("mergedReports", postReportsData, commentReportsData, pmReportsData);
 
     // must have post and comment report data
-    if (!postReportsData || !commentReportsData || !(pmReportsData || userRole != "admin")) return;
+
+    const pmReports = userRole === "admin" ? (pmReportsData || {pages: []}) : {pages: []};
+    const postReports = postReportsData || {pages: []};
+    const commentReports = commentReportsData || {pages: []};
+
+    if (!pmReportsData) {
+      console.log("pmReportsError - may not be site admin", pmReportsError);
+    }
 
     // return if either of these are still loading
     if (postReportsLoading || commentReportsLoading || (pmReportsLoading && userRole === "admin")) return;
 
     console.log("mergedReports", postReportsData, commentReportsData, pmReportsData);
 
-    if (!pmReportsData) {
-      console.log("pmReportsError - may not be site admin", pmReportsError);
-      // pmReportsData.private_message_reports = [];
-    }
 
-    let normalPostReports = mapPagesData(postReportsData.pages, (report) => {
+    let normalPostReports = mapPagesData(postReports.pages, (report) => {
       return {
         ...report,
         type: "post",
@@ -114,7 +117,7 @@ export default function useLemmyReports() {
     });
     console.log("normalPostReports", normalPostReports.length);
 
-    let normalCommentReports = mapPagesData(commentReportsData.pages, (report) => {
+    let normalCommentReports = mapPagesData(commentReports.pages, (report) => {
       return {
         ...report,
         type: "comment",
@@ -129,7 +132,7 @@ export default function useLemmyReports() {
     let normalPMReports = [];
 
     if (userRole === "admin") {
-      normalPMReports = mapPagesData(pmReportsData.pages, (report) => {
+      normalPMReports = mapPagesData(pmReports.pages, (report) => {
         return {
           ...report,
           type: "pm",

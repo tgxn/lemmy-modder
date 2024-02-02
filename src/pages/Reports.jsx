@@ -193,7 +193,7 @@ export default function Reports() {
 
       <ReportsList reportsList={reportsList} />
 
-      {reportsList.length > 0 && !hasNextPageReports && <Divider variant="plain">no more items</Divider>}
+      {!reportsList || reportsList.length > 0 && !hasNextPageReports && <Divider variant="plain">no more items</Divider>}
       {hasNextPageReports && (
         <Box
           ref={ref}
